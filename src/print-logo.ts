@@ -17,7 +17,6 @@ See file LICENSE in the root of this project or go to <https://opensource.org/li
 import * as colors from 'colors/safe';
 
 export default function printLogo() {
-    //@ts-ignore
     console.log(colors.green(
 `8888888b.                   888           888b    888
 888  "Y88b                  888           8888b   888

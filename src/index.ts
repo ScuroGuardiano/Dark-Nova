@@ -16,7 +16,7 @@ See file LICENSE in the root of this project or go to <https://opensource.org/li
 */
 
 import printLogo from "./print-logo";
-import { DarkNova } from "./server";
+import Server from "./server";
 import config from "./config";
 import logger from './logger';
 import * as colors from 'colors/safe';
@@ -34,7 +34,7 @@ function printInfo() {
 
 module.exports = async function main() {
     printInfo();
-    let server = new DarkNova.Server(config.get('host'), config.get("port"));
+    let server = new Server(config.get('host'), config.get("port"));
     server.start(() => {
         logger.info("Server is listening on %s:%d", server.host, server.port);
     })

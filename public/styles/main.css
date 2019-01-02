@@ -1,0 +1,30 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    background-color: black;
+    color: #21ff21;
+    font-family: Consolas, monospace;
+}
+input {
+    border: none;
+    border: 2px #21ff21 solid;
+    background-color: black;
+    color: #21ff21;
+    padding: 10px;
+    font-size: 30px;
+    margin-top: 8px;
+}
+input[type="submit"] {
+    cursor: pointer;
+}
+input[type="submit"]:hover {
+    background-color: #21ff21;
+    color: black;
+}
+#login, #register {
+    float: left;
+    margin-left: 40px;
+}
+footer {
+    clear: both;
+}

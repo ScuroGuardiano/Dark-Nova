@@ -17,34 +17,60 @@ See file LICENSE in the root of this project or go to <https://opensource.org/li
 
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
+import * as morgan from 'morgan';
+import logger from './logger';
+import { write } from 'fs';
 
-export namespace DarkNova {
-    export class Server {
-        constructor(public host: string, public port: number) {
-            this.app = express();
-            this.configureServer();
-            this.registerRoutes();
-            this.registerRouters();
-        }
-        public start(cb: Function) {
-            this.app.listen(this.port, this.host, cb);
-        }
-        private app: express.Application;
-        private configureServer() {
-            this.app.set('view engine', 'ejs');
-            this.configureMiddlewares();
-        }
-        private configureMiddlewares() {
-            this.app.use(bodyParser.urlencoded({ extended: true }));
-            this.app.use(bodyParser.json());
-        }
-        private registerRouters() {
+const loggerSuccessStream = {
+    write(message: string) {
+        if(message.endsWith('\n'))
+            message = message.substring(0, message.length - 1);
+        logger.info(message);
+    }
+}
+const loggerErrorStream = {
+    write(message: string) {
+        if (message.endsWith('\n'))
+            message = message.substring(0, message.length - 1);
+        logger.error(message);
+    }
+}
 
-        }
-        private registerRoutes() {
-            this.app.get('/', (req, res) => {
-                res.send("No elo");
-            });
-        }
+export default class Server {
+    constructor(public host: string, public port: number) {
+        this.app = express();
+        this.configureServer();
+        this.registerRoutes();
+        this.registerRouters();
+    }
+    public start(cb: Function) {
+        this.app.listen(this.port, this.host, cb);
+    }
+    private app: express.Application;
+    private configureServer() {
+        this.app.set('view engine', 'ejs');
+        this.configureMiddlewares();
+    }
+    private configureMiddlewares() {
+        //For 4xx and 5xx error logging
+        this.app.use(morgan('short', {
+            stream: loggerErrorStream,
+            skip(req, res) { return res.statusCode < 400 }
+        }));
+        //For 2xx and 3xx normal logging
+        this.app.use(morgan('short', {
+            stream: loggerSuccessStream,
+            skip(req, res) { return res.statusCode > 400 }
+        }));
+        this.app.use("/public", express.static('./public'));
+        this.app.use(bodyParser.urlencoded({ extended: true }));
+        this.app.use(bodyParser.json());
+    }
+    private registerRouters() {
+    }
+    private registerRoutes() {
+        this.app.get(['/', '/index'], (req, res) => {
+            res.status(200).render('index');
+        });
     }
 }
