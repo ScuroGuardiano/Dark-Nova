@@ -47,14 +47,14 @@ let config = convict({
         name: {
             doc: "Database name",
             format: "*",
-            default: "mainDB",
+            default: "darknova",
             env: "DB_NAME",
             arg: "db-name"
         },
         user: {
             doc: "Database username",
             format: "*",
-            default: null,
+            default: "root",
             env: "DB_USER",
             arg: "db-user"
         },
@@ -78,6 +78,13 @@ let config = convict({
             default: 3306,
             env: "DB_PORT",
             arg: "db-port"
+        },
+        logging: {
+            doc: "Sequelize logging",
+            format: Boolean,
+            default: false,
+            env: "DB_LOGGING",
+            arg: "db-logging"
         }
     }
 });

@@ -19,7 +19,6 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as morgan from 'morgan';
 import logger from './logger';
-import { write } from 'fs';
 
 const loggerSuccessStream = {
     write(message: string) {
@@ -67,6 +66,7 @@ export default class Server {
         this.app.use(bodyParser.json());
     }
     private registerRouters() {
+        
     }
     private registerRoutes() {
         this.app.get(['/', '/index'], (req, res) => {
