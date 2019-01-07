@@ -26,7 +26,7 @@ import * as colors from 'colors/safe';
 function printInfo() {
     printLogo();
     console.log("\nBy Scuro Guardiano\n");
-    if(config.get('env') === "dev") {
+    if(config.get('env') === "development") {
         logger.info("Running in development mode!");
     }
     if(config.get('env') === "production") {

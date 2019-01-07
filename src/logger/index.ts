@@ -8,7 +8,6 @@ See file LICENSE in the root of this project or go to <https://opensource.org/li
 
 import { createLogger, format, transports } from 'winston';
 import config from '../config';
-import * as path from 'path';
 import * as colors from 'colors';
 
 const consoleFormat = format.printf(data => {

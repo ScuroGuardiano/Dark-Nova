@@ -4,8 +4,8 @@ import * as colors from 'colors/safe';
 let config = convict({
     env: {
         doc: "The application enviroment",
-        format: ["production", "dev"],
-        default: "dev",
+        format: ["production", "development"],
+        default: "development",
         env: "NODE_ENV",
         arg: "env"
     },
@@ -28,6 +28,12 @@ let config = convict({
         format: ["error", "warn", "verbose", "info", "debug", "silly"],
         default: "debug",
         env: "LOGGING_LEVEL"
+    },
+    clientSessionsSecret: {
+        doc: "Secret for client-sessions package",
+        format: "*",
+        default: "Provide-your-secret",
+        env: "CLIENT_SESSIONS_SECRET"
     },
     db: {
         dialect: {
