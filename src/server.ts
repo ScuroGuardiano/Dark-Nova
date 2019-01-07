@@ -19,6 +19,7 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as morgan from 'morgan';
 import logger from './logger';
+import * as http from 'http';
 
 const loggerSuccessStream = {
     write(message: string) {
@@ -42,10 +43,34 @@ export default class Server {
         this.registerRoutes();
         this.registerRouters();
     }
-    public start(cb: Function) {
-        this.app.listen(this.port, this.host, cb);
+
+    //Public methods
+    public start(cb?: Function) {
+        let callback = cb ? cb : () => {
+            logger.info("Server is listening on %s:%d", this.host, this.port);
+        }
+        logger.info("Starting HTTP Server...");
+        this.server = this.app.listen(this.port, this.host, callback);
+        this.server.on('close', () => {
+            logger.info("HTTP Server has been shutted down");
+        });
     }
+    public close(cb?: Function) {
+        if(this.server && this.server.listening) {
+            logger.info("Shutting down HTTP Server...");
+            this.server.close(cb);
+        }
+        else {
+            //Call callback anyway
+            process.nextTick(cb);
+        }
+    }
+
+    //Private properties
     private app: express.Application;
+    private server: http.Server;
+
+    //Private methods
     private configureServer() {
         this.app.set('view engine', 'ejs');
         this.configureMiddlewares();

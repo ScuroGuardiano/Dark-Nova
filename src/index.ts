@@ -22,22 +22,81 @@ import Server from "./server";
 import config from "./config";
 import logger from './logger';
 import * as colors from 'colors/safe';
+import * as util from 'util';
+import { initDatabase } from './db';
+import waitForLogger from './logger/wait-for-logger';
 
-function printInfo() {
-    printLogo();
-    console.log("\nBy Scuro Guardiano\n");
-    if(config.get('env') === "development") {
-        logger.info("Running in development mode!");
+class DarkNova {
+    constructor() {
+        this.server = new Server(config.get('host'), config.get("port"));
     }
-    if(config.get('env') === "production") {
-        logger.debug(colors.red("Running in production mode, you should set logging to 'info' in config!"));
+    public async run() {
+        this.setProcessListeners();
+        this.printInfo();
+        await this.loadNeededModules();
+        this.server.start();
     }
+    ////////////////////////////////////////////////////////////////////////////
+    private printInfo() {
+        printLogo();
+        console.log("\nBy Scuro Guardiano\n");
+        if (config.get('env') === "development") {
+            logger.info("Running in development mode!");
+        }
+        if (config.get('env') === "production") {
+            logger.debug(colors.red("Running in production mode, you should set logging to 'info' in config!"));
+        }
+    }
+    //Initializing and enabling all required libraries and modules, like database
+    private async loadNeededModules() {
+        logger.info("Connecting to database...")
+        try {
+            await initDatabase();
+            logger.info("Connected to database!");
+        }
+        catch (err) {
+            logger.error("Error while connecting to database %s", util.inspect(err));
+            this.criticalShutdown();
+        }
+    }
+    private setProcessListeners() {
+        process.on('uncaughtException', err => {
+            logger.error("CRITICAL ERROR: UNCAUGHT EXCEPTION!");
+            logger.error(util.inspect(err));
+            this.criticalShutdown();
+        });
+        process.on('unhandledRejection', err => {
+            logger.error("CRITICAL ERROR: UNHANDLED PROMISE REJECTION!")
+            logger.error(util.inspect(err));
+            this.criticalShutdown();
+        })
+        process.on('SIGINT', () => {
+            logger.info("Caught interrupt signal.");
+            this.shutdown();
+        });
+    }
+    private criticalShutdown() {
+        logger.error("SHUTTING DOWN DUE TO CRITICAL ERROR...");
+        this.server.close(async () => {
+            waitForLogger(logger).then(() => {
+                process.exit(1);
+            });
+            logger.end();
+        });
+    }
+    private shutdown() {
+        logger.info("Shutting down Dark Nova...");
+        this.server.close(async () => {
+            waitForLogger(logger).then(() => {
+                process.exit(0);
+            });
+            logger.end();
+        });
+    }
+    private server: Server;
 }
 
 module.exports = async function main() {
-    printInfo();
-    let server = new Server(config.get('host'), config.get("port"));
-    server.start(() => {
-        logger.info("Server is listening on %s:%d", server.host, server.port);
-    })
+    let darkNova = new DarkNova();
+    darkNova.run();
 }

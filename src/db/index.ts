@@ -24,7 +24,8 @@ if(dbConfig.dialect === "sqlite") {
     db = new Sequelize('mainDB', null, null, {
         dialect: "sqlite",
         storage: dbConfig.storage,
-        logging: dbLogging
+        logging: dbLogging,
+        operatorsAliases: false
     });
 }
 else {
@@ -32,7 +33,8 @@ else {
         dialect: dbConfig.dialect,
         host: dbConfig.host,
         port: dbConfig.port,
-        logging: dbLogging
+        logging: dbLogging,
+        operatorsAliases: false
     });
 }
 
