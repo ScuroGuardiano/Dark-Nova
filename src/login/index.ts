@@ -14,3 +14,54 @@ This file is part of Dark Nova project.
 This file and project is licensed under the MIT license
 See file LICENSE in the root of this project or go to <https://opensource.org/licenses/MIT> for full license details.
 */
+
+import * as express from 'express';
+import logger from '../logger';
+import { inspect } from 'util';
+import LoginService, { Errors as LoginErrors } from './service';
+
+const router = express.Router();
+
+export default router;
+
+const loginService = new LoginService();
+
+router.get(['login', 'register'], (req, res) => {
+    res.redirect('/');
+});
+
+router.post('/login', async (req, res) => {
+    try {
+        if(!req.body.email && !req.body.password)
+            return res.status(400).send("400 - Bad Request");
+        
+        let user = await loginService.authUser(req.body.email, req.body.password);
+        return res.send(`Authorization complete, user email: ${user.email}`);
+    }
+    catch(err) {
+        if(err instanceof LoginErrors.WrongEmailOrPassword) {
+            return res.send("Wrong email or password");
+        }
+        logger.error(inspect(err));
+        res.status(500).send("Internal Error");
+    }
+});
+router.post('/register', async (req, res) => {
+    try {
+        if(!req.body.email && !req.body.password)
+            return res.status(400).send("400 - Bad Request");
+        
+        let user = await loginService.registerUser(req.body.email, req.body.password);
+        return res.send(`Registration complete, user email: ${user.email}`);
+    }
+    catch(err) {
+        if(err instanceof LoginErrors.AccountAlreadyExists)
+            return res.send("Account already exists");
+        if(err instanceof LoginErrors.InvalidEmailFormat)
+            return res.send("Invalid email format");
+        if(err instanceof LoginErrors.InvalidPasswordFormat)
+            return res.send("Invalid password format");
+        logger.error(inspect(err));
+        res.status(500).send("Internal Error");
+    }
+})

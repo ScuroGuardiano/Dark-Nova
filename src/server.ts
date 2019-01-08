@@ -20,6 +20,7 @@ import * as bodyParser from 'body-parser';
 import * as morgan from 'morgan';
 import logger from './logger';
 import * as http from 'http';
+import authorization from './login';
 
 const loggerSuccessStream = {
     write(message: string) {
@@ -91,7 +92,7 @@ export default class Server {
         this.app.use(bodyParser.json());
     }
     private registerRouters() {
-        
+        this.app.use('/', authorization);
     }
     private registerRoutes() {
         this.app.get(['/', '/index'], (req, res) => {

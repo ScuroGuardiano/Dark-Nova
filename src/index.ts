@@ -71,8 +71,12 @@ class DarkNova {
             this.criticalShutdown();
         })
         process.on('SIGINT', () => {
-            logger.info("Caught interrupt signal.");
-            this.shutdown();
+            //LINUX IS SENDING 2X SIGINT ON CTRL+C OR IDK WTF IS GOING ON
+            if(!this.interrupted) {
+                logger.info("Caught interrupt signal.");
+                this.interrupted = true;
+                this.shutdown();
+            }
         });
     }
     private criticalShutdown() {
@@ -81,7 +85,6 @@ class DarkNova {
             waitForLogger(logger).then(() => {
                 process.exit(1);
             });
-            logger.end();
         });
     }
     private shutdown() {
@@ -90,10 +93,10 @@ class DarkNova {
             waitForLogger(logger).then(() => {
                 process.exit(0);
             });
-            logger.end();
         });
     }
     private server: Server;
+    private interrupted = false;
 }
 
 module.exports = async function main() {
