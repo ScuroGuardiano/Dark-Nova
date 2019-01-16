@@ -20,7 +20,11 @@ import * as bodyParser from 'body-parser';
 import * as morgan from 'morgan';
 import logger from './logger';
 import * as http from 'http';
+import * as clientSessions from 'client-sessions';
 import authorization from './login';
+import config from './config';
+
+const SESSIONS_CONFIG = config.get("client-sessions");
 
 const loggerSuccessStream = {
     write(message: string) {
@@ -77,6 +81,7 @@ export default class Server {
         this.configureMiddlewares();
     }
     private configureMiddlewares() {
+        // ============= Mo(r)gan =============
         //For 4xx and 5xx error logging
         this.app.use(morgan('short', {
             stream: loggerErrorStream,
@@ -87,9 +92,18 @@ export default class Server {
             stream: loggerSuccessStream,
             skip(req, res) { return res.statusCode > 400 }
         }));
+        // ============= static files =============
         this.app.use("/public", express.static('./public'));
+        // ============= body-parser =============
         this.app.use(bodyParser.urlencoded({ extended: true }));
         this.app.use(bodyParser.json());
+        // ============= client-sessions =============
+        this.app.use(clientSessions({
+            duration: SESSIONS_CONFIG.duration,
+            activeDuration: SESSIONS_CONFIG.activeDuration,
+            secret: SESSIONS_CONFIG.secret,
+            cookieName: "novaSession"
+        }));
     }
     private registerRouters() {
         this.app.use('/', authorization);

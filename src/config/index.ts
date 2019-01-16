@@ -29,12 +29,6 @@ let config = convict({
         default: "debug",
         env: "LOGGING_LEVEL"
     },
-    clientSessionsSecret: {
-        doc: "Secret for client-sessions package",
-        format: "*",
-        default: "Provide-your-secret",
-        env: "CLIENT_SESSIONS_SECRET"
-    },
     db: {
         dialect: {
             doc: "Database dialect (sqlite, mysql, postgres, mssql)",
@@ -92,17 +86,43 @@ let config = convict({
             env: "DB_LOGGING",
             arg: "db-logging"
         }
-    }
+    },
+    "client-sessions": {
+        secret: {
+            doc: "Secret to encrypt client sessions cookies",
+            format: "*",
+            default: Math.random().toString(),
+            env: "SESSION_SECRET"
+        },
+        duration: {
+            doc: "Session duration",
+            format: "timestamp",
+            default: 24 * 60 * 60 * 1000,
+            env: "SESSION_DURATION"
+        },
+        activeDuration: {
+            doc: "Session active duration, if duration < activeDuration then duration = activeDuration",
+            format: "timestamp",
+            default: 60 * 60 * 1000,
+            env: "SESSION_ACTIVE_DURATION"
+        }
+    },
 });
+
+let configWarnings: Array<string> = [];
 
 try {
     config.loadFile('./config/' + config.get('env') + '.json');
 }
 catch(err) {
-    console.error(colors.red(`====================== CONFIGURATION LOADER ======================
+    configWarnings.push(colors.red(`====================== CONFIGURATION LOADER ======================
 ==== Did not find configuration file for ${config.get("env")}.
 ==== You should create file ${config.get('env')}.json in config directory!
 ==== You'll find schema in file src/config/index.js\n`));
 }
+if (config.get("client-sessions").secret == config.default("client-sessions.secret")) {
+    configWarnings.push(colors.red(`[IMPORTANT] client-sessions secret isn't set!!! Set secret in config or set env variable SESSION_SECRET!!!`));
+}
 
 export default config;
+export { configWarnings };

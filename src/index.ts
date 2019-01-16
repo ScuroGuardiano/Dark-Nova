@@ -19,7 +19,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 import printLogo from "./print-logo";
 import Server from "./server";
-import config from "./config";
+import config, { configWarnings } from "./config";
 import logger from './logger';
 import * as colors from 'colors/safe';
 import * as util from 'util';
@@ -33,10 +33,20 @@ class DarkNova {
     public async run() {
         this.setProcessListeners();
         this.printInfo();
+        this.printConfigWarnings();
         await this.loadNeededModules();
         this.server.start();
     }
     ////////////////////////////////////////////////////////////////////////////
+    private printConfigWarnings() {
+        if(configWarnings.length == 0) {
+            logger.info("No config warnings :)");
+            return;
+        }
+        configWarnings.forEach(warning => {
+            logger.warn(warning);
+        });
+    }
     private printInfo() {
         printLogo();
         console.log("\nBy Scuro Guardiano\n");
@@ -71,23 +81,22 @@ class DarkNova {
             this.criticalShutdown();
         })
         process.on('SIGINT', () => {
-            //LINUX IS SENDING 2X SIGINT ON CTRL+C OR IDK WTF IS GOING ON
-            if(!this.interrupted) {
-                logger.info("Caught interrupt signal.");
-                this.interrupted = true;
-                this.shutdown();
-            }
+            logger.info("Caught interrupt signal.");
+            this.shutdown();
         });
+        process.on("SIGTERM", () => {
+            logger.info("Caught interrupt singal.");
+            this.shutdown();
+        })
     }
     private criticalShutdown() {
         logger.error("SHUTTING DOWN DUE TO CRITICAL ERROR...");
-        this.server.close(async () => {
-            waitForLogger(logger).then(() => {
-                process.exit(1);
-            });
-        });
+        this.shutdown();
     }
     private shutdown() {
+        if (this.shuttingDown) //prevent from invoking shutdown function more than once
+            return;
+        this.shuttingDown = true;
         logger.info("Shutting down Dark Nova...");
         this.server.close(async () => {
             waitForLogger(logger).then(() => {
@@ -96,7 +105,7 @@ class DarkNova {
         });
     }
     private server: Server;
-    private interrupted = false;
+    private shuttingDown = false;
 }
 
 module.exports = async function main() {
