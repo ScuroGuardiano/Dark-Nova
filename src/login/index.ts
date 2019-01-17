@@ -19,6 +19,7 @@ import * as express from 'express';
 import logger from '../logger';
 import { inspect } from 'util';
 import LoginService, { Errors as LoginErrors } from './service';
+import { NovaRequest } from '../typings';
 
 const router = express.Router();
 
@@ -30,12 +31,13 @@ router.get(['login', 'register'], (req, res) => {
     res.redirect('/');
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', async (req: NovaRequest, res) => {
     try {
         if(!req.body.email && !req.body.password)
             return res.status(400).send("400 - Bad Request");
         
         let user = await loginService.authUser(req.body.email, req.body.password);
+        req.novaSession.userId = user.id;
         return res.send(`Authorization complete, user email: ${user.email}`);
     }
     catch(err) {
@@ -46,12 +48,13 @@ router.post('/login', async (req, res) => {
         res.status(500).send("Internal Error");
     }
 });
-router.post('/register', async (req, res) => {
+router.post('/register', async (req: NovaRequest, res) => {
     try {
         if(!req.body.email && !req.body.password)
             return res.status(400).send("400 - Bad Request");
         
         let user = await loginService.registerUser(req.body.email, req.body.password);
+        req.novaSession.userId = user.id;
         return res.send(`Registration complete, user email: ${user.email}`);
     }
     catch(err) {
@@ -64,4 +67,8 @@ router.post('/register', async (req, res) => {
         logger.error(inspect(err));
         res.status(500).send("Internal Error");
     }
-})
+});
+router.get('/logout', async (req: NovaRequest, res) => {
+    req.novaSession.reset();
+    return res.redirect('/');
+});
