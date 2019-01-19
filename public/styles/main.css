@@ -25,6 +25,10 @@ input[type="submit"]:hover {
     float: left;
     margin-left: 40px;
 }
+.error {
+    color: red;
+    text-align: center;
+}
 footer {
     clear: both;
 }

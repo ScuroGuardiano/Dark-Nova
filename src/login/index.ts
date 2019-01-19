@@ -18,14 +18,14 @@ See file LICENSE in the root of this project or go to <https://opensource.org/li
 import * as express from 'express';
 import logger from '../logger';
 import { inspect } from 'util';
-import LoginService, { Errors as LoginErrors } from './service';
+import UserService, { Errors as UserErrors } from './service';
 import { NovaRequest } from '../typings';
 
 const router = express.Router();
 
 export default router;
 
-const loginService = new LoginService();
+const loginService = new UserService();
 
 router.get(['login', 'register'], (req, res) => {
     res.redirect('/');
@@ -38,14 +38,14 @@ router.post('/login', async (req: NovaRequest, res) => {
         
         let user = await loginService.authUser(req.body.email, req.body.password);
         req.novaSession.userId = user.id;
-        return res.send(`Authorization complete, user email: ${user.email}`);
+        return res.redirect('/');
     }
     catch(err) {
-        if(err instanceof LoginErrors.WrongEmailOrPassword) {
-            return res.send("Wrong email or password");
+        if(err instanceof UserErrors.WrongEmailOrPassword) {
+            return res.render('index', { loginError: "Wrong email or password" });
         }
         logger.error(inspect(err));
-        res.status(500).send("Internal Error");
+        res.status(500).send("<h1>500 - Internal Error</h1>");
     }
 });
 router.post('/register', async (req: NovaRequest, res) => {
@@ -55,17 +55,17 @@ router.post('/register', async (req: NovaRequest, res) => {
         
         let user = await loginService.registerUser(req.body.email, req.body.password);
         req.novaSession.userId = user.id;
-        return res.send(`Registration complete, user email: ${user.email}`);
+        return res.redirect('/');
     }
     catch(err) {
-        if(err instanceof LoginErrors.AccountAlreadyExists)
-            return res.send("Account already exists");
-        if(err instanceof LoginErrors.InvalidEmailFormat)
-            return res.send("Invalid email format");
-        if(err instanceof LoginErrors.InvalidPasswordFormat)
-            return res.send("Invalid password format");
+        if(err instanceof UserErrors.AccountAlreadyExists)
+            return res.render('index', { registerError: "Account already exists" });
+        if(err instanceof UserErrors.InvalidEmailFormat)
+            return res.render('index', { registerError: "Invalid email format" });
+        if(err instanceof UserErrors.InvalidPasswordFormat)
+            return res.render('index', { registerError: "Invalid password format" });
         logger.error(inspect(err));
-        res.status(500).send("Internal Error");
+        res.status(500).send("<h1>500 - Internal Error</h1>");
     }
 });
 router.get('/logout', async (req: NovaRequest, res) => {

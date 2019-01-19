@@ -8,6 +8,11 @@
 <body>
     <h1>Welcome to Dark Nova</h1>
     <div id="login">
+        <p class="error">
+            <% if(locals.loginError) { %>
+                <%=loginError %> 
+            <% } %>
+        </p>
         <form method="POST" action="/login">
             <input type="email" name="email" placeholder="email" required><br>
             <input type="password" name="password" placeholder="password" required><br>
@@ -15,6 +20,11 @@
         </form>
     </div>
     <div id="register">
+        <p class="error">
+            <% if(locals.registerError) { %>
+                <%=registerError %>
+            <% } %>
+        </p>
         <form method="POST" action="/register">
             <input type="email" name="email" placeholder="email" required><br>
             <input type="password" name="password" placeholder="password" required><br>

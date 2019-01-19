@@ -22,7 +22,10 @@ import logger from './logger';
 import * as http from 'http';
 import * as clientSessions from 'client-sessions';
 import authorization from './login';
+import game from './game/controller';
 import config from './config';
+import { NovaRequest } from './typings';
+import * as path from 'path';
 
 const SESSIONS_CONFIG = config.get("client-sessions");
 
@@ -107,10 +110,18 @@ export default class Server {
     }
     private registerRouters() {
         this.app.use('/', authorization);
+        this.app.use('/game', game);
     }
     private registerRoutes() {
-        this.app.get(['/', '/index'], (req, res) => {
-            res.status(200).render('index');
+        //TODO: Wywalić to na zewnątrz klasy serwera, bo tak.
+        this.app.get(['/', '/index'], (req: NovaRequest, res) => {
+            if(req.novaSession.userId) {
+                return res.redirect('/game/');
+            }
+            res.render('index');
+        });
+        this.app.get('/favicon.ico', (req, res) => {
+            res.sendFile(path.join('public', 'favicon.ico'), { root: "./" });
         });
     }
 }

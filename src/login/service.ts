@@ -51,7 +51,7 @@ export namespace Errors {
     }
 }
 
-export default class LoginService {
+export default class UserService {
     /**
      * Registers user, returns user 
      * @param email 
