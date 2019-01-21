@@ -75,7 +75,7 @@ let config = convict({
         port: {
             doc: "Database port",
             format: "port",
-            default: 3306,
+            default: null,
             env: "DB_PORT",
             arg: "db-port"
         },

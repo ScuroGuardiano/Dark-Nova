@@ -16,7 +16,7 @@ See file LICENSE in the root of this project or go to <https://opensource.org/li
 */
 
 import BasicError from "../errors/basic-error";
-import { User } from "../db/index";
+import User from "../db/models/user";
 import * as bcrypt from 'bcrypt';
 import UknownError from "../errors/unknown";
 
@@ -67,13 +67,12 @@ export default class UserService {
         
         let hashedPassword = await bcrypt.hash(password, 12);
 
-        let user = await User.create({
+        let user = User.create({
             email: email,
             password: hashedPassword
         });
-        if(user)
-            return user;
-        throw new UknownError();
+        await user.save();
+        return user;
     }
     public async authUser(email: string, password: string) {
         let user = await this.getUserByEmail(email);

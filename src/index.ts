@@ -23,7 +23,7 @@ import config, { configWarnings } from "./config";
 import logger from './logger';
 import * as colors from 'colors/safe';
 import * as util from 'util';
-import { initDatabase } from './db';
+import initDatabase from './db';
 import waitForLogger from './logger/wait-for-logger';
 
 class DarkNova {

@@ -1,52 +1,35 @@
 import config from "../config";
-import * as Sequelize from 'sequelize';
-import defineUserModel from "./models/user";
 import logger from "../logger";
-import winston = require("winston");
+import { createConnection } from "typeorm";
+import DatabaseLogger from "./logger";
+import User from "./models/user";
+import Player from "./models/player";
 
-let db: Sequelize.Sequelize;
-const dbConfig = config.get("db");
-let dbLogging: boolean | winston.LeveledLogMethod = dbConfig.logging;
-
-if(dbLogging) {
-    //In production enviroment turn off logging, even it is set to true in config
-    if (config.get('env') === "production") {
-        logger.warn("Database logging can't be turned on in production enviroment, it has been turned off");
-        dbLogging = false;
+export default async function initDatabase() {
+    let entities = [
+        User, Player
+    ]
+    const dbConfig = config.get("db");
+    let databaseOptions: any = {
+        logging: dbConfig.logging,
+        logger: new DatabaseLogger(),
+        entities: entities,
+        synchronize: true
+    };
+    if(dbConfig.dialect === "sqlite") {
+        databaseOptions.type = "sqlite";
+        databaseOptions.database = dbConfig.storage;
     }
-    //In development enviroment
     else {
-        dbLogging = logger.debug;
+        databaseOptions.type = dbConfig.dialect;
+        databaseOptions.host = dbConfig.host;
+        databaseOptions.username = dbConfig.user;
+        databaseOptions.password = dbConfig.password;
+        databaseOptions.database = dbConfig.name;
+        if(dbConfig.port) databaseOptions.port = dbConfig.port;
     }
+
+    await createConnection(databaseOptions);
+    logger.info("<DATABASE> Connected to database!");
 }
 
-if(dbConfig.dialect === "sqlite") {
-    db = new Sequelize('mainDB', null, null, {
-        dialect: "sqlite",
-        storage: dbConfig.storage,
-        logging: dbLogging,
-        operatorsAliases: false
-    });
-}
-else {
-    db = new Sequelize(dbConfig.name, dbConfig.user, dbConfig.password, {
-        dialect: dbConfig.dialect,
-        host: dbConfig.host,
-        port: dbConfig.port,
-        logging: dbLogging,
-        operatorsAliases: false
-    });
-}
-
-// Models
-const User = defineUserModel(db);
-
-// Associations
-
-// Export models
-export { User };
-export { IUserAttributes, IUserInstance } from './models/user';
-
-export async function initDatabase() {
-    await db.sync({force: false});
-}

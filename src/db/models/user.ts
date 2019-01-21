@@ -6,21 +6,22 @@ This file and project is licensed under the MIT license
 See file LICENSE in the root of this project or go to <https://opensource.org/licenses/MIT> for full license details.
 */
 
-import * as Sequelize from 'sequelize';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BaseEntity } from 'typeorm';
 
-export interface IUserAttributes {
-    id?: string;
+@Entity()
+export default class User extends BaseEntity {
+    @PrimaryGeneratedColumn("uuid")
+    id: string;
+
+    @Column({ unique: true, nullable: false })
     email: string;
-    password: string;
-    createdAt?: string;
-    updatedAt?: string;
-}
-export interface IUserInstance extends IUserAttributes, Sequelize.Instance<IUserAttributes> {}
 
-export default function defineUserModel(sequelize: Sequelize.Sequelize) {
-    return sequelize.define<IUserInstance, IUserAttributes>('User', {
-        id: { type: Sequelize.UUID, primaryKey: true, unique: true, defaultValue: Sequelize.UUIDV4 },
-        email: { type: Sequelize.STRING, unique: true, allowNull: false },
-        password: { type: Sequelize.STRING, allowNull: false }
-    }, { version: true });
+    @Column({ nullable: false })
+    password: string;
+
+    @CreateDateColumn()
+    createdAt: Date;
+    
+    @UpdateDateColumn()
+    updatedAt: Date;
 }
