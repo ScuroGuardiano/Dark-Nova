@@ -62,7 +62,6 @@ class DarkNova {
         logger.info("Connecting to database...")
         try {
             await initDatabase();
-            logger.info("Connected to database!");
         }
         catch (err) {
             logger.error("Error while connecting to database %s", util.inspect(err));

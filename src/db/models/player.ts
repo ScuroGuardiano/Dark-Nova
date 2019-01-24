@@ -11,13 +11,28 @@ export enum Permissions {
 }
 @Entity()
 export default class Player extends BaseEntity {
+    private constructor() {
+        super();
+    }
+    public static createNew(userId: string, nickname: string): Player {
+        let player = new Player();
+        player.userId = userId;
+        player.nickname = nickname;
+        player.nicknameLowcase = nickname.split(' ').join('').toLowerCase();
+        return player;
+    }
+    public static findByNickname(nickname: string) {
+        let nicknameLowcase = nickname.split(' ').join('').toLowerCase();
+        return this.findOne({ where: { nicknameLowcase: nicknameLowcase }});
+    }
     @PrimaryGeneratedColumn('increment')
     id: number;
 
-    @Column()
+    @Column({ nullable: false })
     nickname: string;
 
-    @Column()
+    /** Lowercase nickname without spaces */
+    @Column({ nullable: false })
     nicknameLowcase: string;
 
     @Column({ default: Permissions.USER })

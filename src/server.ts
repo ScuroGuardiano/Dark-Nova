@@ -55,7 +55,7 @@ export default class Server {
     //Public methods
     public start(cb?: Function) {
         let callback = cb ? cb : () => {
-            logger.info("Server is listening on %s:%d", this.host, this.port);
+            logger.info("HTTP Server is listening on %s:%d", this.host, this.port);
         }
         logger.info("Starting HTTP Server...");
         this.server = this.app.listen(this.port, this.host, callback);

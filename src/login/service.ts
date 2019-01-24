@@ -68,14 +68,14 @@ export default class UserService {
         let hashedPassword = await bcrypt.hash(password, 12);
 
         let user = User.create({
-            email: email,
+            email: email.toLowerCase(),
             password: hashedPassword
         });
         await user.save();
         return user;
     }
     public async authUser(email: string, password: string) {
-        let user = await this.getUserByEmail(email);
+        let user = await this.getUserByEmail(email.toLowerCase());
         if(!user)
             throw new Errors.WrongEmailOrPassword();
         if(await bcrypt.compare(password, user.password))
