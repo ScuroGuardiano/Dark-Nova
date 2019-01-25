@@ -13,11 +13,12 @@ let uniConfig = convict({
         planets: { format: "int", default: 15 }
     },
     speed: {
-        fleet: { format: strictNumber , default: 1 },
+        fleet: { format: strictNumber, default: 1 },
         buildings: { format: strictNumber, default: 1 },
         research: { format: strictNumber, default: 1 },
         production: { format: strictNumber, default: 1 }
     },
+    storageMultipler: { format: strictNumber, default: 1 },
     baseProductions: {
         metal: { format: "int", default: 120 },
         crystal: { format: "int", default: 70 },
