@@ -6,8 +6,9 @@ This file and project is licensed under the MIT license
 See file LICENSE in the root of this project or go to <https://opensource.org/licenses/MIT> for full license details.
 */
 
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BaseEntity, Index, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BaseEntity, Index, ManyToOne, JoinColumn, OneToOne } from 'typeorm';
 import Player from './player';
+import PlanetBuildings from './planet-buildings';
 
 @Entity()
 @Index(['galaxy', 'system', 'position'], { unique: true })
@@ -15,11 +16,26 @@ export default class Planet extends BaseEntity {
     @PrimaryGeneratedColumn('increment')
     id: number;
 
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @UpdateDateColumn()
+    updatedAt: Date;
+
+    @Column()
+    name: string;
+
     @Column({ nullable: false })
     playerId: number;
 
     @ManyToOne(type => Player)
     player: Player;
+
+    @OneToOne(type => PlanetBuildings, {
+        eager: true
+    })
+    @JoinColumn()
+    buildings: PlanetBuildings;
 
     @Column({ type: "int", nullable: false })
     galaxy: number;
