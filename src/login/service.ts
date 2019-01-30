@@ -18,7 +18,6 @@ See file LICENSE in the root of this project or go to <https://opensource.org/li
 import BasicError from "../errors/basic-error";
 import User from "../db/models/user";
 import * as bcrypt from 'bcrypt';
-import UknownError from "../errors/unknown";
 
 export namespace Errors {
     //Login errors

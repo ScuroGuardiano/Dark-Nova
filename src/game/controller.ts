@@ -1,7 +1,6 @@
 import * as express from 'express';
 import logger from '../logger';
 import { NovaRequest } from '../typings';
-import User from '../db/models/user';
 import { inspect } from 'util';
 import requireSession from '../middlewares/require-session';
 import requirePlayer from './middlewares/require-player';

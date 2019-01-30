@@ -20,11 +20,13 @@ dotenv.config();
 import printLogo from "./print-logo";
 import Server from "./server";
 import config, { configWarnings } from "./config";
+import './config/uni-config';
 import logger from './logger';
 import * as colors from 'colors/safe';
 import * as util from 'util';
 import initDatabase from './db';
 import waitForLogger from './logger/wait-for-logger';
+import HomePlanetService from './game/services/home-planet';
 
 class DarkNova {
     constructor() {

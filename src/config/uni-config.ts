@@ -33,7 +33,17 @@ let uniConfig = convict({
         position: {
             min: { format: "int", default: 4 },
             max: { format: "int", default: 12}
+        },
+        startingResources: {
+            metal: { format: "int", default: 500 },
+            crystal: { format: "int", default: 500 },
+            deuter: { format: "int", default: 0 }
         }
+    },
+    reservedSystems: {
+        doc: "Number of first systems in galactic 1 reserved for administration",
+        format: 'int',
+        default: 2
     },
     planets: {
         "1": { 

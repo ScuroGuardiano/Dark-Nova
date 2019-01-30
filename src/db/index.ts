@@ -4,10 +4,12 @@ import { createConnection } from "typeorm";
 import DatabaseLogger from "./logger";
 import User from "./models/user";
 import Player from "./models/player";
+import Planet from "./models/planet";
+import PlanetBuildings from "./models/planet-buildings";
 
 export default async function initDatabase() {
     let entities = [
-        User, Player
+        User, Player, Planet, PlanetBuildings
     ]
     const dbConfig = config.get("db");
     let databaseOptions: any = {
