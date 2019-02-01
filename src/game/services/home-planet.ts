@@ -3,8 +3,19 @@ import Planet from "../../db/models/planet";
 import * as _ from 'lodash';
 import logger from "../../logger";
 import { inspect } from "util";
-import { getRepository } from "typeorm";
+import { getRepository, Between } from "typeorm";
+import IPlanetData from "../data-types/planet-data";
+import BasicError from "../../errors/basic-error";
+import { Coordinates } from "../data-types/coordinates";
+import { Resources } from "../data-types/resources";
 
+export namespace Errors {
+    export class NoAvailableSystemsForHomePlanet extends BasicError {
+        constructor() {
+            super("There's no more available space (hehe) in The Universe for home planets!");
+        }
+    }
+}
 
 /**
  * This class will contain whole logic for fiding home planets
@@ -12,24 +23,72 @@ import { getRepository } from "typeorm";
  * Unfortunately it will get complicated as f*ck, because I will write a lot of rules here
  */
 
+//TODO: Test in on production don't waste time for testing now ;)
 export default class HomePlanetService {
 
+    //TODO: Write auto tests for it
+    /**
+     * Generates all home planet specific data, rest is up to Planet Service as for example temperature.
+     */
+    public async generatePlanetDataForHomePlanet(): Promise<Partial<IPlanetData>> {
+        let coords = await this.generateCoordinatesForHomePlanet();
+        logger.debug(`Generated coords for new home planet: ${coords.toString()}`);
+        let resources = new Resources(
+            this.homePlanetConfig.startingResources.metal,
+            this.homePlanetConfig.startingResources.crystal,
+            this.homePlanetConfig.startingResources.deuter
+        );
+        let maxFields = this.homePlanetConfig.fields.max;
+        if(this.homePlanetConfig.fields.max !== this.homePlanetConfig.fields.min) {
+            //TODO: Change it to gaussian random
+            maxFields = _.random(this.homePlanetConfig.fields.min, this.homePlanetConfig.fields.max);
+        }
+        let diameter = this.homePlanetConfig.diameter;
+
+        return {
+            coords: coords,
+            resources: resources,
+            maxFields: maxFields,
+            diameter: diameter
+        };
+    }
+    
+    /**
+     * _**IMPORTANT**_:  
+     * _**This is one of the key functions that is responsible for planet distribution in universe!**_  
+     *   
+     * Generating coords for home planet, currently it's chosing it totally random  
+     * Maybe later I will do something more fancy, but for now it will be enough.
+     */
+    private async generateCoordinatesForHomePlanet(): Promise<Coordinates> {
+        let availableSystems = await this.findAvailableSystemsForHomePlanets();
+        if(availableSystems.length === 0) {
+            logger.error("There's no more available space (hehe) in The Universe for home planets! The Universe is almost full!");
+            throw new Errors.NoAvailableSystemsForHomePlanet();
+        }
+        let galaxyIndex = _.random(0, availableSystems.length - 1); //Take random available galaxy INDEX;
+        let system = _.sample(availableSystems[galaxyIndex].systems) //Take random system from galaxy;
+        let galaxy = availableSystems[galaxyIndex].galaxy;
+        let positions = await this.findAvailableHomePlanetPositionsForSystem(galaxy, system);
+        let position = _.sample(positions);
+
+        return new Coordinates(galaxy, system, position);
+    }
     /** 
      * Returns available systems for home planets in format: 
      * { galaxy: galaxyNumber, systems: availableSystems[] }[]
     */
-    public async getAvailableSystemsForHomePlanets() {
-        const homePlanetPosition = uniConfig.get('homePlanet').position;
+    private async findAvailableSystemsForHomePlanets() {
         const reservedSystems = uniConfig.get('reservedSystems');
         const universeSize = uniConfig.get('size');
 
         let planetsInSystems = await this.countPlanetsInPositionRangeBySystem(
-            homePlanetPosition.min, 
-            homePlanetPosition.max
+            this.homePlanetPosition.min, 
+            this.homePlanetPosition.max
         );
 
         //This can be decreased to make smaller home planets density.
-        let maxHomePlanetsInSystem = homePlanetPosition.max - homePlanetPosition.min + 1;
+        let maxHomePlanetsInSystem = this.homePlanetPosition.max - this.homePlanetPosition.min + 1;
 
         //HOLY SHIET THAT IS THE MONSTER
         let availableSystems = 
@@ -70,12 +129,20 @@ export default class HomePlanetService {
             .getRawMany() as [{ galaxy: number, system: number, planets: number }];
         return planets;
     }
-    public async getAvailablePositionsForSystem(galaxy: number, system: number) {
-        let planets = await Planet.find({ where: { galaxy: galaxy, system: system } });
+    private async findAvailableHomePlanetPositionsForSystem(galaxy: number, system: number) {
+        let planets = await Planet.find({ 
+            where: { 
+                galaxy: galaxy, 
+                system: system,
+                position: Between(this.homePlanetPosition.min, this.homePlanetPosition.max)
+            }
+        });
         let freePositions = 
-        _.range(1, uniConfig.get('size').planets + 1)
+        _.range(this.homePlanetPosition.min, this.homePlanetPosition.max + 1)
         .filter(pos => 
             planets.findIndex(planet => planet.position === pos) == -1);
             return freePositions;
     }
+    private homePlanetConfig = uniConfig.get('homePlanet');
+    private homePlanetPosition = this.homePlanetConfig.position;
 }

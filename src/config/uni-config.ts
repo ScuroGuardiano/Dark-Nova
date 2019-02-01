@@ -30,6 +30,7 @@ let uniConfig = convict({
             min: { format: "int", default: 163 },
             max: { format: "int", default: 163 }
         },
+        diameter: { format: "int", default: 12800 },
         position: {
             min: { format: "int", default: 4 },
             max: { format: "int", default: 12}
