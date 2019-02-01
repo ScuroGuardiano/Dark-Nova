@@ -5,6 +5,21 @@ import IPlanetData from "../data-types/planet-data";
 import uniConfig from "../../config/uni-config";
 import * as _ from 'lodash';
 import Planet from "../../db/models/planet";
+import BasicError from "../../errors/basic-error";
+import logger from "../../logger";
+
+export namespace Errors {
+    export class InvalidCoordinates extends BasicError {
+        constructor(coords: ICoordinates) {
+            super(`Coordinates ${coords.galaxy}:${coords.system}:${coords.position} are invalid!`);
+        }
+    }
+    export class PositionIsTaken extends BasicError {
+        constructor(coords: ICoordinates) {
+            super(`There is already planet on coords: ${coords.galaxy}:${coords.system}:${coords.position}!`);
+        }
+    }
+}
 
 export default class PlanetService {
     public constructor(homePlanetService?: HomePlanetService) {
@@ -22,7 +37,17 @@ export default class PlanetService {
      */
     //TODO: I don't know if it will work, need to test it
     public async createNewPlanet(playerId: number, coords: ICoordinates, home: boolean = false, resources?: IResources) {
+        if(this.checkCoords(coords) == false) {
+            logger.error(`Coordinates ${coords.galaxy}:${coords.system}:${coords.position} are invalid!`);
+            throw new Errors.InvalidCoordinates(coords);
+        }
         let planetData = await this.generatePlanetData(coords, home, resources || null);
+        
+        //Check after generating planet data to make sure that HomePlanetService bug didn't generate wrong coords
+        if(await this.isPositionFree(coords) == false) {
+            logger.error(`There's already planet on coords: ${coords.galaxy}:${coords.system}:${coords.position}!`)
+            throw new Errors.PositionIsTaken(coords);
+        }
         let planet = Planet.createPlanet(playerId, planetData as IPlanetData);
         return await planet.save();
     }
@@ -61,6 +86,14 @@ export default class PlanetService {
         }
 
         return planetData;
+    }
+    private checkCoords(coords: ICoordinates) {
+        return _.inRange(coords.galaxy, 1, uniConfig.get('size').galaxies + 1) &&
+            _.inRange(coords.system, 1, uniConfig.get('size').systems + 1) &&
+            _.inRange(coords.position, 1, uniConfig.get('size').planets + 1)
+    }
+    private async isPositionFree(coords: ICoordinates) {
+        return !Planet.isPlanetExistsByCoords(coords.galaxy, coords.system, coords.position);
     }
     private homePlanetService: HomePlanetService;
     private planetsConfig: any = uniConfig.get("planets"); //F*ck this types, it getting bugged with convict and indexes

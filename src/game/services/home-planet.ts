@@ -17,15 +17,13 @@ export namespace Errors {
     }
 }
 
+//TODO: Test in on production don't waste time for testing now ;)
 /**
- * This class will contain whole logic for fiding home planets
+ * This class contains whole logic for fiding home planets
  * And home planets distribution in space
  * Unfortunately it will get complicated as f*ck, because I will write a lot of rules here
  */
-
-//TODO: Test in on production don't waste time for testing now ;)
 export default class HomePlanetService {
-
     //TODO: Write auto tests for it
     /**
      * Generates all home planet specific data, rest is up to Planet Service as for example temperature.
@@ -52,7 +50,6 @@ export default class HomePlanetService {
             diameter: diameter
         };
     }
-    
     /**
      * _**IMPORTANT**_:  
      * _**This is one of the key functions that is responsible for planet distribution in universe!**_  
