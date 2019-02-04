@@ -106,7 +106,6 @@ export default class Planet extends BaseEntity {
         }
         return planet;
     }
-    /*
     //TODO: Zone
     public get energy() {
         return 0;
@@ -134,9 +133,9 @@ export default class Planet extends BaseEntity {
     }
     public get deuteriumStorage() {
         return 0;
-    }*/
+    }
     /** Production of each building, energy usage of each building etc. */
-    /*public getEconomyDetails() {
+    public getEconomyDetails() {
         return { };
-    }*/
+    }
 }

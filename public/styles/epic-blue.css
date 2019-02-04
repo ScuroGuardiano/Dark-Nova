@@ -9,6 +9,63 @@ body {
     background-image: url('/public/images/background.jpg');
     background-size: 100%;
 }
+header {
+    background-color: rgb(53, 69, 102);
+}
+nav {
+    background-color: rgb(53, 69, 102);
+    border: solid rgb(70, 80, 119) 2px;
+    width: 180px;
+}
+nav .nav-title {
+    background-color: rgb(38, 49, 69);
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+nav a {
+    text-decoration: none;
+    color: rgb(151, 169, 248);
+    font-weight: bold;
+}
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+nav ul li {
+    margin-top: 2px;
+}
+nav ul li:last-child {
+    margin-bottom: 2px;
+}
+
+.cb {
+    clear: both;
+}
+.player-name {
+    margin-left: 100px;
+}
+#resources-bar-wrapper {
+    margin-top: 10px;
+    text-align: center;
+}
+#resources-bar {
+    display: inline-block;
+}
+.resource {
+    float: left;
+    margin-left: 75px;
+    text-align: center;
+}
+.resource:first-child {
+    margin-left: 0;
+}
+.resource span {
+    display: block;
+    font-size: 10px;
+}
 input[type="text"] {
     background-color: rgb(38, 49, 69);
     border: solid rgb(70, 80, 119) 2px;
