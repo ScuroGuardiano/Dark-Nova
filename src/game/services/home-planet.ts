@@ -2,7 +2,6 @@ import uniConfig from "../../config/uni-config";
 import Planet from "../../db/models/planet";
 import * as _ from 'lodash';
 import logger from "../../logger";
-import { inspect } from "util";
 import { getRepository, Between } from "typeorm";
 import IPlanetData from "../data-types/planet-data";
 import BasicError from "../../errors/basic-error";

@@ -16,7 +16,10 @@ input[type="text"] {
     color: #eee;
     margin-top: 5px;
 }
-input[type="submit"] {
+input[type="submit"],
+button,
+.button-link {
+    text-decoration: none;
     background-color: rgb(38, 49, 69);
     border: solid rgb(70, 80, 119) 2px;
     padding: 2px 12px;
@@ -25,7 +28,9 @@ input[type="submit"] {
     cursor: pointer;
     transition-duration: 0.3s;
 }
-input[type="submit"]:hover {
+input[type="submit"]:hover,
+button:hover,
+.button-link:hover {
     background-color: rgb(55, 63, 94);
 }
 .small-window {

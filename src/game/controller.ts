@@ -4,13 +4,13 @@ import { NovaRequest } from '../typings';
 import { inspect } from 'util';
 import requireSession from '../middlewares/require-session';
 import requirePlayer from './middlewares/require-player';
-import PlayerService, { Errors as PlayerErrors } from './services/player';
+import { Errors as PlayerErrors } from './services/player';
+import { playerService } from './services';
+import loadPlanet from './middlewares/load-planet';
 
 const router = express.Router();
 
 export default router;
-
-const playerService = new PlayerService();
 
 router.use(requireSession);
 // ==== ROUTES BELOW REQUIRE USER TO BE LOGGED IN!!! ====
@@ -44,12 +44,17 @@ router.post('/createPlayer', async (req: NovaRequest, res) => {
 
 router.use(requirePlayer);
 // ==== ROUTES BELOW REQUIRE PLAYER TO EXISTS!!! ====
-router.get('/', async (req: NovaRequest, res) => {
+router.use(loadPlanet);
+// ==== ROUTES BELOW LOADS OR CREATES PLANET!!!! ====
+
+router.get('/test-view', async (req: NovaRequest, res, next) => {
+    return res.render('game/' + req.query.view);
+})
+router.get('/', async (req: NovaRequest, res, next) => {
     try {
         return res.render('game/index');
     }
     catch(err) {
-        logger.error(inspect(err));
-        res.status(500).send("<h1>500 - Internal Error</h1>");
+        return next(err);
     }
 });

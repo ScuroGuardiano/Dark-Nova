@@ -77,7 +77,8 @@ export default class Planet extends BaseEntity {
         return this.findOne({ where: { galaxy, system, position }})
     }
     public static async isPlanetExistsByCoords(galaxy: number, system: number, position: number): Promise<boolean> {
-        return await this.count({ where: { galaxy, system, position }}) > 0;
+        let planets = await this.count({ where: { galaxy: galaxy, system: system, position: position } });
+        return planets > 0;
     }
     public static createPlanet(playerId: number, planetData: IPlanetData, planetBuildings: PlanetBuildings = new PlanetBuildings()) {
         let planet = new Planet();

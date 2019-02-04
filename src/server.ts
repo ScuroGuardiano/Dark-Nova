@@ -26,6 +26,7 @@ import game from './game/controller';
 import config from './config';
 import { NovaRequest } from './typings';
 import * as path from 'path';
+import { inspect } from 'util';
 
 const SESSIONS_CONFIG = config.get("client-sessions");
 
@@ -123,5 +124,11 @@ export default class Server {
         this.app.get('/favicon.ico', (req, res) => {
             res.sendFile(path.join('public', 'favicon.ico'), { root: "./" });
         });
+
+        this.app.use(this.errorHandler.bind(this));
+    }
+    private errorHandler(err: any, req: NovaRequest, res: express.Response, next: express.NextFunction) {
+        logger.error(inspect(err));
+        return res.status(500).render('5xx');
     }
 }
