@@ -3,19 +3,38 @@ html, body {
     padding: 0;
     color: #eee;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 14px;
+    font-size: 12px;
 }
 body {
     background-image: url('/public/images/background.jpg');
     background-size: 100%;
+    min-width: 800px;
+    min-height: 600px;
+    overflow: auto;
 }
 header {
     background-color: rgb(53, 69, 102);
+}
+footer {
+    clear: both;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    text-align: center;
+    color: #888;
+}
+main {
+    margin-top: 10px;
+    float: left;
+    position: relative;
+    left: calc(50% - 182px);
+    transform: translateX(-50%);
 }
 nav {
     background-color: rgb(53, 69, 102);
     border: solid rgb(70, 80, 119) 2px;
     width: 180px;
+    float: left;
 }
 nav .nav-title {
     background-color: rgb(38, 49, 69);
@@ -102,6 +121,7 @@ button:hover,
     padding: 2px;
     background-color: rgb(38, 49, 69);
     border: solid rgb(70, 80, 119) 2px;
+    font-weight: bold;
 }
 .window-content {
     box-sizing: border-box;
@@ -121,5 +141,18 @@ button:hover,
 .error {
     color: red;
     font-size: 12px;
+    text-align: center;
+}
+.overview {
+    width: 480px;
+}
+.overview table {
+    border: solid rgb(70, 80, 119) 2px;
+    border-top: none;
+}
+.overview td {
+    background-color: rgb(53, 69, 102);
+    width: 160px;
+    padding: 5px;
     text-align: center;
 }
