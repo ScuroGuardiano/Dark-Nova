@@ -14,7 +14,7 @@ export default async function initDatabase() {
     const dbConfig = config.get("db");
     let databaseOptions: any = {
         logging: dbConfig.logging,
-        logger: new DatabaseLogger(),
+        logger: dbConfig.logging && new DatabaseLogger(),
         entities: entities,
         synchronize: true
     };
