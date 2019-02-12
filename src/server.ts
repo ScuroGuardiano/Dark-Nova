@@ -27,6 +27,7 @@ import config from './config';
 import { NovaRequest } from './typings';
 import * as path from 'path';
 import { inspect } from 'util';
+import * as colors from 'colors/safe';
 
 const SESSIONS_CONFIG = config.get("client-sessions");
 
@@ -34,14 +35,14 @@ const loggerSuccessStream = {
     write(message: string) {
         if(message.endsWith('\n'))
             message = message.substring(0, message.length - 1);
-        logger.info(message);
+        logger.info(colors.yellow("<HTTP>") + " " + message);
     }
 }
 const loggerErrorStream = {
     write(message: string) {
         if (message.endsWith('\n'))
             message = message.substring(0, message.length - 1);
-        logger.error(message);
+        logger.error(colors.red("<HTTP>") + " " + message);
     }
 }
 
