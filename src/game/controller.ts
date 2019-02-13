@@ -7,6 +7,7 @@ import requirePlayer from './middlewares/require-player';
 import { Errors as PlayerErrors } from './services/player';
 import { playerService } from './services';
 import loadPlanet from './middlewares/load-planet';
+import updatePlanet from './middlewares/update-planet';
 
 const router = express.Router();
 
@@ -45,6 +46,7 @@ router.post('/createPlayer', async (req: NovaRequest, res) => {
 router.use(requirePlayer);
 // ==== ROUTES BELOW REQUIRE PLAYER TO EXISTS!!! ====
 router.use(loadPlanet);
+router.use(updatePlanet);
 // ==== ROUTES BELOW LOADS OR CREATES PLANET!!!! ====
 
 router.get('/test-view', async (req: NovaRequest, res, next) => {

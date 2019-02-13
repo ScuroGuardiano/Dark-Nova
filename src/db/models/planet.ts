@@ -10,6 +10,7 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 import Player from './player';
 import PlanetBuildings from './planet-buildings';
 import IPlanetData from '../../game/data-types/planet-data';
+import uniConfig from '../../config/uni-config';
 
 @Entity()
 @Index(['galaxy', 'system', 'position'], { unique: true })
@@ -22,6 +23,10 @@ export default class Planet extends BaseEntity {
 
     @UpdateDateColumn()
     updatedAt: Date;
+
+    //Last update from Updater
+    @Column()
+    lastUpdate: Date;
 
     @Column()
     name: string;
@@ -87,6 +92,7 @@ export default class Planet extends BaseEntity {
         planet.playerId = playerId;
         planet.name = planetData.name;
         planet.planetType = planetData.planetType;
+        planet.lastUpdate = new Date();
 
         //Coords
         planet.galaxy = planetData.coords.galaxy;
@@ -108,7 +114,7 @@ export default class Planet extends BaseEntity {
     }
     //TODO: Zone
     public get energy() {
-        return 0;
+        return uniConfig.get('baseProductions').energy;
     }
     public get usedEnergy() {
         return 0;
@@ -117,22 +123,22 @@ export default class Planet extends BaseEntity {
         return 0;
     }
     public get metalPerHour() {
-        return 0;
+        return uniConfig.get('baseProductions').metal;
     }
     public get crystalPerHour() {
-        return 0;
+        return uniConfig.get('baseProductions').crystal;
     }
     public get deuteriumPerHour() {
-        return 0;
+        return uniConfig.get('baseProductions').deuter;
     }
     public get metalStorage() {
-        return 0;
+        return uniConfig.get('baseStorage').metal;
     }
     public get crystalStorage() {
-        return 0;
+        return uniConfig.get('baseStorage').crystal;
     }
     public get deuteriumStorage() {
-        return 0;
+        return uniConfig.get('baseStorage').deuter;
     }
     /** Production of each building, energy usage of each building etc. */
     public getEconomyDetails() {
