@@ -38,7 +38,8 @@ export default class Planet extends BaseEntity {
     player: Player;
 
     @OneToOne(type => PlanetBuildings, {
-        eager: true
+        eager: true,
+        cascade: true
     })
     @JoinColumn()
     buildings: PlanetBuildings;

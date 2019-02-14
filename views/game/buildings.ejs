@@ -1,0 +1,11 @@
+<% title = `${planet.name} - Buildings` %>
+<%- include("partials/layout-top.ejs") %>
+<%- include("partials/nav.ejs") %>
+<main class="buildings">
+    <p class="window-title">Planet  &quot;<%=planet.name%>&quot; (<%=player.nickname%>) - Buildings</p>
+    <% Object.getOwnPropertyNames(planet.buildings).forEach(prop => { %>
+        <%if(prop == "id") return %>
+        <%=prop%> &colon; <%=planet.buildings[prop]%>lv<br>
+    <%})%>
+</main>
+<%- include("partials/layout-bot.ejs") %>

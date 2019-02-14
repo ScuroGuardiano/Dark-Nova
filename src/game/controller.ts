@@ -60,3 +60,11 @@ router.get('/', async (req: NovaRequest, res, next) => {
         return next(err);
     }
 });
+router.get('/buildings', async (req: NovaRequest, res, next) => {
+    try {
+        return res.render('game/buildings');
+    }
+    catch(err) {
+        return next(err);
+    }
+});
