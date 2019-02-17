@@ -11,10 +11,11 @@ import Player from './player';
 import PlanetBuildings from './planet-buildings';
 import IPlanetData from '../../game/data-types/planet-data';
 import uniConfig from '../../config/uni-config';
+import { IResourcesAndEnergy } from '../../game/data-types/resources';
 
 @Entity()
 @Index(['galaxy', 'system', 'position'], { unique: true })
-export default class Planet extends BaseEntity {
+export default class Planet extends BaseEntity implements IResourcesAndEnergy {
     @PrimaryGeneratedColumn('increment')
     id: number;
 

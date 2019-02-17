@@ -5,12 +5,11 @@ import uniConfig from "../../config/uni-config";
 //https://ogame.fandom.com/wiki/Buildings
 export default class Calculator {
     constructor(private planet: Planet) {}
-    public calculateCostForBuild(buildingName: string) {
-        let buildingLevel = this.planet.buildings[buildingName] as number;
-        return this.getCalculateCostFunctionForBuilding(buildingName)(buildingLevel);
+    public calculateCostForBuild(buildingName: string, currentBuildingLevel: number) {
+        return this.getCalculateCostFunctionForBuilding(buildingName)(currentBuildingLevel);
     }
     /**
-     * Returns build time in seconds rounded down
+     * Returns build time in milliseconds rounded down
      * @param buildCost cost for build building :p
      * @param level current building's level
      */
@@ -22,7 +21,7 @@ export default class Calculator {
         let timeInHours = (buildCost.metal + buildCost.deuter) / (2500 * robotFactory * Math.pow(2, nanoFactory) * universeBuildSpeed);
         if(level < 5)
             timeInHours *= 2 / (7 - level);
-        return Math.floor(timeInHours * 60 * 60);
+        return Math.floor(timeInHours * 60 * 60 * 1000);
     }
     private getCalculateCostFunctionForBuilding(buildingName: string): (level: number) => IResourcesAndEnergy {
         switch(buildingName) {
@@ -109,8 +108,8 @@ export default class Calculator {
                         50 * Math.pow(5, level),
                         50 * Math.pow(2.5, level)
                     )
-                    .floor(); //1000 250 125;  5000, 1250, 312
-            default: 
+                    .floor();
+            default:
                 throw new Error(`There's no cost function for building ${buildingName}!`);
         }
     }

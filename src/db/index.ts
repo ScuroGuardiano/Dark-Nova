@@ -6,10 +6,11 @@ import User from "./models/user";
 import Player from "./models/player";
 import Planet from "./models/planet";
 import PlanetBuildings from "./models/planet-buildings";
+import BuildTask from "./models/build-task";
 
 export default async function initDatabase() {
     let entities = [
-        User, Player, Planet, PlanetBuildings
+        User, Player, Planet, PlanetBuildings, BuildTask
     ]
     const dbConfig = config.get("db");
     let databaseOptions: any = {
