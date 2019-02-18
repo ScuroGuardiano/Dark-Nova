@@ -8,6 +8,10 @@ import { Errors as PlayerErrors } from './services/player';
 import { playerService } from './services';
 import loadPlanet from './middlewares/load-planet';
 import updatePlanet from './middlewares/update-planet';
+import { IResourcesAndEnergy } from './data-types/resources';
+import Planet from '../db/models/planet';
+import Calculator from './services/calculator';
+import { getBuidingNameByKey } from './utils';
 
 const router = express.Router();
 
@@ -62,7 +66,16 @@ router.get('/', async (req: NovaRequest, res, next) => {
 });
 router.get('/buildings', async (req: NovaRequest, res, next) => {
     try {
-        return res.render('game/buildings');
+        let buildingsInfo = [] as { key: string, name: string, level: number, cost: IResourcesAndEnergy, buildTime: number }[];
+        let calculator = new Calculator(res.locals.planet);
+        (res.locals.planet as Planet).buildings.getBuildingsList().forEach(building => {
+            let level = building.level;
+            let name = getBuidingNameByKey(building.key);
+            let cost = calculator.calculateCostForBuild(building.key, building.level);
+            let buildTime = calculator.calculateBuildTime(cost, building.level);
+            buildingsInfo.push({key: building.key, name, level, cost, buildTime});
+        });
+        return res.render('game/buildings', { buildings: buildingsInfo });
     }
     catch(err) {
         return next(err);

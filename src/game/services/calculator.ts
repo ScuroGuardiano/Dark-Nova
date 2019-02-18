@@ -18,7 +18,7 @@ export default class Calculator {
         const nanoFactory = this.planet.buildings.nanoFactory;
         const universeBuildSpeed = uniConfig.get('speed').buildings;
 
-        let timeInHours = (buildCost.metal + buildCost.deuter) / (2500 * robotFactory * Math.pow(2, nanoFactory) * universeBuildSpeed);
+        let timeInHours = (buildCost.metal + buildCost.deuter) / (2500 * (1 + robotFactory) * Math.pow(2, nanoFactory) * universeBuildSpeed);
         if(level < 5)
             timeInHours *= 2 / (7 - level);
         return Math.floor(timeInHours * 60 * 60 * 1000);

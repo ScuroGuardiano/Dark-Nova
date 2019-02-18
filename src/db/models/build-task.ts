@@ -26,7 +26,7 @@ export default class BuildTask extends BaseEntity {
         return buildTask;
     }
 
-    @PrimaryGeneratedColumn({ type: "bigint" })
+    @PrimaryGeneratedColumn('increment')
     id: number;
 
     @Column({ default: BuildTaskType.BUILD })

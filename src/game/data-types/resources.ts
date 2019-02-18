@@ -35,7 +35,7 @@ export class ResourcesAndEnergy extends Resources implements IResourcesAndEnergy
         return `${super.toString()}, Energy: ${this.energy}`;
     }
     public multiplyBy(x: number): ResourcesAndEnergy {
-        this.multiplyBy(x);
+        super.multiplyBy(x);
         this.energy *= x;
         return this;
     }

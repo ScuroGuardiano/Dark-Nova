@@ -3,9 +3,33 @@
 <%- include("partials/nav.ejs") %>
 <main class="buildings">
     <p class="window-title">Planet  &quot;<%=planet.name%>&quot; (<%=player.nickname%>) - Buildings</p>
-    <% Object.getOwnPropertyNames(planet.buildings).forEach(prop => { %>
-        <%if(prop == "id") return %>
-        <%=prop%> &colon; <%=planet.buildings[prop]%>lv<br>
+    <% buildings.forEach(building => { %>
+        <div class="building">
+            <div class="building-image">
+                <img src="/public/images/technology/<%=building.key + '.gif'%>"/>
+            </div>
+            <div class="building-details">
+                <b><%=building.name%> (Level: <%=building.level%>)</b><br>
+                Requirements:<br>
+                <%if(building.cost.metal > 0) {%>
+                    &nbsp;&nbsp;Metal: <b><%=building.cost.metal%></b><br>
+                <%}%>
+                <%if(building.cost.crystal > 0) {%>
+                    &nbsp;&nbsp;Crystal: <b><%=building.cost.crystal%></b><br>
+                <%}%>
+                 <%if(building.cost.deuter > 0) {%>
+                    &nbsp;&nbsp;Deuterium: <b><%=building.cost.deuter%></b><br>
+                <%}%>
+                <%if(building.cost.energy > 0) {%>
+                    &nbsp;&nbsp;Energy: <b><%=building.cost.energy%></b><br>
+                <%}%>
+                Building time: <%=Math.floor(building.buildTime / 1000)%>s
+            </div>
+            <div class="building-build">
+                <a href="#">Build to level: <%=building.level + 1%></a>
+            </div>
+            <div class="cb"></div>
+        </div>
     <%})%>
 </main>
 <%- include("partials/layout-bot.ejs") %>

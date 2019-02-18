@@ -19,3 +19,25 @@ export function subtractResources(from: IResources, subtrahend: IResources): IRe
     from.deuter -= subtrahend.deuter;
     return from;
 }
+
+const buildings: { [key: string]: string } = {
+    metalMine: "Metal mine",
+    crystalMine: "Crystal mine",
+    deuteriumSynthesizer: "Deuterium synthesizer",
+    solarPlant: "Solar plant",
+    fusionReactor: "Fusion reactor",
+    metalStorage: "Metal storage",
+    crystalStorage: "Crystal storage",
+    deuteriumStorage: "Deuterium tank",
+    robotFactory: "Robotics factory",
+    nanoFactory: "Nano factory",
+    shipyard: "Shipyard",
+    laboratory: "Research lab",
+    missileSilo: "Missile silo",
+    terraformer: "Terraformer",
+    allianceDepot: "Alliance depot",
+    spaceDock: "Space dock"
+};
+export function getBuidingNameByKey(buildingKey: string) {
+    return buildings[buildingKey];
+}
