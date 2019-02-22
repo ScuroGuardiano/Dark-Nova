@@ -3,7 +3,12 @@
 <%- include("partials/nav.ejs") %>
 <main class="buildings">
     <p class="window-title">Planet  &quot;<%=planet.name%>&quot; (<%=player.nickname%>) - Buildings</p>
-    <% buildings.forEach(building => { %>
+    <div>
+        <% buildQueue.forEach(el => {%> 
+            <%=el.buildingName%> | <%=el.startTime%> | <%=el.finishTime%><br>
+        <%})%>
+    </div>
+        <% buildings.forEach(building => { %>
         <div class="building">
             <div class="building-image">
                 <img src="/public/images/technology/<%=building.key + '.gif'%>"/>
@@ -26,10 +31,29 @@
                 Building time: <%=Math.floor(building.buildTime / 1000)%>s
             </div>
             <div class="building-build">
-                <a href="#">Build to level: <%=building.level + 1%></a>
+                <a onclick="sheludeBuildTask('<%=building.key%>')" href="#">Build to level: <%=building.level + 1%></a>
             </div>
             <div class="cb"></div>
         </div>
     <%})%>
 </main>
+<script>
+    async function sheludeBuildTask(buildingName) {
+        try {
+            let res = await fetch('./sheludeBuildTask', {
+                method: 'POST',
+                body: JSON.stringify({ buildingName }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            let parsedBody = await res.json();
+            if(parsedBody.result == "success")
+                return location.reload();
+        }
+        catch {}
+        alert("Couldn't start build task");
+        return true;
+    }
+</script>
 <%- include("partials/layout-bot.ejs") %>

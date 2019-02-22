@@ -12,6 +12,8 @@ import { IResourcesAndEnergy } from './data-types/resources';
 import Planet from '../db/models/planet';
 import Calculator from './services/calculator';
 import { getBuidingNameByKey } from './utils';
+import BuildSheluder from './services/buildings/build-sheluder';
+import BuildQueue from './services/buildings/build-queue';
 
 const router = express.Router();
 
@@ -75,9 +77,26 @@ router.get('/buildings', async (req: NovaRequest, res, next) => {
             let buildTime = calculator.calculateBuildTime(cost, building.level);
             buildingsInfo.push({key: building.key, name, level, cost, buildTime});
         });
-        return res.render('game/buildings', { buildings: buildingsInfo });
+        let buildQueue = await (new BuildQueue(res.locals.planet)).toArray();
+        return res.render('game/buildings', { buildings: buildingsInfo, buildQueue });
     }
     catch(err) {
         return next(err);
+    }
+});
+router.post('/sheludeBuildTask', async (req: NovaRequest, res, next) => {
+    try {
+        if(!req.body.buildingName)
+            return res.status(400).send("W łeb się puknij");
+        let buildSheluder = new BuildSheluder(res.locals.planet);
+        if(await buildSheluder.sheludeBuildTask(req.body.buildingName)) {
+            return res.status(200).json({ result: "success" });
+        }
+        else {
+            return res.status(200).json({ result: "failure" });
+        }
+    }
+    catch(err) {
+        return res.status(500).send("Internalu Erroru");
     }
 });
