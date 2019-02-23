@@ -264,7 +264,7 @@ let uniConfig = convict({
         }
     },
     buildQueueLimit: {
-        normal: { format: "int", default: 20 },
+        normal: { format: "int", default: 1 },
         premium: { format: "int", default: 5 }
     }
 });
