@@ -122,7 +122,11 @@ export default class Planet extends BaseEntity implements IResourcesAndEnergy {
         return 0;
     }
     public get usedFields() {
-        return 0;
+        let buildingsList = this.buildings.getBuildingsList();
+        let totalBuildings = buildingsList.reduce((previous, current) => {
+            return previous + current.level;
+        }, 0);
+        return totalBuildings;
     }
     public get metalPerHour() {
         return uniConfig.get('baseProductions').metal;

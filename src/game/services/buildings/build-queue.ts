@@ -39,6 +39,9 @@ export default class BuildQueue {
         let maxSize = uniConfig.get('buildQueueLimit')[this.premium ? 'premium' : 'normal'];
         return (await this.entityManager.count(BuildTask, { planetId: this.planet.id })) === maxSize;
     }
+    public async length() {
+        return await this.entityManager.count(BuildTask, { planetId: this.planet.id });
+    }
     public countElementsForBuilding(buildingName: string) {
         return this.entityManager.count(BuildTask, { 
             planetId: this.planet.id,

@@ -33,6 +33,8 @@ export default class BuildSheluder {
 
         if(await buildQueue.isEmpty()) {
             //Queue is empty, so building job starts now. That means we must take resources now
+            if(this.checkPlanetFields())
+                return false; //Not enough fields on planet
             let cost = calculator.calculateCostForBuild(buildingName, buildingLevel);
             if (!haveEnoughResources(planet, cost))
                 return false;
@@ -55,6 +57,10 @@ export default class BuildSheluder {
         /* If there's pending task in queue, then we must use higher level, 
         for example if you have metal mine on level 2 and two metal mine build task in queue
         then when those tasks will be finished, metal mine will be on level 4.*/
+        let buildingTasksInQueue = await buildQueue.length();
+        if(this.checkPlanetFields(buildingTasksInQueue + 1))
+            return false; //Not enough fields on planet
+
         buildingLevel += await buildQueue.countElementsForBuilding(buildingName);
         let cost = calculator.calculateCostForBuild(buildingName, buildingLevel);
         let buildTime = calculator.calculateBuildTime(cost, buildingLevel);
@@ -75,5 +81,8 @@ export default class BuildSheluder {
         return this.planet.buildings
         .getBuildingsList()
         .findIndex(v => v.key === buildingName) != -1;
+    }
+    private checkPlanetFields(neededFields: number = 1) {
+        return (this.planet.usedFields + neededFields) <= this.planet.maxFields;
     }
 }
