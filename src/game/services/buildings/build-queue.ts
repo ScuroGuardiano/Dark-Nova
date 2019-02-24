@@ -61,5 +61,11 @@ export default class BuildQueue {
         await this.entityManager.remove(task);
         return task;
     }
+    public async removeTasks(tasks: BuildTask[]) {
+        await this.entityManager.remove(tasks);
+    }
+    public async updateTasks(tasks: BuildTask[]) {
+        await this.entityManager.save(tasks);
+    }
     private entityManager: EntityManager;
 }
