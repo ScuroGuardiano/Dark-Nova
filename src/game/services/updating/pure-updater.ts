@@ -24,11 +24,12 @@ export class PureUpdater {
         if (buildTaskList.length === 0) {
             const hoursSinceLastUpdate = timeSinceLastUpdate / HOUR;
             this.updateResources(hoursSinceLastUpdate);
+            this.planet.lastUpdate = new Date(this.now);
             return this.planet;
         }
         /** There are building to build, in the recursion loop I will update buildings and resources between builds :3 */
 
-        this.updateTick(this.now, buildTaskList);
+        this.updateTick(this.planet.lastUpdate.getTime(), buildTaskList);
 
         this.planet.lastUpdate = new Date(this.now);
         return this.planet;

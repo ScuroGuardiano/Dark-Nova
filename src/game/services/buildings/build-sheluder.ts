@@ -7,7 +7,7 @@ import { Transaction, TransactionManager, EntityManager } from "typeorm";
 import BuildQueue from "./build-queue";
 
 export default class BuildSheluder {
-    constructor(private planet: Planet) {}
+    constructor(private _planet: Planet) {}
     /**
      * Performing ACID operation of adding new build task.
      * Reloads planet from DB in transaction, 
@@ -20,7 +20,7 @@ export default class BuildSheluder {
             return false;
         }
         
-        let planet = await manager.findOne(Planet, this.planet.id);
+        let planet = await manager.findOne(Planet, this._planet.id);
         const buildQueue = new BuildQueue(planet);
         buildQueue.useEntityManager(manager);
 
@@ -28,13 +28,15 @@ export default class BuildSheluder {
             logger.error(`Trying to create build job while the queue if full!`);
             return false;
         }
-        let calculator = new Calculator(this.planet);
+        let calculator = new Calculator(planet);
         let buildingLevel = planet.buildings[buildingName];
 
         if(await buildQueue.isEmpty()) {
             //Queue is empty, so building job starts now. That means we must take resources now
-            if(this.checkPlanetFields())
+            if(!this.checkPlanetFields(planet)) {
+                logger.error(`Trying to create build job on full planet!`);
                 return false; //Not enough fields on planet
+            }
             let cost = calculator.calculateCostForBuild(buildingName, buildingLevel);
             if (!haveEnoughResources(planet, cost))
                 return false;
@@ -42,11 +44,11 @@ export default class BuildSheluder {
                 let buildTime = calculator.calculateBuildTime(cost, buildingLevel);
                 let startTime = Date.now();
                 let buildTask = BuildTask.createNew(
-                    this.planet,
+                    planet,
                     buildingName,
                     new Date(startTime),
                     new Date(startTime + buildTime)
-                    );
+                );
                 subtractResources(planet, cost);
 
                 await buildQueue.push(buildTask);
@@ -58,8 +60,10 @@ export default class BuildSheluder {
         for example if you have metal mine on level 2 and two metal mine build task in queue
         then when those tasks will be finished, metal mine will be on level 4.*/
         let buildingTasksInQueue = await buildQueue.length();
-        if(this.checkPlanetFields(buildingTasksInQueue + 1))
+        if(!this.checkPlanetFields(planet, buildingTasksInQueue + 1)) {
+            logger.error(`Trying to create build job on full planet!`);
             return false; //Not enough fields on planet
+        }
 
         buildingLevel += await buildQueue.countElementsForBuilding(buildingName);
         let cost = calculator.calculateCostForBuild(buildingName, buildingLevel);
@@ -78,11 +82,11 @@ export default class BuildSheluder {
         throw new Error("Not implemented");
     }
     private checkIfValidBuildingName(buildingName: string) {
-        return this.planet.buildings
+        return this._planet.buildings
         .getBuildingsList()
         .findIndex(v => v.key === buildingName) != -1;
     }
-    private checkPlanetFields(neededFields: number = 1) {
-        return (this.planet.usedFields + neededFields) <= this.planet.maxFields;
+    private checkPlanetFields(planet: Planet, neededFields: number = 1) {
+        return (planet.usedFields + neededFields) <= planet.maxFields;
     }
 }

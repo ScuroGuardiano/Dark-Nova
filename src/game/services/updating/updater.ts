@@ -11,6 +11,8 @@ export default class Updater {
     @Transaction({isolation: "SERIALIZABLE"})
     public async fullUpdatePlanet(@TransactionManager() manager?: EntityManager): Promise<Planet> {
         let planet = await manager.findOne(Planet, this.planetId);
+        if(!planet) return null;
+
         let buildQueue = new BuildQueue(planet);
         buildQueue.useEntityManager(manager);
         let pureUpdater = new PureUpdater(planet);
@@ -22,7 +24,7 @@ export default class Updater {
         //TODO: Make function that will send message to player about not enough resources
         let processedTasks = [...pureUpdater.doneBuildTasks, ...pureUpdater.failedToShelude];
         await buildQueue.removeTasks(processedTasks);
-        await buildQueue.updateTasks(processedTasks);
+        await buildQueue.updateTasks(buildQueueArray);
         await manager.save(planet);
         return planet;
     }

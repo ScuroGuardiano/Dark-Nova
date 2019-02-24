@@ -7,6 +7,7 @@ import * as _ from 'lodash';
 import Planet from "../../db/models/planet";
 import BasicError from "../../errors/basic-error";
 import logger from "../../logger";
+import Updater from "./updating/updater";
 
 export namespace Errors {
     export class InvalidCoordinates extends BasicError {
@@ -46,6 +47,18 @@ export default class PlanetService {
         let planet = Planet.createPlanet(playerId, planetData as IPlanetData);
         await planet.save();
         logger.info(`Created new ${home ? "home " : ""}planet on coords ${planet.galaxy}:${planet.system}:${planet.position}.`);
+        return planet;
+    }
+    public async getAndUpdatePlanetById(id: number): Promise<Planet> {
+        let updater = new Updater(id);
+        let planet = await updater.fullUpdatePlanet();
+        return planet;
+    }
+    public async getAndUpdateFirstPlayerPlanet(playerId: number): Promise<Planet> {
+        let planet = await Planet.findOne({ playerId: playerId });
+        if(!planet) return null;
+        let updater = new Updater(planet.id);
+        planet = await updater.fullUpdatePlanet();
         return planet;
     }
     public getPlanetById(id: number | string): Promise<Planet> {

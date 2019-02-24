@@ -20,7 +20,7 @@ export default async function loadPlanet(req: NovaRequest, res: Response, next: 
     try {
         let player = res.locals.player as Player;
         if(req.query.planetId) {
-            let planet = await planetService.getPlanetById(req.query.planetId);
+            let planet = await planetService.getAndUpdatePlanetById(req.query.planetId);
             if(planet && planet.playerId === player.id) {
                 res.locals.planet = planet;
                 return next();
@@ -28,7 +28,7 @@ export default async function loadPlanet(req: NovaRequest, res: Response, next: 
         }
         //No planetId param or planetId is invalid
         {
-            let planet = await planetService.getFirstPlanetForPlayerId(player.id);
+            let planet = await planetService.getAndUpdateFirstPlayerPlanet(player.id);
             if (planet) {
                 res.locals.planet = planet;
                 return next();
