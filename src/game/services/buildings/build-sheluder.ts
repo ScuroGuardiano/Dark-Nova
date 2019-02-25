@@ -2,7 +2,7 @@ import Planet from "../../../db/models/planet";
 import logger from "../../../logger";
 import BuildTask from "../../../db/models/build-task";
 import { haveEnoughResources, subtractResources } from "../../utils";
-import Calculator from "../calculator";
+import BuildingsCalculator from "./buildings-calculator";
 import { Transaction, TransactionManager, EntityManager } from "typeorm";
 import BuildQueue from "./build-queue";
 
@@ -28,7 +28,7 @@ export default class BuildSheluder {
             logger.error(`Trying to create build job while the queue if full!`);
             return false;
         }
-        let calculator = new Calculator(planet);
+        let calculator = new BuildingsCalculator(planet);
         let buildingLevel = planet.buildings[buildingName];
 
         if(await buildQueue.isEmpty()) {

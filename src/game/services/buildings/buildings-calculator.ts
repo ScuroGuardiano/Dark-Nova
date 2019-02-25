@@ -1,9 +1,9 @@
-import Planet from "../../db/models/planet";
-import { IResourcesAndEnergy, ResourcesAndEnergy, IResources } from "../data-types/resources";
-import uniConfig from "../../config/uni-config";
+import Planet from "../../../db/models/planet";
+import { IResourcesAndEnergy, ResourcesAndEnergy, IResources } from "../../data-types/resources";
+import uniConfig from "../../../config/uni-config";
 
 //https://ogame.fandom.com/wiki/Buildings
-export default class Calculator {
+export default class BuildingsCalculator {
     constructor(private planet: Planet) {}
     public calculateCostForBuild(buildingName: string, currentBuildingLevel: number) {
         return this.getCalculateCostFunctionForBuilding(buildingName)(currentBuildingLevel);

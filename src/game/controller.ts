@@ -9,7 +9,7 @@ import { playerService } from './services';
 import loadPlanet from './middlewares/load-planet';
 import { IResourcesAndEnergy } from './data-types/resources';
 import Planet from '../db/models/planet';
-import Calculator from './services/calculator';
+import BuildingsCalculator from './services/buildings/buildings-calculator';
 import { getBuidingNameByKey } from './utils';
 import BuildSheluder from './services/buildings/build-sheluder';
 import BuildQueue from './services/buildings/build-queue';
@@ -67,7 +67,7 @@ router.get('/', async (req: NovaRequest, res, next) => {
 router.get('/buildings', async (req: NovaRequest, res, next) => {
     try {
         let buildingsInfo = [] as { key: string, name: string, level: number, cost: IResourcesAndEnergy, buildTime: number }[];
-        let calculator = new Calculator(res.locals.planet);
+        let calculator = new BuildingsCalculator(res.locals.planet);
         (res.locals.planet as Planet).buildings.getBuildingsList().forEach(building => {
             let level = building.level;
             let name = getBuidingNameByKey(building.key);

@@ -1,6 +1,6 @@
 import Planet from "../../../db/models/planet";
 import BuildTask, { BuildTaskType } from "../../../db/models/build-task";
-import Calculator from "../calculator";
+import BuildingsCalculator from "../buildings/buildings-calculator";
 import { haveEnoughResources, subtractResources } from "../../utils";
 
 const SECOND = 1000;
@@ -75,7 +75,7 @@ export class PureUpdater {
             return;
         if (buildTaskList[0].taskType == BuildTaskType.BUILD) {
             let buildingName = buildTaskList[0].buildingName;
-            let calculator = new Calculator(this.planet);
+            let calculator = new BuildingsCalculator(this.planet);
             let buildingLevel = this.planet.buildings[buildTaskList[0].buildingName];
             let cost = calculator.calculateCostForBuild(buildingName, buildingLevel);
             if (!haveEnoughResources(this.planet, cost)) {
