@@ -16,21 +16,27 @@
             <img src="/public/images/icons/metal.gif"/>
             <span class="resource-name"><b><i>Metal</i></b></span>
             <span class="resource-amount"><%=Math.floor(planet.metal)%></span>
+            <span class="resource-production"><%=Math.floor(planet.metalPerHour)%>/h</span>
+            <span class="resource-storage"><%=Math.floor(planet.metalStorage)%></span>
         </div>
         <div class="resource crystal">
             <img src="/public/images/icons/crystal.gif"/>
             <span class="resource-name"><b><i>Crystal</i></b></span>
             <span class="resource-amount"><%=Math.floor(planet.crystal)%></span>
+            <span class="resource-production"><%=Math.floor(planet.crystalPerHour)%>/h</span>
+            <span class="resource-storage"><%=Math.floor(planet.crystalStorage)%></span>
         </div>
         <div class="resource deuter">
             <img src="/public/images/icons/deuter.gif"/>
             <span class="resource-name"><b><i>Deuterium</i></b></span>
             <span class="resource-amount"><%=Math.floor(planet.deuter)%></span>
+            <span class="resource-production"><%=Math.floor(planet.deuteriumPerHour)%>/h</span>
+            <span class="resource-storage"><%=Math.floor(planet.deuteriumStorage)%></span>
         </div>
         <div class="resource energy">
             <img src="/public/images/icons/energy.gif"/>
             <span class="resource-name"><b><i>Energy</i></b></span>
-            <span class="resource-amount"><%=planet.usedEnergy - planet.energy%></span>
+            <span class="resource-amount"><%=planet.energy - planet.usedEnergy%></span>
         </div>
         <div class="resource dark-matter">
             <img src="/public/images/icons/dark-matter.jpg"/>

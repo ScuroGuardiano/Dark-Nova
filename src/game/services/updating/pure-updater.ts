@@ -60,6 +60,7 @@ export class PureUpdater {
         this.updateBuilding(buildTaskList[0]);
         this.doneBuildTasks.push(buildTaskList.shift());
         this.setNextBuildTaskOnTop(endTime, buildTaskList);
+        this.planet.calculateEconomy(); //Recalculate economy details
         return this.updateTick(endTime, buildTaskList);
     }
     private updateBuilding(buildTask: BuildTask) {

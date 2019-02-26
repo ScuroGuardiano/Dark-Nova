@@ -6,12 +6,14 @@ This file and project is licensed under the MIT license
 See file LICENSE in the root of this project or go to <https://opensource.org/licenses/MIT> for full license details.
 */
 
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BaseEntity, Index, ManyToOne, JoinColumn, OneToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BaseEntity, Index, ManyToOne, JoinColumn, OneToOne, AfterLoad } from 'typeorm';
 import Player from './player';
 import PlanetBuildings from './planet-buildings';
 import IPlanetData from '../../game/data-types/planet-data';
 import uniConfig from '../../config/uni-config';
 import { IResourcesAndEnergy } from '../../game/data-types/resources';
+import IEconomyData from '../../game/data-types/economy-data';
+import EconomyCalculator from '../../game/services/economy-calculator';
 
 @Entity()
 @Index(['galaxy', 'system', 'position'], { unique: true })
@@ -79,7 +81,11 @@ export default class Planet extends BaseEntity implements IResourcesAndEnergy {
     @Column( { type: 'smallint', nullable: false })
     minTemperature: number;
     
-    
+    @AfterLoad()
+    public calculateEconomy() {
+        let economyCalculator = new EconomyCalculator(this);
+        this.economyData = economyCalculator.calculateEconomy();
+    }
     public static findPlanetByCoords(galaxy: number, system: number, position: number): Promise<Planet> {
         return this.findOne({ where: { galaxy, system, position }})
     }
@@ -116,10 +122,10 @@ export default class Planet extends BaseEntity implements IResourcesAndEnergy {
     }
     //TODO: Zone
     public get energy() {
-        return uniConfig.get('baseProductions').energy;
+        return this.economyData.energy.production;
     }
     public get usedEnergy() {
-        return 0;
+        return this.economyData.energy.usage;
     }
     public get usedFields() {
         let buildingsList = this.buildings.getBuildingsList();
@@ -129,25 +135,26 @@ export default class Planet extends BaseEntity implements IResourcesAndEnergy {
         return totalBuildings;
     }
     public get metalPerHour() {
-        return uniConfig.get('baseProductions').metal;
+        return this.economyData.production.metal;
     }
     public get crystalPerHour() {
-        return uniConfig.get('baseProductions').crystal;
+        return this.economyData.production.crystal;
     }
     public get deuteriumPerHour() {
-        return uniConfig.get('baseProductions').deuter;
+        return this.economyData.production.deuter;
     }
     public get metalStorage() {
-        return uniConfig.get('baseStorage').metal;
+        return 5000 * Math.floor(2.5 * Math.exp(20 * this.buildings.metalStorage / 33));
     }
     public get crystalStorage() {
-        return uniConfig.get('baseStorage').crystal;
+        return 5000 * Math.floor(2.5 * Math.exp(20 * this.buildings.crystalStorage / 33));
     }
     public get deuteriumStorage() {
-        return uniConfig.get('baseStorage').deuter;
+        return 5000 * Math.floor(2.5 * Math.exp(20 * this.buildings.deuteriumStorage / 33));
     }
     /** Production of each building, energy usage of each building etc. */
     public getEconomyDetails() {
-        return { };
+        return this.economyData;
     }
+    private economyData: IEconomyData;
 }

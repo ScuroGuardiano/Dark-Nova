@@ -25,11 +25,6 @@ let uniConfig = convict({
         deuter: { format: "int", default: 0 },
         energy: { format: "int", default: 0 }
     },
-    baseStorage: {
-        metal: { format: "int", default: 10000 },
-        crystal: { format: "int", default: 10000 },
-        deuter: { format: "int", default: 10000 }
-    },
     homePlanet: {
         fields: {
             min: { format: "int", default: 163 },
