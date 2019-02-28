@@ -26,7 +26,6 @@ import * as colors from 'colors/safe';
 import * as util from 'util';
 import initDatabase from './db';
 import waitForLogger from './logger/wait-for-logger';
-import HomePlanetService from './game/services/home-planet';
 
 class DarkNova {
     constructor() {

@@ -86,6 +86,8 @@ export default class Server {
         this.configureMiddlewares();
     }
     private configureMiddlewares() {
+        // ============= static files =============
+        this.app.use("/public", express.static('./public'));
         // ============= Mo(r)gan =============
         //For 4xx and 5xx error logging
         this.app.use(morgan('short', {
@@ -97,8 +99,6 @@ export default class Server {
             stream: loggerSuccessStream,
             skip(req, res) { return res.statusCode > 400 }
         }));
-        // ============= static files =============
-        this.app.use("/public", express.static('./public'));
         // ============= body-parser =============
         this.app.use(bodyParser.urlencoded({ extended: true }));
         this.app.use(bodyParser.json());
