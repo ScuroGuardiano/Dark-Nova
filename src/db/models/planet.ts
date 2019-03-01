@@ -10,7 +10,6 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 import Player from './player';
 import PlanetBuildings from './planet-buildings';
 import IPlanetData from '../../game/data-types/planet-data';
-import uniConfig from '../../config/uni-config';
 import { IResourcesAndEnergy } from '../../game/data-types/resources';
 import IEconomyData from '../../game/data-types/economy-data';
 import EconomyCalculator from '../../game/services/economy-calculator';
@@ -118,6 +117,7 @@ export default class Planet extends BaseEntity implements IResourcesAndEnergy {
             planet.crystal = planetData.resources.crystal;
             planet.deuter = planetData.resources.deuter;
         }
+        planet.calculateEconomy();
         return planet;
     }
     //TODO: Zone

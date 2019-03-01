@@ -16,52 +16,52 @@ export default class PlanetBuildings extends BaseEntity {
     id: number;
 
     @Column('smallint', { default: 0, nullable: false })
-    metalMine: number;
+    metalMine: number = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    crystalMine: number;
+    crystalMine: number = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    deuteriumSynthesizer: number;
+    deuteriumSynthesizer: number = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    solarPlant: number;
+    solarPlant: number = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    fusionReactor: number;
+    fusionReactor: number = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    metalStorage: number;
+    metalStorage: number = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    crystalStorage: number;
+    crystalStorage: number = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    deuteriumStorage: number;
+    deuteriumStorage: number = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    robotFactory: number;
+    robotFactory: number = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    nanoFactory: number;
+    nanoFactory: number = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    shipyard: number;
+    shipyard: number = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    laboratory: number;
+    laboratory: number = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    missileSilo: number;
+    missileSilo: number = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    terraformer: number;
+    terraformer: number = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    allianceDepot: number;
+    allianceDepot: number = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    spaceDock: number;
+    spaceDock: number = 0;
 
     public getBuildingsList() {
         return [
