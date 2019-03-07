@@ -8,10 +8,13 @@ import Planet from "./models/planet";
 import PlanetBuildings from "./models/planet-buildings";
 import BuildTask from "./models/build-task";
 import Message from "./models/message";
+import Research from "./models/research";
+import ResearchTask from "./models/research-task";
 
 export default async function initDatabase() {
     let entities = [
-        User, Player, Planet, PlanetBuildings, BuildTask, Message
+        User, Player, Planet, PlanetBuildings, BuildTask, Message,
+        Research, ResearchTask
     ]
     const dbConfig = config.get("db");
     let databaseOptions: any = {

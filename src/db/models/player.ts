@@ -8,6 +8,7 @@ See file LICENSE in the root of this project or go to <https://opensource.org/li
 
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn } from 'typeorm';
 import User from './user';
+import Research from './research';
 
 
 export enum Permissions {
@@ -27,6 +28,7 @@ export default class Player extends BaseEntity {
         player.userId = userId;
         player.nickname = nickname;
         player.nicknameLowcase = nickname.split(' ').join('').toLowerCase();
+        player.research = new Research();
         return player;
     }
     public static findByNickname(nickname: string) {
@@ -56,6 +58,13 @@ export default class Player extends BaseEntity {
 
     @Column({ nullable: false })
     userId: string;
+
+    @OneToOne(type => Research, {
+        cascade: true,
+        eager: true
+    })
+    @JoinColumn()
+    research: Research;
 
     @OneToOne(type => User)
     @JoinColumn()

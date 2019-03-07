@@ -59,13 +59,13 @@ export default class Planet extends BaseEntity implements IResourcesAndEnergy {
     @Column({ nullable: false })
     planetType: string;
 
-    @Column({ type: "bigint", default: 0, nullable: false })
+    @Column({ type: "double", default: 0, nullable: false })
     metal: number;
 
-    @Column({ type: "bigint", default: 0, nullable: false })
+    @Column({ type: "double", default: 0, nullable: false })
     crystal: number;
 
-    @Column({ type: "bigint", default: 0, nullable: false})
+    @Column({ type: "double", default: 0, nullable: false})
     deuter: number;
 
     @Column({ type: 'int', nullable: false })
