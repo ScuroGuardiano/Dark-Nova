@@ -261,6 +261,10 @@ let uniConfig = convict({
     buildQueueLimit: {
         normal: { format: "int", default: 1 },
         premium: { format: "int", default: 5 }
+    },
+    researchQueueLimit: {
+        normal: { format: "int", default: 1 },
+        premium: { format: "int", default: 5 }
     }
 });
 
