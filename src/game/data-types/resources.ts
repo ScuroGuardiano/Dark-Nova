@@ -26,6 +26,12 @@ export class Resources implements IResources {
         this.deuter = Math.floor(this.deuter);
         return this;
     }
+    public round() {
+        this.metal = Math.round(this.metal);
+        this.crystal = Math.round(this.crystal);
+        this.deuter = Math.round(this.deuter);
+        return this;
+    }
 }
 export class ResourcesAndEnergy extends Resources implements IResourcesAndEnergy {
     public constructor(metal: number = 0, crystal: number = 0, deuter: number = 0, public energy: number = 0) {
@@ -42,6 +48,11 @@ export class ResourcesAndEnergy extends Resources implements IResourcesAndEnergy
     public floor() {
         super.floor();
         this.energy = Math.floor(this.energy);
+        return this;
+    }
+    public round() {
+        super.round();
+        this.energy = Math.round(this.energy);
         return this;
     }
 }
