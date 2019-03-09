@@ -10,7 +10,7 @@ export default class BuildSheluder {
     constructor(private _planet: Planet) {}
     /**
      * Performing ACID operation of adding new build task.
-     * Reloads planet from DB in transaction, 
+     * Loads planet again from DB in transaction, 
      * then saves it to database if modified resources
      */
     @Transaction({ isolation: "SERIALIZABLE" })
@@ -41,18 +41,18 @@ export default class BuildSheluder {
             if (!haveEnoughResources(planet, cost))
                 return false;
             
-                let buildTime = calculator.calculateBuildTime(cost, buildingLevel);
-                let startTime = Date.now();
-                let buildTask = BuildTask.createNew(
-                    planet,
-                    buildingName,
-                    new Date(startTime),
-                    new Date(startTime + buildTime)
-                );
-                subtractResources(planet, cost);
+            let buildTime = calculator.calculateBuildTime(cost, buildingLevel);
+            let startTime = Date.now();
+            let buildTask = BuildTask.createNew(
+                planet,
+                buildingName,
+                new Date(startTime),
+                new Date(startTime + buildTime)
+            );
+            subtractResources(planet, cost);
 
-                await buildQueue.push(buildTask);
-                await manager.save(planet);
+            await buildQueue.push(buildTask);
+            await manager.save(planet);
             return true;
         }
         //Queue is not empty, so we only add task to queue, without taking resources.
@@ -64,7 +64,9 @@ export default class BuildSheluder {
             logger.error(`Trying to create build job on full planet!`);
             return false; //Not enough fields on planet
         }
-
+        /*TODO: Make it simpler and test it ^^, it doesn't have to determine time now, time just have to be higher than last task time
+          Updater is calculating time again anyway. Also OGame shows time only for currently building element, so
+          knowing build time now is useless*/
         buildingLevel += await buildQueue.countElementsForBuilding(buildingName);
         let cost = calculator.calculateCostForBuild(buildingName, buildingLevel);
         let buildTime = calculator.calculateBuildTime(cost, buildingLevel);

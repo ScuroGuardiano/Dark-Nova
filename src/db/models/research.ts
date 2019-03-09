@@ -4,6 +4,7 @@ import { SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS } from "constants";
 
 @Entity()
 export default class Research extends BaseEntity {
+    [Key: string]: any;
     @PrimaryGeneratedColumn('increment')
     id: number;
     //Basic

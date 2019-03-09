@@ -37,7 +37,7 @@ export default class ResearchQueue {
     public async length() {
         return await this.entityManager.count(ResearchTask, { playerId: this.player.id });
     }
-    public countElementsForBuilding(researchName: string) {
+    public countElementsForResearchName(researchName: string) {
         return this.entityManager.count(ResearchTask, { 
             playerId: this.player.id,
             researchName: researchName

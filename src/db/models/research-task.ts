@@ -17,6 +17,7 @@ export default class ResearchTask extends BaseEntity {
         task.researchName = researchName;
         task.startTime = startTime;
         task.finishTime = finishTime;
+        return task;
     }
 
     @PrimaryGeneratedColumn('increment')
