@@ -1,6 +1,4 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from "typeorm";
-import { SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS } from "constants";
-
 
 @Entity()
 export default class Research extends BaseEntity {
