@@ -82,6 +82,11 @@ export class PureUpdater {
             let cost = calculator.calculateCostForBuild(buildingName, buildingLevel);
             if (!haveEnoughResources(this.planet, cost)) {
                 this.failedToShelude.push(buildQueue.pop());
+                if(buildQueue.length() > 0) {
+                    //It have to update next build task, because this one failed
+                    buildQueue.front().startTime = new Date(startTime);
+                    this.setNextBuildTaskOnTop(startTime, buildQueue);
+                }
                 return;
             }
             let buildTime = calculator.calculateBuildTime(cost, buildingLevel);
