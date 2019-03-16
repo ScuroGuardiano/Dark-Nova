@@ -2,6 +2,7 @@ import Planet from "../../../db/models/planet";
 import BuildTask, { BuildTaskType } from "../../../db/models/build-task";
 import BuildingsCalculator from "../buildings/buildings-calculator";
 import { haveEnoughResources, subtractResources } from "../../utils";
+import BuildQueue from "../buildings/build-queue";
 
 const SECOND = 1000;
 const MINUTE = SECOND * 60;
@@ -14,14 +15,14 @@ const HOUR = MINUTE * 60;
  */
 export class PureUpdater {
     public constructor(private planet: Planet) { }
-    public update(buildTaskList: Array<BuildTask>) {
+    public update(buildQueue: BuildQueue) {
         this.now = Date.now();
         const timeSinceLastUpdate = this.now - this.planet.lastUpdate.getTime();
         if (timeSinceLastUpdate <= 0)
             return this.planet;
 
         /** There's no buildings to build, so we can update only resources */
-        if (buildTaskList.length === 0) {
+        if (buildQueue.length() === 0) {
             const hoursSinceLastUpdate = timeSinceLastUpdate / HOUR;
             this.updateResources(hoursSinceLastUpdate);
             this.planet.lastUpdate = new Date(this.now);
@@ -29,7 +30,7 @@ export class PureUpdater {
         }
         /** There are building to build, in the recursion loop I will update buildings and resources between builds :3 */
 
-        this.updateTick(this.planet.lastUpdate.getTime(), buildTaskList);
+        this.updateTick(this.planet.lastUpdate.getTime(), buildQueue);
 
         this.planet.lastUpdate = new Date(this.now);
         return this.planet;
@@ -46,22 +47,22 @@ export class PureUpdater {
      * 
      * To do this I just used recursion
      */
-    private updateTick(startTime: number, buildTaskList: Array<BuildTask>): void {
+    private updateTick(startTime: number, buildQueue: BuildQueue): void {
         let endTime = this.now;
         //If there's no building to build update resource to the current time and end updating
-        if (buildTaskList.length === 0 || buildTaskList[0].finishTime.getTime() > this.now) {
+        if (buildQueue.length() === 0 || buildQueue.front().finishTime.getTime() > this.now) {
             let deltaHours = (endTime - startTime) / HOUR;
             this.updateResources(deltaHours);
             return;
         }
-        endTime = buildTaskList[0].finishTime.getTime();
+        endTime = buildQueue.front().finishTime.getTime();
         let deltaHours = (endTime - startTime) / HOUR;
         this.updateResources(deltaHours);
-        this.updateBuilding(buildTaskList[0]);
-        this.doneBuildTasks.push(buildTaskList.shift());
-        this.setNextBuildTaskOnTop(endTime, buildTaskList);
+        this.updateBuilding(buildQueue.front());
+        buildQueue.pop();
+        this.setNextBuildTaskOnTop(endTime, buildQueue);
         this.planet.calculateEconomy(); //Recalculate economy details
-        return this.updateTick(endTime, buildTaskList);
+        return this.updateTick(endTime, buildQueue);
     }
     private updateBuilding(buildTask: BuildTask) {
         if (buildTask.taskType == BuildTaskType.BUILD) {
@@ -71,27 +72,27 @@ export class PureUpdater {
             this.planet.buildings[buildTask.buildingName]--;
         }
     }
-    private setNextBuildTaskOnTop(startTime: number, buildTaskList: Array<BuildTask>) {
-        if (buildTaskList.length === 0)
+    private setNextBuildTaskOnTop(startTime: number, buildQueue: BuildQueue) {
+        if (buildQueue.length() === 0)
             return;
-        if (buildTaskList[0].taskType == BuildTaskType.BUILD) {
-            let buildingName = buildTaskList[0].buildingName;
+        if (buildQueue.front().taskType == BuildTaskType.BUILD) {
+            let buildingName = buildQueue.front().buildingName;
             let calculator = new BuildingsCalculator(this.planet);
-            let buildingLevel = this.planet.buildings[buildTaskList[0].buildingName];
+            let buildingLevel = this.planet.buildings[buildQueue.front().buildingName];
             let cost = calculator.calculateCostForBuild(buildingName, buildingLevel);
             if (!haveEnoughResources(this.planet, cost)) {
-                this.failedToShelude.push(buildTaskList.shift());
+                this.failedToShelude.push(buildQueue.pop());
                 return;
             }
             let buildTime = calculator.calculateBuildTime(cost, buildingLevel);
 
             //Times could changed by, e.g building nano factory or robotics factory
-            buildTaskList[0].startTime = new Date(startTime);
-            buildTaskList[0].finishTime = new Date(startTime + buildTime);
+            buildQueue.front().startTime = new Date(startTime);
+            buildQueue.front().finishTime = new Date(startTime + buildTime);
             subtractResources(this.planet, cost);
             return;
         }
-        else if (buildTaskList[0].taskType == BuildTaskType.DESTROY) {
+        else if (buildQueue.front().taskType == BuildTaskType.DESTROY) {
             throw new Error("Not implemented");
         }
     }
@@ -113,6 +114,5 @@ export class PureUpdater {
         }
     }
     private now: number;
-    public doneBuildTasks: BuildTask[] = [];
     public failedToShelude: BuildTask[] = [];
 }

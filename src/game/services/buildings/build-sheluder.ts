@@ -22,16 +22,16 @@ export default class BuildSheluder {
         
         let planet = await manager.findOne(Planet, this._planet.id);
         const buildQueue = new BuildQueue(planet);
-        buildQueue.useEntityManager(manager);
+        await buildQueue.load(manager);
 
-        if(await buildQueue.isFull()) {
+        if(buildQueue.isFull()) {
             logger.error(`Trying to create build job while the queue if full!`);
             return false;
         }
         let calculator = new BuildingsCalculator(planet);
         let buildingLevel = planet.buildings[buildingName];
 
-        if(await buildQueue.isEmpty()) {
+        if(buildQueue.isEmpty()) {
             //Queue is empty, so building job starts now. That means we must take resources now
             if(!this.checkPlanetFields(planet)) {
                 logger.error(`Trying to create build job on full planet!`);
@@ -51,7 +51,8 @@ export default class BuildSheluder {
             );
             subtractResources(planet, cost);
 
-            await buildQueue.push(buildTask);
+            buildQueue.push(buildTask);
+            await buildQueue.save(manager);
             await manager.save(planet);
             return true;
         }
@@ -59,7 +60,7 @@ export default class BuildSheluder {
         /* If there's pending task in queue, then we must use higher level, 
         for example if you have metal mine on level 2 and two metal mine build task in queue
         then when those tasks will be finished, metal mine will be on level 4.*/
-        let buildingTasksInQueue = await buildQueue.length();
+        let buildingTasksInQueue = buildQueue.length();
         if(!this.checkPlanetFields(planet, buildingTasksInQueue + 1)) {
             logger.error(`Trying to create build job on full planet!`);
             return false; //Not enough fields on planet
@@ -67,17 +68,18 @@ export default class BuildSheluder {
         /*TODO: Make it simpler and test it ^^, it doesn't have to determine time now, time just have to be higher than last task time
           Updater is calculating time again anyway. Also OGame shows time only for currently building element, so
           knowing build time now is useless*/
-        buildingLevel += await buildQueue.countElementsForBuilding(buildingName);
+        buildingLevel += buildQueue.countElementsForBuilding(buildingName);
         let cost = calculator.calculateCostForBuild(buildingName, buildingLevel);
         let buildTime = calculator.calculateBuildTime(cost, buildingLevel);
-        let startTime = (await buildQueue.back()).finishTime;
+        let startTime = (buildQueue.back()).finishTime;
 
         let buildTask = BuildTask.createNew(planet,
             buildingName,
             startTime,
             new Date(startTime.getTime() + buildTime)
         );
-        await buildQueue.push(buildTask);
+        buildQueue.push(buildTask);
+        await buildQueue.save(manager);
         return true;
     }
     public sheludeDestroyTask(buildingName: string) {

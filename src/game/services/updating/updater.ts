@@ -14,17 +14,14 @@ export default class Updater {
         if(!planet) return null;
 
         let buildQueue = new BuildQueue(planet);
-        buildQueue.useEntityManager(manager);
+        await buildQueue.load(manager);
         let pureUpdater = new PureUpdater(planet);
-        let buildQueueArray = await buildQueue.toArray();
 
-        pureUpdater.update(buildQueueArray); //THE BIG UPDATE XD
+        pureUpdater.update(buildQueue); //THE BIG UPDATE XD
 
         this.logFailed(pureUpdater.failedToShelude, planet);
         //TODO: Make function that will send message to player about not enough resources
-        let processedTasks = [...pureUpdater.doneBuildTasks, ...pureUpdater.failedToShelude];
-        await buildQueue.removeTasks(processedTasks);
-        await buildQueue.updateTasks(buildQueueArray);
+        await buildQueue.save(manager);
         await manager.save(planet);
         return planet;
     }

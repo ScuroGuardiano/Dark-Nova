@@ -75,7 +75,7 @@ router.get('/buildings', async (req: NovaRequest, res, next) => {
             let buildTime = calculator.calculateBuildTime(cost, building.level);
             buildingsInfo.push({key: building.key, name, level, cost, buildTime});
         });
-        let buildQueue = await (new BuildQueue(res.locals.planet)).toArray();
+        let buildQueue = (await new BuildQueue(res.locals.planet).load()).toArray();
         return res.render('game/buildings', { buildings: buildingsInfo, buildQueue });
     }
     catch(err) {

@@ -2,8 +2,8 @@ import ITask from "./task";
 import { EntityManager } from "typeorm";
 
 export default interface ITaskQueue<T extends ITask = ITask> {
-    load(entityManager: EntityManager): Promise<boolean>;
-    save(entityManager: EntityManager): Promise<boolean>;
+    load(entityManager: EntityManager): Promise<ITaskQueue>;
+    save(entityManager: EntityManager): Promise<ITaskQueue>;
     front(): T;
     back(): T;
     isEmpty(): boolean;
