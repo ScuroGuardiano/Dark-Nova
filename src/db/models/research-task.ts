@@ -7,9 +7,10 @@ See file LICENSE in the root of this project or go to <https://opensource.org/li
 */
 
 import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from 'typeorm';
+import ITask from '../../game/interfaces/task';
 
 @Entity()
-export default class ResearchTask extends BaseEntity {
+export default class ResearchTask extends BaseEntity implements ITask {
     public static createNew(planetId: number, playerId: number, researchName: string, startTime: Date, finishTime: Date) {
         let task = new ResearchTask();
         task.planetId = planetId;

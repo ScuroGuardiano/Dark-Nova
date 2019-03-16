@@ -8,6 +8,7 @@ See file LICENSE in the root of this project or go to <https://opensource.org/li
 
 import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, ManyToOne, JoinColumn } from 'typeorm';
 import Planet from './planet';
+import ITask from '../../game/interfaces/task';
 
 export enum BuildTaskType {
     BUILD = "build",
@@ -15,7 +16,7 @@ export enum BuildTaskType {
 }
 
 @Entity()
-export default class BuildTask extends BaseEntity {
+export default class BuildTask extends BaseEntity implements ITask {
     public static createNew(planet: Planet, buildingName: string, startTime: Date, finishTime: Date, taskType = BuildTaskType.BUILD) {
         let buildTask = new BuildTask();
         buildTask.planet = planet;
