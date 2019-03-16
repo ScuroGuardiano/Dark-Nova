@@ -1,7 +1,7 @@
 import ITask from "./task";
 import { EntityManager } from "typeorm";
 
-export default interface ITaskQueue<T extends ITask> {
+export default interface ITaskQueue<T extends ITask = ITask> {
     load(entityManager: EntityManager): Promise<boolean>;
     save(entityManager: EntityManager): Promise<boolean>;
     front(): T;
