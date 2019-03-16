@@ -1,69 +1,33 @@
 import Player from "../../../db/models/player";
 import { EntityManager, getManager } from "typeorm";
 import ResearchTask from "../../../db/models/research-task";
+import BaseTaskQueue from "../../data-types/base-task-queue";
+import uniConfig from "../../../config/uni-config";
 
-export default class ResearchQueue {
+export default class ResearchQueue extends BaseTaskQueue<ResearchTask> {
     constructor(private player: Player, private premium: boolean = false) {
-        this.entityManager = getManager();
+        super();
+        this.maxSize = uniConfig.get('researchQueueLimit')[this.premium ? 'premium' : 'normal'];
     }
-    /** Overrides default entity manager. Useful in transactions <3 */
-    public useEntityManager(entityManager: EntityManager) {
-        this.entityManager = entityManager;
-    }
-    /** Overrides current entity manager with default. */
-    public useDefaultEntityManager() {
-        this.entityManager = getManager();
-    }
-    public front() {
-        return this.entityManager.findOne(ResearchTask, {
+    public async load(entityManager: EntityManager = getManager()): Promise<ResearchQueue> {
+        this.elements = await entityManager.find(ResearchTask, {
             where: { playerId: this.player.id },
             order: { finishTime: "ASC" }
         });
+        return this;
     }
-    public back() {
-        return this.entityManager.findOne(ResearchTask, {
-            where: { playerId: this.player.id },
-            order: { finishTime: "DESC" }
-        });
-    }
-    public async isEmpty() {
-        return (await this.entityManager.count(ResearchTask, { playerId: this.player.id })) === 0;
-    }
-    public async isFull() {
-        //@ts-ignore
-        let maxSize = uniConfig.get('researchQueueLimit')[this.premium ? 'premium' : 'normal'];
-        return (await this.entityManager.count(ResearchTask, { playerId: this.player.id })) === maxSize;
-    }
-    public async length() {
-        return await this.entityManager.count(ResearchTask, { playerId: this.player.id });
+    public async save(entityManager: EntityManager): Promise<ResearchQueue> {
+        await Promise.all([
+            entityManager.remove(this.removed),
+            entityManager.save(this.elements)
+        ]);
+        return this;
     }
     public countElementsForResearchName(researchName: string) {
-        return this.entityManager.count(ResearchTask, { 
-            playerId: this.player.id,
-            researchName: researchName
-        });
+        return this.elements.reduce((count, current): number => {
+            if (current.researchName === researchName)
+                return count + 1;
+            return count;
+        }, 0)
     }
-    public toArray() {
-        return this.entityManager.find(ResearchTask, {
-            where: { playerId: this.player.id },
-            order: { finishTime: "ASC" }
-        });
-    }
-    /** Adds new element into queue, doesn't check if it's exceed queue size */
-    public push(ResearchTask: ResearchTask) {
-        this.entityManager.save(ResearchTask);
-    }
-    /** Removes and returns first element in the queue */
-    public async pop() {
-        let task = await this.front();
-        await this.entityManager.remove(task);
-        return task;
-    }
-    public async removeTasks(tasks: ResearchTask[]) {
-        await this.entityManager.remove(tasks);
-    }
-    public async updateTasks(tasks: ResearchTask[]) {
-        await this.entityManager.save(tasks);
-    }
-    private entityManager: EntityManager;
 }

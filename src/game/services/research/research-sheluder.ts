@@ -24,15 +24,15 @@ export default class ResearchSheluder {
 
         let [player, planet] = await this.loadPlayerAndPlanet(manager);
         const researchQueue = new ResearchQueue(player);
-        researchQueue.useEntityManager(manager);
+        await researchQueue.load(manager);
 
-        if(await researchQueue.isFull()) {
+        if(researchQueue.isFull()) {
             logger.error("Can't create research task, the queue is full!");
         }
         let calculator = new ResearchCalculator(planet);
         let techLevel = player.research[techName];
 
-        if(await researchQueue.isEmpty()) {
+        if(researchQueue.isEmpty()) {
             //Queue is empty, job starts now
             let cost = calculator.calculateResearchCost(techName, techLevel);
             if(!haveEnoughResources(planet, cost))
@@ -49,9 +49,10 @@ export default class ResearchSheluder {
             );
             subtractResources(planet, cost);
 
-            await researchQueue.push(researchTask);
-            //player didn't change, so we save only planet
-            await planet.save();
+            researchQueue.push(researchTask);
+            //player didn't change, so we save only planet and queue
+            await researchQueue.save(manager);
+            await manager.save(planet);
             return true;
         }
         //Queue is not empty, so we only add task to queue, without taking resources.
@@ -62,10 +63,10 @@ export default class ResearchSheluder {
         /*TODO: Make it simpler and test it ^^, it doesn't have to determine time now, time just have to be higher than last task time
           Updater is calculating time again anyway. Also OGame shows time only for currently researching element, so
           knowing research time now is useless*/
-        techLevel += await researchQueue.countElementsForResearchName(techName);
+        techLevel += researchQueue.countElementsForResearchName(techName);
         let cost = calculator.calculateResearchCost(techName, techLevel);
         let researchTime = calculator.calculateResearchTime(cost);
-        let startTime = (await researchQueue.back()).finishTime;
+        let startTime = (researchQueue.back()).finishTime;
 
         let researchTask = ResearchTask.createNew(
             planet.id,
@@ -74,7 +75,8 @@ export default class ResearchSheluder {
             startTime,
             new Date(startTime.getTime() + researchTime)
         );
-        await researchQueue.push(researchTask);
+        researchQueue.push(researchTask);
+        await researchQueue.save(manager);
         return true;
     }
 

@@ -14,11 +14,10 @@ export default class BuildQueue extends BaseTaskQueue<BuildTask> {
         this.maxSize = uniConfig.get('buildQueueLimit')[this.premium ? 'premium' : 'normal'];
     }
     public async load(entityManager: EntityManager = getManager()): Promise<BuildQueue> {
-        let elements = await entityManager.find(BuildTask, { 
+        this.elements = await entityManager.find(BuildTask, { 
             where: { planetId: this.planet.id },
             order: { finishTime: "ASC" }
         });
-        this.elements = elements;
         return this;
     }
     public async save(entityManager: EntityManager): Promise<BuildQueue> {
@@ -35,5 +34,4 @@ export default class BuildQueue extends BaseTaskQueue<BuildTask> {
             return count;
         }, 0)
     }
-    private entityManager: EntityManager;
 }
