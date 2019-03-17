@@ -3,6 +3,10 @@ import BuildTask, { BuildTaskType } from "../../../db/models/build-task";
 import BuildingsCalculator from "../buildings/buildings-calculator";
 import { haveEnoughResources, subtractResources } from "../../utils";
 import BuildQueue from "../buildings/build-queue";
+import Player from "../../../db/models/player";
+import ResearchQueue from "../research/research-queue";
+import ResearchTask from "../../../db/models/research-task";
+import ResearchCalculator from "../research/research-calculator";
 
 const SECOND = 1000;
 const MINUTE = SECOND * 60;
@@ -14,8 +18,8 @@ const HOUR = MINUTE * 60;
  * Thanks this I can better control database access  
  */
 export class PureUpdater {
-    public constructor(private planet: Planet) { }
-    public update(buildQueue: BuildQueue) {
+    public constructor(private player: Player, private planet: Planet) { }
+    public update(buildQueue: BuildQueue, researchQueue: ResearchQueue) {
         this.now = Date.now();
         const timeSinceLastUpdate = this.now - this.planet.lastUpdate.getTime();
         if (timeSinceLastUpdate <= 0)
@@ -48,6 +52,7 @@ export class PureUpdater {
      * To do this I just used recursion
      */
     private updateTick(startTime: number, buildQueue: BuildQueue): void {
+        //TODO: RESEARCH!1!@!112
         let endTime = this.now;
         //If there's no building to build update resource to the current time and end updating
         if (buildQueue.length() === 0 || buildQueue.front().finishTime.getTime() > this.now) {
@@ -72,14 +77,17 @@ export class PureUpdater {
             this.planet.buildings[buildTask.buildingName]--;
         }
     }
+    private updateResearch(researchTask: ResearchTask) {
+        this.player.research[researchTask.researchName]++;
+    }
     private setNextBuildTaskOnTop(startTime: number, buildQueue: BuildQueue) {
         if (buildQueue.length() === 0)
             return;
         if (buildQueue.front().taskType == BuildTaskType.BUILD) {
-            let buildingName = buildQueue.front().buildingName;
-            let calculator = new BuildingsCalculator(this.planet);
-            let buildingLevel = this.planet.buildings[buildQueue.front().buildingName];
-            let cost = calculator.calculateCostForBuild(buildingName, buildingLevel);
+            const buildingName = buildQueue.front().buildingName;
+            const calculator = new BuildingsCalculator(this.planet);
+            const buildingLevel = this.planet.buildings[buildingName];
+            const cost = calculator.calculateCostForBuild(buildingName, buildingLevel);
             if (!haveEnoughResources(this.planet, cost)) {
                 this.failedToShelude.push(buildQueue.pop());
                 if(buildQueue.length() > 0) {
@@ -100,6 +108,17 @@ export class PureUpdater {
         else if (buildQueue.front().taskType == BuildTaskType.DESTROY) {
             throw new Error("Not implemented");
         }
+    }
+    private setNextResearchTaskOnTop(startTime: number, researchQueue: ResearchQueue) {
+        if(researchQueue.length() === 0)
+            return;
+        throw new Error("Not implemented");
+        /*
+            TODO: Here we got small problem. Next research task could be set on different planet.
+            And so I have to load another planet, but this is pure updater which is not doing anything
+            with database and I don't want to change it sooo I must figure out da wei :3 In fact I could
+            update all player's planets but updating every single time a lot of planets is waste of computation time ;-;
+        */
     }
     private updateResources(timestampInHours: number) {
         if (this.planet.metal < this.planet.metalStorage) {
