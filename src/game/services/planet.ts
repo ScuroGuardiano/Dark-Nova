@@ -51,14 +51,15 @@ export default class PlanetService {
     }
     public async getAndUpdatePlanetById(id: number): Promise<Planet> {
         let updater = new Updater(id);
-        let planet = await updater.fullUpdatePlanet();
+        let { planet } = await updater.fullUpdatePlanet();
         return planet;
     }
     public async getAndUpdateFirstPlayerPlanet(playerId: number): Promise<Planet> {
         let planet = await Planet.findOne({ playerId: playerId });
         if(!planet) return null;
         let updater = new Updater(planet.id);
-        planet = await updater.fullUpdatePlanet();
+        let updaterRes = await updater.fullUpdatePlanet();
+        planet = updaterRes.planet;
         return planet;
     }
     public getPlanetById(id: number | string): Promise<Planet> {

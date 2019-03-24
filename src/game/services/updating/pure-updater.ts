@@ -43,7 +43,8 @@ export class PureUpdater {
             const hoursSinceLastUpdate = timeSinceLastUpdate / HOUR;
             this.updateResources(hoursSinceLastUpdate);
             this.planet.lastUpdate = new Date(this.targetTime);
-            return;
+            this.finished = true;
+            return true;
         }
 
         this.updateTick(this.planet.lastUpdate.getTime());
@@ -105,9 +106,9 @@ export class PureUpdater {
         return this.updateTick(endTime);
     }
     private areAnyTasksInQueueToDo(): boolean {
-        let buildingsToBuild = this.buildQueue.length() > 0 && this.buildQueue.front().finishTime.getTime() < this.targetTime;
-        let researchToDo = this.researchQueue.length() > 0 && this.researchQueue.front().finishTime.getTime() < this.targetTime;
-        return !buildingsToBuild && !researchToDo;
+        let buildingsToBuild = this.buildQueue.length() > 0 && this.buildQueue.front().finishTime.getTime() <= this.targetTime;
+        let researchToDo = this.researchQueue.length() > 0 && this.researchQueue.front().finishTime.getTime() <= this.targetTime;
+        return buildingsToBuild || researchToDo;
     }
     private getNextTaskType(): string {
         if(this.researchQueue.length() === 0) return "BUILD";
