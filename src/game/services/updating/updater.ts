@@ -26,7 +26,7 @@ export default class Updater {
 
         pureUpdater.update(buildQueue, researchQueue); //THE BIG UPDATE XD
 
-        this.logFailed(pureUpdater.failedToShelude, planet);
+        this.logFailed(pureUpdater.failedBuildTasks, planet);
         //TODO: Make function that will send message to player about not enough resources
         await buildQueue.save(manager);
         await manager.save(planet);

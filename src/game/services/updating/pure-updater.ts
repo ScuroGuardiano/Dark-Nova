@@ -18,26 +18,45 @@ const HOUR = MINUTE * 60;
  * Thanks this I can better control database access  
  */
 export class PureUpdater {
-    public constructor(private player: Player, private planet: Planet) { }
-    public update(buildQueue: BuildQueue, researchQueue: ResearchQueue) {
-        this.now = Date.now();
-        const timeSinceLastUpdate = this.now - this.planet.lastUpdate.getTime();
-        if (timeSinceLastUpdate <= 0)
-            return this.planet;
+    public constructor(
+        private player: Player,
+        private planet: Planet,
+        private buildQueue: BuildQueue,
+        private researchQueue: ResearchQueue) { }
 
-        /** There's no buildings to build, so we can update only resources */
-        if (buildQueue.length() === 0) {
+    public init(targetTime = Date.now()) {
+        this.targetTime = targetTime;
+        this._currentUpdaterTime = this.planet.lastUpdate.getTime();
+        this.finished = false;
+    }
+
+    /**
+     * Starts updating planet and player. If update is done it will return true; otherwise it will return false
+     */
+    public startUpdate() {
+        const timeSinceLastUpdate = this.targetTime - this._currentUpdaterTime;
+        if (timeSinceLastUpdate <= 0)
+            return;
+
+        /** There's no buildings and research in queue, so we can update only resources */
+        if (this.buildQueue.length() === 0 && this.researchQueue.length() === 0) {
             const hoursSinceLastUpdate = timeSinceLastUpdate / HOUR;
             this.updateResources(hoursSinceLastUpdate);
-            this.planet.lastUpdate = new Date(this.now);
-            return this.planet;
+            this.planet.lastUpdate = new Date(this.targetTime);
+            return;
         }
-        /** There are building to build, in the recursion loop I will update buildings and resources between builds :3 */
 
-        this.updateTick(this.planet.lastUpdate.getTime(), buildQueue);
+        this.updateTick(this.planet.lastUpdate.getTime());
 
-        this.planet.lastUpdate = new Date(this.now);
-        return this.planet;
+        if(this.finished) {
+            this.planet.lastUpdate = new Date(this.targetTime);
+            return true;
+        }
+        return false;
+    }
+    /** Returns current updater time, useful when updater pauses, because of research task on other planet */
+    public get currentUpdaterTime() {
+        return this._currentUpdaterTime;
     }
     /**
      * One tick in update, explain on example:
@@ -51,23 +70,51 @@ export class PureUpdater {
      * 
      * To do this I just used recursion
      */
-    private updateTick(startTime: number, buildQueue: BuildQueue): void {
-        //TODO: RESEARCH!1!@!112
-        let endTime = this.now;
-        //If there's no building to build update resource to the current time and end updating
-        if (buildQueue.length() === 0 || buildQueue.front().finishTime.getTime() > this.now) {
+    private updateTick(startTime: number): void {
+        this.planet.calculateEconomy(); //Recalculate economy details
+
+        let endTime = this.targetTime;
+        if (this.areAnyTasksInQueueToDo() === false) {
             let deltaHours = (endTime - startTime) / HOUR;
             this.updateResources(deltaHours);
+            this.finished = true;
             return;
         }
-        endTime = buildQueue.front().finishTime.getTime();
-        let deltaHours = (endTime - startTime) / HOUR;
-        this.updateResources(deltaHours);
-        this.updateBuilding(buildQueue.front());
-        buildQueue.pop();
-        this.setNextBuildTaskOnTop(endTime, buildQueue);
-        this.planet.calculateEconomy(); //Recalculate economy details
-        return this.updateTick(endTime, buildQueue);
+
+        let nextTaskType = this.getNextTaskType();
+        if(nextTaskType === "BUILD") {
+            endTime = this.buildQueue.front().finishTime.getTime();
+            let deltaHours = (endTime - startTime) / HOUR;
+            this.updateResources(deltaHours);
+            this.updateBuilding(this.buildQueue.front());
+            this.buildQueue.pop();
+            this.setNextBuildTaskOnTop(endTime);
+        }
+        if(nextTaskType === "RESEARCH") {
+            endTime = this.researchQueue.front().finishTime.getTime();
+            let deltaHours = (endTime - startTime) / HOUR;
+            this.updateResources(deltaHours);
+            this.updateResearch(this.researchQueue.front());
+            this.researchQueue.pop();
+            let succeed = this.setNextResearchTaskOnTop(endTime);
+            if(!succeed) {
+                this._currentUpdaterTime = endTime;
+                return;
+            }
+        }
+        return this.updateTick(endTime);
+    }
+    private areAnyTasksInQueueToDo(): boolean {
+        let buildingsToBuild = this.buildQueue.length() > 0 && this.buildQueue.front().finishTime.getTime() < this.targetTime;
+        let researchToDo = this.researchQueue.length() > 0 && this.researchQueue.front().finishTime.getTime() < this.targetTime;
+        return !buildingsToBuild && !researchToDo;
+    }
+    private getNextTaskType(): string {
+        if(this.researchQueue.length() === 0) return "BUILD";
+        if(this.buildQueue.length() === 0) return "RESEARCH";
+        let researchFinishTime = this.researchQueue.front().finishTime.getTime();
+        let buildingFinishTime = this.buildQueue.front().finishTime.getTime();
+        return (buildingFinishTime <= researchFinishTime) ? "BUILD" : "RESEARCH";
     }
     private updateBuilding(buildTask: BuildTask) {
         if (buildTask.taskType == BuildTaskType.BUILD) {
@@ -80,45 +127,60 @@ export class PureUpdater {
     private updateResearch(researchTask: ResearchTask) {
         this.player.research[researchTask.researchName]++;
     }
-    private setNextBuildTaskOnTop(startTime: number, buildQueue: BuildQueue) {
-        if (buildQueue.length() === 0)
+    private setNextBuildTaskOnTop(startTime: number) {
+        if (this.buildQueue.length() === 0)
             return;
-        if (buildQueue.front().taskType == BuildTaskType.BUILD) {
-            const buildingName = buildQueue.front().buildingName;
+        if (this.buildQueue.front().taskType == BuildTaskType.BUILD) {
+            const buildingName = this.buildQueue.front().buildingName;
             const calculator = new BuildingsCalculator(this.planet);
             const buildingLevel = this.planet.buildings[buildingName];
             const cost = calculator.calculateCostForBuild(buildingName, buildingLevel);
             if (!haveEnoughResources(this.planet, cost)) {
-                this.failedToShelude.push(buildQueue.pop());
-                if(buildQueue.length() > 0) {
-                    //It have to update next build task, because this one failed
-                    buildQueue.front().startTime = new Date(startTime);
-                    this.setNextBuildTaskOnTop(startTime, buildQueue);
+                this.failedBuildTasks.push(this.buildQueue.pop());
+                if(this.buildQueue.length() > 0) {
+                    //It has to update next build task, because this one failed
+                    this.buildQueue.front().startTime = new Date(startTime);
+                    this.setNextBuildTaskOnTop(startTime);
                 }
                 return;
             }
             let buildTime = calculator.calculateBuildTime(cost, buildingLevel);
 
-            //Times could changed by, e.g building nano factory or robotics factory
-            buildQueue.front().startTime = new Date(startTime);
-            buildQueue.front().finishTime = new Date(startTime + buildTime);
+            this.buildQueue.front().startTime = new Date(startTime);
+            this.buildQueue.front().finishTime = new Date(startTime + buildTime);
             subtractResources(this.planet, cost);
             return;
         }
-        else if (buildQueue.front().taskType == BuildTaskType.DESTROY) {
+        else if (this.buildQueue.front().taskType == BuildTaskType.DESTROY) {
             throw new Error("Not implemented");
         }
     }
-    private setNextResearchTaskOnTop(startTime: number, researchQueue: ResearchQueue) {
-        if(researchQueue.length() === 0)
-            return;
-        throw new Error("Not implemented");
-        /*
-            TODO: Here we got small problem. Next research task could be set on different planet.
-            And so I have to load another planet, but this is pure updater which is not doing anything
-            with database and I don't want to change it sooo I must figure out da wei :3 In fact I could
-            update all player's planets but updating every single time a lot of planets is waste of computation time ;-;
-        */
+    /** Returns true if there was no problem or false if couldn't do it on currently updating planet */
+    private setNextResearchTaskOnTop(startTime: number) {
+        if(this.researchQueue.length() === 0)
+            return true;
+        let nextTask = this.researchQueue.front();
+        //Return false, I can't do it on this planet, pure updater have to pause itself and wait for normal updater to solve this problem. Fuck this updaters.
+        if(nextTask.planetId != this.planet.id)
+            return false;
+        //I can do it on this planet YAYX <3
+        const reseachName = nextTask.researchName;
+        const calculator = new ResearchCalculator(this.planet);
+        const researchLevel = this.player.research[reseachName];
+        const cost = calculator.calculateResearchCost(reseachName, researchLevel);
+        if(!haveEnoughResources(this.planet, cost)) {
+            this.failedResearchTasks.push(this.researchQueue.pop());
+            if(this.researchQueue.length() > 0) {
+                //It has to update next research task, because this one failed
+                this.researchQueue.front().startTime = new Date(startTime);
+                this.setNextResearchTaskOnTop(startTime);
+            }
+        }
+        let researchTime = calculator.calculateResearchTime(cost);
+        nextTask.startTime = new Date(startTime);
+        nextTask.finishTime = new Date(startTime + researchTime);
+        subtractResources(this.planet, cost);
+        return true;
     }
     private updateResources(timestampInHours: number) {
         if (this.planet.metal < this.planet.metalStorage) {
@@ -137,6 +199,9 @@ export class PureUpdater {
                 this.planet.deuter = this.planet.deuteriumStorage;
         }
     }
-    private now: number;
-    public failedToShelude: BuildTask[] = [];
+    private targetTime: number;
+    private _currentUpdaterTime: number;
+    public failedBuildTasks: BuildTask[] = [];
+    public failedResearchTasks: ResearchTask[] = [];
+    public finished: boolean;
 }
