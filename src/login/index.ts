@@ -36,7 +36,7 @@ router.post('/login', async (req: NovaRequest, res) => {
         if(!req.body.email && !req.body.password)
             return res.status(400).send("400 - Bad Request");
         
-        let user = await loginService.authUser(req.body.email, req.body.password);
+        const user = await loginService.authUser(req.body.email, req.body.password);
         req.novaSession.userId = user.id;
         return res.redirect('/');
     }
@@ -53,7 +53,7 @@ router.post('/register', async (req: NovaRequest, res) => {
         if(!req.body.email && !req.body.password)
             return res.status(400).send("400 - Bad Request");
         
-        let user = await loginService.registerUser(req.body.email, req.body.password);
+        const user = await loginService.registerUser(req.body.email, req.body.password);
         req.novaSession.userId = user.id;
         return res.redirect('/');
     }

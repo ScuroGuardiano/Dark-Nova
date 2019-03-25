@@ -4,7 +4,7 @@ export interface ITemperature {
 }
 export class Temperature {
     public constructor(public min: number, public max: number) {}
-    public toString() {
+    public toString(): string {
         return `TMin: ${this.min}, TMax: ${this.max}`;
     }
 }

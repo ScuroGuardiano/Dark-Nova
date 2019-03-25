@@ -5,7 +5,7 @@ import BaseTaskQueue from "../../data-types/base-task-queue";
 import uniConfig from "../../../config/uni-config";
 
 export default class ResearchQueue extends BaseTaskQueue<ResearchTask> {
-    constructor(private player: Player, private premium: boolean = false) {
+    constructor(private player: Player, private premium = false) {
         super();
         this.maxSize = uniConfig.get('researchQueueLimit')[this.premium ? 'premium' : 'normal'];
     }
@@ -23,7 +23,7 @@ export default class ResearchQueue extends BaseTaskQueue<ResearchTask> {
         ]);
         return this;
     }
-    public countElementsForResearchName(researchName: string) {
+    public countElementsForResearchName(researchName: string): number {
         return this.elements.reduce((count, current): number => {
             if (current.researchName === researchName)
                 return count + 1;

@@ -6,7 +6,7 @@ export interface ICoordinates {
 
 export class Coordinates implements ICoordinates {
     public constructor(public galaxy: number, public system: number, public position: number) {}
-    public toString() {
+    public toString(): string {
         return `${this.galaxy}:${this.system}:${this.position}`;
     }
 }

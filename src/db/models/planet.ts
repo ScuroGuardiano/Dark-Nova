@@ -18,71 +18,71 @@ import EconomyCalculator from '../../game/services/economy-calculator';
 @Index(['galaxy', 'system', 'position'], { unique: true })
 export default class Planet extends BaseEntity implements IResourcesAndEnergy {
     @PrimaryGeneratedColumn('increment')
-    id: number;
+    public id: number;
 
     @CreateDateColumn()
-    createdAt: Date;
+    public createdAt: Date;
 
     @UpdateDateColumn()
-    updatedAt: Date;
+    public updatedAt: Date;
 
     //Last update from Updater
     @Column()
-    lastUpdate: Date;
+    public lastUpdate: Date;
 
     @Column()
-    name: string;
+    public name: string;
 
     @Column({ nullable: false })
-    playerId: number;
+    public playerId: number;
 
     @ManyToOne(type => Player)
-    player: Player;
+    public player: Player;
 
     @OneToOne(type => PlanetBuildings, {
         eager: true,
         cascade: true
     })
     @JoinColumn()
-    buildings: PlanetBuildings;
+    public buildings: PlanetBuildings;
 
     @Column({ type: "int", nullable: false })
-    galaxy: number;
+    public galaxy: number;
 
     @Column({ type: "int", nullable: false })
-    system: number;
+    public system: number;
 
     @Column({ type: "int", nullable: false })
-    position: number;
+    public position: number;
 
     /** Planet type, e.g dry, desert etc. */
     @Column({ nullable: false })
-    planetType: string;
+    public planetType: string;
 
     @Column({ type: "double", default: 0, nullable: false })
-    metal: number;
+    public metal: number;
 
     @Column({ type: "double", default: 0, nullable: false })
-    crystal: number;
+    public crystal: number;
 
     @Column({ type: "double", default: 0, nullable: false})
-    deuter: number;
+    public deuter: number;
 
     @Column({ type: 'int', nullable: false })
-    diameter: number;
+    public diameter: number;
 
     @Column({ type: 'smallint', nullable: false })
-    maxFields: number;
+    public maxFields: number;
     
     @Column({ type: 'smallint', nullable: false })
-    maxTemperature: number;
+    public maxTemperature: number;
     
     @Column( { type: 'smallint', nullable: false })
-    minTemperature: number;
+    public minTemperature: number;
     
     @AfterLoad()
-    public calculateEconomy() {
-        let economyCalculator = new EconomyCalculator(this);
+    public calculateEconomy(): void {
+        const economyCalculator = new EconomyCalculator(this);
         this.economyData = economyCalculator.calculateEconomy();
     }
     public static findPlanetByCoords(galaxy: number, system: number, position: number): Promise<Planet> {
@@ -93,7 +93,7 @@ export default class Planet extends BaseEntity implements IResourcesAndEnergy {
         return planets > 0;
     }
     public static createPlanet(playerId: number, planetData: IPlanetData, planetBuildings: PlanetBuildings = new PlanetBuildings()) {
-        let planet = new Planet();
+        const planet = new Planet();
         planet.buildings = planetBuildings;
 
         planet.playerId = playerId;
@@ -121,35 +121,35 @@ export default class Planet extends BaseEntity implements IResourcesAndEnergy {
         return planet;
     }
     //TODO: Zone
-    public get energy() {
+    public get energy(): number {
         return this.economyData.energy.production;
     }
-    public get usedEnergy() {
+    public get usedEnergy(): number {
         return this.economyData.energy.usage;
     }
-    public get usedFields() {
+    public get usedFields(): number {
         let buildingsList = this.buildings.getBuildingsList();
         let totalBuildings = buildingsList.reduce((previous, current) => {
             return previous + current.level;
         }, 0);
         return totalBuildings;
     }
-    public get metalPerHour() {
+    public get metalPerHour(): number {
         return this.economyData.production.metal;
     }
-    public get crystalPerHour() {
+    public get crystalPerHour(): number {
         return this.economyData.production.crystal;
     }
-    public get deuteriumPerHour() {
+    public get deuteriumPerHour(): number {
         return this.economyData.production.deuter;
     }
-    public get metalStorage() {
+    public get metalStorage(): number {
         return 5000 * Math.floor(2.5 * Math.exp(20 * this.buildings.metalStorage / 33));
     }
-    public get crystalStorage() {
+    public get crystalStorage(): number {
         return 5000 * Math.floor(2.5 * Math.exp(20 * this.buildings.crystalStorage / 33));
     }
-    public get deuteriumStorage() {
+    public get deuteriumStorage(): number {
         return 5000 * Math.floor(2.5 * Math.exp(20 * this.buildings.deuteriumStorage / 33));
     }
     /** Production of each building, energy usage of each building etc. */
