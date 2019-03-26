@@ -1,0 +1,47 @@
+{
+    "defaultSeverity": "error",
+    "extends": [],
+    "jsRules": {},
+    "rules": {
+        "max-classes-per-file": [true, 1],
+        "ban-types": [
+            true, 
+            ["Object", "Use {} instead."], 
+            ["String"]
+        ],
+        "no-duplicate-imports": [
+            true
+        ],
+        "no-import-side-effect": true,
+        "no-inferrable-types": true,
+        "no-internal-module": true,
+        "no-require-imports": true,
+        "no-mergeable-namespace": true,
+        "no-non-null-assertion": true,
+        "no-parameter-reassignment": true,
+        "no-var-requires": true,
+        "only-arrow-functions": true,
+        "no-trailing-whitespace": true,
+        "no-return-await": true,
+        "no-var-keyword": true,
+        "cyclomatic-complexity": true,
+        "indent": [ true, "spaces" ],
+        "member-ordering": [
+            true, 
+            {
+                "order": "fields-first"
+            }
+        ],
+        "no-empty-interface": true,
+        "prefer-for-of": true,
+        "promise-function-async": true,
+        "member-access": true,
+        "max-file-line-count": [ true, 1000 ],
+        "max-line-length": { "options": { "limit": 120, "ignore-pattern": "^import |^export {(.*?)}|class [a-zA-Z]+ implements |//" } },
+        "prefer-readonly": true,
+        "prefer-const": true,
+        "typedef": [true, "parameter", "member-variable-declaration"],
+        "deprecation": true
+    },
+    "rulesDirectory": []
+}
