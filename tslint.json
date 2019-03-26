@@ -3,7 +3,6 @@
     "extends": [],
     "jsRules": {},
     "rules": {
-        "max-classes-per-file": [true, 1],
         "ban-types": [
             true, 
             ["Object", "Use {} instead."], 
@@ -20,7 +19,7 @@
         "no-non-null-assertion": true,
         "no-parameter-reassignment": true,
         "no-var-requires": true,
-        "only-arrow-functions": true,
+        "only-arrow-functions": [true, "allow-declarations", "allow-named-functions"],
         "no-trailing-whitespace": true,
         "no-return-await": true,
         "no-var-keyword": true,
@@ -37,10 +36,10 @@
         "promise-function-async": true,
         "member-access": true,
         "max-file-line-count": [ true, 1000 ],
-        "max-line-length": { "options": { "limit": 120, "ignore-pattern": "^import |^export {(.*?)}|class [a-zA-Z]+ implements |//" } },
+        "max-line-length": { "options": { "limit": 120, "ignore-pattern": "^import |^export {(.*?)}|class [a-zA-Z]+ implements |// |([\"'])(?:(?=(\\\\?))\\2.)*?\\1" } },
         "prefer-readonly": true,
         "prefer-const": true,
-        "typedef": [true, "parameter", "member-variable-declaration"],
+        "typedef": [true, "member-variable-declaration"],
         "deprecation": true
     },
     "rulesDirectory": []

@@ -50,11 +50,14 @@ export namespace Errors {
     }
 }
 
+
 export default class UserService {
+// tslint:disable-next-line: max-line-length
+    private readonly emailRegex: RegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     /**
-     * Registers user, returns user 
-     * @param email 
-     * @param password 
+     * Registers user, returns user
+     * @param email
+     * @param password
      */
     public async registerUser(email: string, password: string) {
         if(!this.verifyEmail(email))
@@ -63,10 +66,10 @@ export default class UserService {
             throw new Errors.InvalidPasswordFormat();
         if(await this.getUserByEmail(email) !== null)
             throw new Errors.AccountAlreadyExists();
-        
-        let hashedPassword = await bcrypt.hash(password, 12);
 
-        let user = User.create({
+        const hashedPassword = await bcrypt.hash(password, 12);
+
+        const user = User.create({
             email: email.toLowerCase(),
             password: hashedPassword
         });
@@ -74,7 +77,7 @@ export default class UserService {
         return user;
     }
     public async authUser(email: string, password: string) {
-        let user = await this.getUserByEmail(email.toLowerCase());
+        const user = await this.getUserByEmail(email.toLowerCase());
         if(!user)
             throw new Errors.WrongEmailOrPassword();
         if(await bcrypt.compare(password, user.password))
@@ -91,5 +94,4 @@ export default class UserService {
     private async getUserByEmail(email: string) {
         return await User.findOne({ where: { email: email }}) || null;
     }
-    private emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 }

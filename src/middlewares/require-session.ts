@@ -4,15 +4,15 @@ import { inspect } from "util";
 import logger from "../logger";
 import { Response, NextFunction } from "express";
 
-/** 
- * Checking if session exists and if it's valid placing user into res.locals.user.   
+/**
+ * Checking if session exists and if it's valid placing user into res.locals.user.
  * If session does not exists or if it's invalid,
  * resets the session and redirects to login page.
  */
 export default async function requireSession(req: NovaRequest, res: Response, next: NextFunction) {
     if (req.novaSession.userId) {
         try {
-            let user = await User.findOne(req.novaSession.userId);
+            const user = await User.findOne(req.novaSession.userId);
             if (user) {
                 res.locals.user = user;
                 return next();

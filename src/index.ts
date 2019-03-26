@@ -20,6 +20,7 @@ dotenv.config();
 import printLogo from "./print-logo";
 import Server from "./server";
 import config, { configWarnings } from "./config";
+// tslint:disable-next-line: no-import-side-effect
 import './config/uni-config';
 import logger from './logger';
 import * as colors from 'colors/safe';
@@ -28,7 +29,10 @@ import initDatabase from './db';
 import waitForLogger from './logger/wait-for-logger';
 
 class DarkNova {
+    private readonly server: Server;
+    private shuttingDown: boolean;
     constructor() {
+        this.shuttingDown = false;
         this.server = new Server(config.get('host'), config.get("port"));
     }
     public async run() {
@@ -104,11 +108,9 @@ class DarkNova {
             });
         });
     }
-    private server: Server;
-    private shuttingDown = false;
 }
 
 module.exports = async function main() {
-    let darkNova = new DarkNova();
+    const darkNova = new DarkNova();
     darkNova.run();
 }

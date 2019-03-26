@@ -11,7 +11,7 @@ import config from '../config';
 import * as colors from 'colors';
 
 const consoleFormat = format.printf(data => {
-    let timestamp = colors.magenta(`${data.timestamp}`);
+    const timestamp = colors.magenta(`${data.timestamp}`);
     return `[${timestamp} ${data.level}]: ${data.message}`;
 });
 
@@ -19,7 +19,7 @@ const fileFormat = format.printf(data => {
     return `[${data.timestamp} ${data.level.toUpperCase()}]: ${data.message}`;
 });
 
-let logger = createLogger({
+const logger = createLogger({
     level: config.get('logging'),
     transports: [
         new transports.Console({

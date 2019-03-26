@@ -34,7 +34,7 @@ router.post('/createPlayer', async (req: NovaRequest, res) => {
     catch(err) {
         if(err instanceof PlayerErrors.InvalidNickname) {
             return res.render('game/create-player', {
-                error: "Invalid nickname. Nickname should have 4-16 characters and contain only letters, numbers and max one space." 
+                error: "Invalid nickname. Nickname should have 4-16 characters and contain only letters, numbers and max one space."
             });
         }
         if(err instanceof PlayerErrors.NicknameIsInUse) {
@@ -66,16 +66,17 @@ router.get('/', async (req: NovaRequest, res, next) => {
 });
 router.get('/buildings', async (req: NovaRequest, res, next) => {
     try {
-        let buildingsInfo = [] as { key: string, name: string, level: number, cost: IResourcesAndEnergy, buildTime: number }[];
-        let calculator = new BuildingsCalculator(res.locals.planet);
+        const buildingsInfo = [] as
+            { key: string, name: string, level: number, cost: IResourcesAndEnergy, buildTime: number }[];
+        const calculator = new BuildingsCalculator(res.locals.planet);
         (res.locals.planet as Planet).buildings.getBuildingsList().forEach(building => {
-            let level = building.level;
-            let name = getBuidingNameByKey(building.key);
-            let cost = calculator.calculateCostForBuild(building.key, building.level);
-            let buildTime = calculator.calculateBuildTime(cost, building.level);
+            const level = building.level;
+            const name = getBuidingNameByKey(building.key);
+            const cost = calculator.calculateCostForBuild(building.key, building.level);
+            const buildTime = calculator.calculateBuildTime(cost, building.level);
             buildingsInfo.push({key: building.key, name, level, cost, buildTime});
         });
-        let buildQueue = (await new BuildQueue(res.locals.planet).load()).toArray();
+        const buildQueue = (await new BuildQueue(res.locals.planet).load()).toArray();
         return res.render('game/buildings', { buildings: buildingsInfo, buildQueue });
     }
     catch(err) {
@@ -86,7 +87,7 @@ router.post('/sheludeBuildTask', async (req: NovaRequest, res, next) => {
     try {
         if(!req.body.buildingName)
             return res.status(400).send("W łeb się puknij");
-        let buildSheluder = new BuildSheluder(res.locals.planet);
+        const buildSheluder = new BuildSheluder(res.locals.planet);
         if(await buildSheluder.sheludeBuildTask(req.body.buildingName)) {
             return res.status(200).json({ result: "success" });
         }

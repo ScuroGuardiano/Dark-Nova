@@ -34,6 +34,7 @@ const SESSIONS_CONFIG = config.get("client-sessions");
 const loggerSuccessStream = {
     write(message: string) {
         if(message.endsWith('\n'))
+// tslint:disable-next-line: no-parameter-reassignment
             message = message.substring(0, message.length - 1);
         logger.info(colors.yellow("<HTTP>") + " " + message);
     }
@@ -41,12 +42,17 @@ const loggerSuccessStream = {
 const loggerErrorStream = {
     write(message: string) {
         if (message.endsWith('\n'))
+// tslint:disable-next-line: no-parameter-reassignment
             message = message.substring(0, message.length - 1);
         logger.error(colors.red("<HTTP>") + " " + message);
     }
 }
 
 export default class Server {
+
+    //Private properties
+    private readonly app: express.Application;
+    private server: http.Server;
     constructor(public host: string, public port: number) {
         this.app = express();
         this.configureServer();
@@ -56,7 +62,7 @@ export default class Server {
 
     //Public methods
     public start(cb?: Function) {
-        let callback = cb ? cb : () => {
+        const callback = cb ? cb : () => {
             logger.info("HTTP Server is listening on %s:%d", this.host, this.port);
         }
         logger.info("Starting HTTP Server...");
@@ -75,10 +81,6 @@ export default class Server {
             process.nextTick(cb);
         }
     }
-
-    //Private properties
-    private app: express.Application;
-    private server: http.Server;
 
     //Private methods
     private configureServer() {
