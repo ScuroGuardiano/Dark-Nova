@@ -28,6 +28,7 @@ export default class ResearchSheluder {
 
         if(researchQueue.isFull()) {
             logger.error("Can't create research task, the queue is full!");
+            return false;
         }
         let calculator = new ResearchCalculator(planet);
         let techLevel = player.research[techName];

@@ -1,0 +1,59 @@
+<% title = `${planet.name} - Buildings` %>
+<%- include("partials/layout-top.ejs") %>
+<%- include("partials/nav.ejs") %>
+<main class="buildings">
+    <p class="window-title">Planet  &quot;<%=planet.name%>&quot; (<%=player.nickname%>) - Research</p>
+    <div>
+        <% researchQueue.forEach(el => {%> 
+            <%=el.researchName%> | <%=el.startTime%> | <%=el.finishTime%><br>
+        <%})%>
+    </div>
+        <% technologies.forEach(technology => { %>
+        <div class="building">
+            <div class="building-image">
+                <img src="/public/images/technology/<%=technology.key + '.gif'%>"/>
+            </div>
+            <div class="building-details">
+                <b><%=technology.name%> (Level: <%=technology.level%>)</b><br>
+                Requirements:<br>
+                <%if(technology.cost.metal > 0) {%>
+                    &nbsp;&nbsp;Metal: <b><%=technology.cost.metal%></b><br>
+                <%}%>
+                <%if(technology.cost.crystal > 0) {%>
+                    &nbsp;&nbsp;Crystal: <b><%=technology.cost.crystal%></b><br>
+                <%}%>
+                 <%if(technology.cost.deuter > 0) {%>
+                    &nbsp;&nbsp;Deuterium: <b><%=technology.cost.deuter%></b><br>
+                <%}%>
+                <%if(technology.cost.energy > 0) {%>
+                    &nbsp;&nbsp;Energy: <b><%=technology.cost.energy%></b><br>
+                <%}%>
+                Research time: <%=Math.floor(technology.researchTime / 1000)%>s
+            </div>
+            <div class="building-build">
+                <a onclick="sheludeResearchTask('<%=technology.key%>')" href="#">Upgrade to level: <%=technology.level + 1%></a>
+            </div>
+            <div class="cb"></div>
+        </div>
+    <%})%>
+</main>
+<script>
+    async function sheludeResearchTask(technologyName) {
+        try {
+            let res = await fetch('./sheludeResearchTask', {
+                method: 'POST',
+                body: JSON.stringify({ technologyName }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            let parsedBody = await res.json();
+            if(parsedBody.result == "success")
+                return location.reload();
+        }
+        catch {}
+        alert("Couldn't start research task");
+        return true;
+    }
+</script>
+<%- include("partials/layout-bot.ejs") %>
