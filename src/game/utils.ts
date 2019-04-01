@@ -56,6 +56,9 @@ const technologies: { [key: string]: string } = {
     shieldingTechnology: "Shielding Technology",
     armourTechnology: "Armour Technology"
 }
+const ships: { [key: string]: string } = {
+    //TODO
+}
 export function getBuidingNameByKey(buildingKey: string) {
     return buildings[buildingKey];
 }
