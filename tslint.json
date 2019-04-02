@@ -19,7 +19,7 @@
         "no-non-null-assertion": true,
         "no-var-requires": true,
         "only-arrow-functions": [true, "allow-declarations", "allow-named-functions"],
-        "no-trailing-whitespace": true,
+        "no-trailing-whitespace": [true, "ignore-jsdoc"],
         "no-return-await": true,
         "no-var-keyword": true,
         "cyclomatic-complexity": true,
