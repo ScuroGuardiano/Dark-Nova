@@ -7,7 +7,7 @@ export interface IResourcesAndEnergy extends IResources {
     energy: number;
 }
 export class Resources implements IResources {
-    public constructor(public metal: number = 0, public crystal: number = 0, public deuter: number = 0) {}
+    public constructor(public metal = 0, public crystal = 0, public deuter = 0) {}
     public toString() {
         return `Metal: ${this.metal}, Crystal: ${this.crystal}, Deuter: ${this.deuter}`;
     }
@@ -34,7 +34,7 @@ export class Resources implements IResources {
     }
 }
 export class ResourcesAndEnergy extends Resources implements IResourcesAndEnergy {
-    public constructor(metal: number = 0, crystal: number = 0, deuter: number = 0, public energy: number = 0) {
+    public constructor(metal = 0, crystal = 0, deuter = 0, public energy = 0) {
         super(metal, crystal, deuter);
     }
     public toString() {

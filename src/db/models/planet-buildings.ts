@@ -13,55 +13,55 @@ export default class PlanetBuildings extends BaseEntity {
     [Key: string]: any;
 
     @PrimaryGeneratedColumn('increment')
-    id: number;
+    public id: number;
 
     @Column('smallint', { default: 0, nullable: false })
-    metalMine: number = 0;
+    public metalMine = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    crystalMine: number = 0;
+    public crystalMine = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    deuteriumSynthesizer: number = 0;
+    public deuteriumSynthesizer = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    solarPlant: number = 0;
+    public solarPlant = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    fusionReactor: number = 0;
+    public fusionReactor = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    metalStorage: number = 0;
+    public metalStorage = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    crystalStorage: number = 0;
+    public crystalStorage = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    deuteriumStorage: number = 0;
+    public deuteriumStorage = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    robotFactory: number = 0;
+    public robotFactory = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    nanoFactory: number = 0;
+    public nanoFactory = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    shipyard: number = 0;
+    public shipyard = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    laboratory: number = 0;
+    public laboratory = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    missileSilo: number = 0;
+    public missileSilo = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    terraformer: number = 0;
+    public terraformer = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    allianceDepot: number = 0;
+    public allianceDepot = 0;
 
     @Column('smallint', { default: 0, nullable: false })
-    spaceDock: number = 0;
+    public spaceDock = 0;
 
     public getBuildingsList() {
         return [

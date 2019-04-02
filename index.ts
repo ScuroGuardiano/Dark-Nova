@@ -1,3 +1,3 @@
 //For npm run dev
-const theFunctionThatWillDestroyEntireUniverse = require("./src");
-theFunctionThatWillDestroyEntireUniverse();
+import * as theFunctionThatWillDestroyEntireUniverse from "./src/index";
+(<Function>theFunctionThatWillDestroyEntireUniverse)();
