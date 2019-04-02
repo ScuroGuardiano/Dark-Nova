@@ -11,17 +11,17 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 @Entity()
 export default class User extends BaseEntity {
     @PrimaryGeneratedColumn("uuid")
-    id: string;
+    public id: string;
 
     @Column({ unique: true, nullable: false })
-    email: string;
+    public email: string;
 
     @Column({ nullable: false })
-    password: string;
+    public password: string;
 
     @CreateDateColumn()
-    createdAt: Date;
-    
+    public createdAt: Date;
+
     @UpdateDateColumn()
-    updatedAt: Date;
+    public updatedAt: Date;
 }

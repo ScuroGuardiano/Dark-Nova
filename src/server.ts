@@ -34,19 +34,17 @@ const SESSIONS_CONFIG = config.get("client-sessions");
 const loggerSuccessStream = {
     write(message: string) {
         if(message.endsWith('\n'))
-// tslint:disable-next-line: no-parameter-reassignment
             message = message.substring(0, message.length - 1);
         logger.info(colors.yellow("<HTTP>") + " " + message);
     }
-}
+};
 const loggerErrorStream = {
     write(message: string) {
         if (message.endsWith('\n'))
-// tslint:disable-next-line: no-parameter-reassignment
             message = message.substring(0, message.length - 1);
         logger.error(colors.red("<HTTP>") + " " + message);
     }
-}
+};
 
 export default class Server {
 
@@ -64,7 +62,7 @@ export default class Server {
     public start(cb?: Function) {
         const callback = cb ? cb : () => {
             logger.info("HTTP Server is listening on %s:%d", this.host, this.port);
-        }
+        };
         logger.info("Starting HTTP Server...");
         this.server = this.app.listen(this.port, this.host, callback);
         this.server.on('close', () => {
@@ -94,12 +92,12 @@ export default class Server {
         //For 4xx and 5xx error logging
         this.app.use(morgan('short', {
             stream: loggerErrorStream,
-            skip(req, res) { return res.statusCode < 400 }
+            skip(req, res) { return res.statusCode < 400; }
         }));
         //For 2xx and 3xx normal logging
         this.app.use(morgan('short', {
             stream: loggerSuccessStream,
-            skip(req, res) { return res.statusCode > 400 }
+            skip(req, res) { return res.statusCode > 400; }
         }));
         // ============= body-parser =============
         this.app.use(bodyParser.urlencoded({ extended: true }));

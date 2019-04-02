@@ -13,16 +13,25 @@ const MINUTE = SECOND * 60;
 const HOUR = MINUTE * 60;
 
 /**
- * This is Pure Updater, hell ye.  
- * I called it "pure" because it's not changing ANYTHING in database, it just changing numbers in memory  
- * Thanks this I can better control database access  
+ * This is Pure Updater, hell ye.
+ * I called it "pure" because it's not changing ANYTHING in database, it just changing numbers in memory
+ * Thanks this I can better control database access
  */
 export class PureUpdater {
+    /** Returns current updater time, useful when updater pauses, because of research task on other planet */
+    public get currentUpdaterTime() {
+        return this._currentUpdaterTime;
+    }
+    public failedBuildTasks: BuildTask[] = [];
+    public failedResearchTasks: ResearchTask[] = [];
+    public finished: boolean;
+    private targetTime: number;
+    private _currentUpdaterTime: number;
     public constructor(
-        private player: Player,
-        private planet: Planet,
-        private buildQueue: BuildQueue,
-        private researchQueue: ResearchQueue) { }
+        private readonly player: Player,
+        private readonly planet: Planet,
+        private readonly buildQueue: BuildQueue,
+        private readonly researchQueue: ResearchQueue) { }
 
     public init(targetTime = Date.now()) {
         this.targetTime = targetTime;
@@ -55,20 +64,16 @@ export class PureUpdater {
         }
         return false;
     }
-    /** Returns current updater time, useful when updater pauses, because of research task on other planet */
-    public get currentUpdaterTime() {
-        return this._currentUpdaterTime;
-    }
     /**
      * One tick in update, explain on example:
      * > Last planet update was at 8:00PM, you have planned 2 Metal mine build tasks:
      * - Metal mine to level 20, finish at 8:30PM
      * - Metal mine to level 21, finish at 9:50PM
-     * 
+     *
      * > As you see your metal production will increase at 8:30PM and then increase again at 9:50PM.
-     * So we need to calculate producted metal from 8:00PM to 8:30PM and then again from 8:30PM to 9:50PM 
+     * So we need to calculate producted metal from 8:00PM to 8:30PM and then again from 8:30PM to 9:50PM
      * but now with increased production.
-     * 
+     *
      * To do this I just used recursion
      */
     private updateTick(startTime: number): void {
@@ -76,16 +81,16 @@ export class PureUpdater {
 
         let endTime = this.targetTime;
         if (this.areAnyTasksInQueueToDo() === false) {
-            let deltaHours = (endTime - startTime) / HOUR;
+            const deltaHours = (endTime - startTime) / HOUR;
             this.updateResources(deltaHours);
             this.finished = true;
             return;
         }
 
-        let nextTaskType = this.getNextTaskType();
+        const nextTaskType = this.getNextTaskType();
         if(nextTaskType === "BUILD") {
             endTime = this.buildQueue.front().finishTime.getTime();
-            let deltaHours = (endTime - startTime) / HOUR;
+            const deltaHours = (endTime - startTime) / HOUR;
             this.updateResources(deltaHours);
             this.updateBuilding(this.buildQueue.front());
             this.buildQueue.pop();
@@ -93,11 +98,11 @@ export class PureUpdater {
         }
         if(nextTaskType === "RESEARCH") {
             endTime = this.researchQueue.front().finishTime.getTime();
-            let deltaHours = (endTime - startTime) / HOUR;
+            const deltaHours = (endTime - startTime) / HOUR;
             this.updateResources(deltaHours);
             this.updateResearch(this.researchQueue.front());
             this.researchQueue.pop();
-            let succeed = this.setNextResearchTaskOnTop(endTime);
+            const succeed = this.setNextResearchTaskOnTop(endTime);
             if(!succeed) {
                 this._currentUpdaterTime = endTime;
                 return;
@@ -106,15 +111,15 @@ export class PureUpdater {
         return this.updateTick(endTime);
     }
     private areAnyTasksInQueueToDo(): boolean {
-        let buildingsToBuild = this.buildQueue.length() > 0 && this.buildQueue.front().finishTime.getTime() <= this.targetTime;
-        let researchToDo = this.researchQueue.length() > 0 && this.researchQueue.front().finishTime.getTime() <= this.targetTime;
+        const buildingsToBuild = this.buildQueue.length() > 0 && this.buildQueue.front().finishTime.getTime() <= this.targetTime;
+        const researchToDo = this.researchQueue.length() > 0 && this.researchQueue.front().finishTime.getTime() <= this.targetTime;
         return buildingsToBuild || researchToDo;
     }
     private getNextTaskType(): string {
         if(this.researchQueue.length() === 0) return "BUILD";
         if(this.buildQueue.length() === 0) return "RESEARCH";
-        let researchFinishTime = this.researchQueue.front().finishTime.getTime();
-        let buildingFinishTime = this.buildQueue.front().finishTime.getTime();
+        const researchFinishTime = this.researchQueue.front().finishTime.getTime();
+        const buildingFinishTime = this.buildQueue.front().finishTime.getTime();
         return (buildingFinishTime <= researchFinishTime) ? "BUILD" : "RESEARCH";
     }
     private updateBuilding(buildTask: BuildTask) {
@@ -145,7 +150,7 @@ export class PureUpdater {
                 }
                 return;
             }
-            let buildTime = calculator.calculateBuildTime(cost, buildingLevel);
+            const buildTime = calculator.calculateBuildTime(cost, buildingLevel);
 
             this.buildQueue.front().startTime = new Date(startTime);
             this.buildQueue.front().finishTime = new Date(startTime + buildTime);
@@ -160,7 +165,7 @@ export class PureUpdater {
     private setNextResearchTaskOnTop(startTime: number) {
         if(this.researchQueue.length() === 0)
             return true;
-        let nextTask = this.researchQueue.front();
+        const nextTask = this.researchQueue.front();
         //Return false, I can't do it on this planet, pure updater have to pause itself and wait for normal updater to solve this problem. Fuck this updaters.
         if(nextTask.planetId != this.planet.id)
             return false;
@@ -177,7 +182,7 @@ export class PureUpdater {
                 this.setNextResearchTaskOnTop(startTime);
             }
         }
-        let researchTime = calculator.calculateResearchTime(cost);
+        const researchTime = calculator.calculateResearchTime(cost);
         nextTask.startTime = new Date(startTime);
         nextTask.finishTime = new Date(startTime + researchTime);
         subtractResources(this.planet, cost);
@@ -200,9 +205,4 @@ export class PureUpdater {
                 this.planet.deuter = this.planet.deuteriumStorage;
         }
     }
-    private targetTime: number;
-    private _currentUpdaterTime: number;
-    public failedBuildTasks: BuildTask[] = [];
-    public failedResearchTasks: ResearchTask[] = [];
-    public finished: boolean;
 }

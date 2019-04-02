@@ -7,20 +7,20 @@ import { planetService } from "../services";
 import { Errors as HomePlanetErrors } from '../services/home-planet';
 
 /**
- * _**IMPORTANT**_  
- * _**Can insert new data to database**_  
- *   
- * * Loads planet specified by planetId query parameter.  
+ * _**IMPORTANT**_
+ * _**Can insert new data to database**_
+ *
+ * * Loads planet specified by planetId query parameter.
  * * Saves planet to _**res.locals.planet**_
- * * If there's no planetId parameter or it isn't correct it loads first planet.  
- * * If player doesn't have any planet it will create new home planet!  
+ * * If there's no planetId parameter or it isn't correct it loads first planet.
+ * * If player doesn't have any planet it will create new home planet!
  * * Requires player set in _**res.locals.player**_
  */
 export default async function loadPlanet(req: NovaRequest, res: Response, next: NextFunction) {
     try {
-        let player = res.locals.player as Player;
+        const player = res.locals.player as Player;
         if(req.query.planetId) {
-            let planet = await planetService.getAndUpdatePlanetById(req.query.planetId);
+            const planet = await planetService.getAndUpdatePlanetById(req.query.planetId);
             if(planet && planet.playerId === player.id) {
                 res.locals.planet = planet;
                 return next();
@@ -28,14 +28,14 @@ export default async function loadPlanet(req: NovaRequest, res: Response, next: 
         }
         //No planetId param or planetId is invalid
         {
-            let planet = await planetService.getAndUpdateFirstPlayerPlanet(player.id);
+            const planet = await planetService.getAndUpdateFirstPlayerPlanet(player.id);
             if (planet) {
                 res.locals.planet = planet;
                 return next();
             }
         }
         //Player doesn't have any planet, create new one
-        let planet = await planetService.createNewPlanet(player.id, null, true);
+        const planet = await planetService.createNewPlanet(player.id, null, true);
         res.locals.planet = planet;
         return next();
     }

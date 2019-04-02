@@ -4,7 +4,7 @@ import uniConfig from "../../../config/uni-config";
 
 //https://ogame.fandom.com/wiki/Buildings
 export default class BuildingsCalculator {
-    constructor(private planet: Planet) {}
+    constructor(private readonly planet: Planet) {}
     public calculateCostForBuild(buildingName: string, currentBuildingLevel: number) {
         return this.getCalculateCostFunctionForBuilding(buildingName)(currentBuildingLevel);
     }
@@ -26,17 +26,17 @@ export default class BuildingsCalculator {
     private getCalculateCostFunctionForBuilding(buildingName: string): (level: number) => IResourcesAndEnergy {
         switch(buildingName) {
             case "metalMine":
-                return (level: number) => 
+                return (level: number) =>
                     new ResourcesAndEnergy(60, 15)
                     .multiplyBy(Math.pow(1.5, level))
                     .floor();
             case "crystalMine":
-                return (level: number) => 
+                return (level: number) =>
                     new ResourcesAndEnergy(48, 24)
                     .multiplyBy(Math.pow(1.6, level))
                     .floor();
             case "deuteriumSynthesizer":
-                return (level: number) => 
+                return (level: number) =>
                     new ResourcesAndEnergy(225, 75)
                     .multiplyBy(Math.pow(1.5, level))
                     .floor();

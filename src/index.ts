@@ -64,7 +64,7 @@ class DarkNova {
     }
     //Initializing and enabling all required libraries and modules, like database
     private async loadNeededModules() {
-        logger.info("Connecting to database...")
+        logger.info("Connecting to database...");
         try {
             await initDatabase();
         }
@@ -80,10 +80,10 @@ class DarkNova {
             this.criticalShutdown();
         });
         process.on('unhandledRejection', err => {
-            logger.error("CRITICAL ERROR: UNHANDLED PROMISE REJECTION!")
+            logger.error("CRITICAL ERROR: UNHANDLED PROMISE REJECTION!");
             logger.error(util.inspect(err));
             this.criticalShutdown();
-        })
+        });
         process.on('SIGINT', () => {
             logger.info("Caught interrupt signal.");
             this.shutdown();
@@ -91,7 +91,7 @@ class DarkNova {
         process.on("SIGTERM", () => {
             logger.info("Caught interrupt singal.");
             this.shutdown();
-        })
+        });
     }
     private criticalShutdown() {
         logger.error("SHUTTING DOWN DUE TO CRITICAL ERROR...");
@@ -113,4 +113,4 @@ class DarkNova {
 module.exports = async function main() {
     const darkNova = new DarkNova();
     darkNova.run();
-}
+};

@@ -17,7 +17,6 @@
         "no-require-imports": true,
         "no-mergeable-namespace": true,
         "no-non-null-assertion": true,
-        "no-parameter-reassignment": true,
         "no-var-requires": true,
         "only-arrow-functions": [true, "allow-declarations", "allow-named-functions"],
         "no-trailing-whitespace": true,
@@ -36,11 +35,14 @@
         "promise-function-async": true,
         "member-access": true,
         "max-file-line-count": [ true, 1000 ],
-        "max-line-length": { "options": { "limit": 120, "ignore-pattern": "^import |^export {(.*?)}|class [a-zA-Z]+ implements |// |([\"'])(?:(?=(\\\\?))\\2.)*?\\1" } },
+        "max-line-length": { "options": { "limit": 150, "ignore-pattern": "^import |^export {(.*?)}|class [a-zA-Z]+ implements |//|([\"'])(?:(?=(\\\\?))\\2.)*?\\1|/*/" } },
         "prefer-readonly": true,
         "prefer-const": true,
-        "typedef": [true, "member-variable-declaration"],
-        "deprecation": true
+        "deprecation": true,
+        "semicolon": [
+            true,
+            "always"
+        ]
     },
     "rulesDirectory": []
 }

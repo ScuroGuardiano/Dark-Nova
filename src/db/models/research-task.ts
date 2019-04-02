@@ -11,8 +11,26 @@ import ITask from '../../game/interfaces/task';
 
 @Entity()
 export default class ResearchTask extends BaseEntity implements ITask {
+
+    @PrimaryGeneratedColumn('increment')
+    public id: number;
+
+    @Column({ nullable: false })
+    public planetId: number;
+
+    @Column({ nullable: false })
+    public playerId: number;
+
+    @Column({ nullable: false })
+    public researchName: string;
+
+    @Column({ nullable: false })
+    public startTime: Date;
+
+    @Column({ nullable: false })
+    public finishTime: Date;
     public static createNew(planetId: number, playerId: number, researchName: string, startTime: Date, finishTime: Date) {
-        let task = new ResearchTask();
+        const task = new ResearchTask();
         task.planetId = planetId;
         task.playerId = playerId;
         task.researchName = researchName;
@@ -20,22 +38,4 @@ export default class ResearchTask extends BaseEntity implements ITask {
         task.finishTime = finishTime;
         return task;
     }
-
-    @PrimaryGeneratedColumn('increment')
-    id: number;
-
-    @Column({ nullable: false })
-    planetId: number;
-
-    @Column({ nullable: false })
-    playerId: number;
-
-    @Column({ nullable: false })
-    researchName: string;
-
-    @Column({ nullable: false })
-    startTime: Date;
-
-    @Column({ nullable: false })
-    finishTime: Date;
 }

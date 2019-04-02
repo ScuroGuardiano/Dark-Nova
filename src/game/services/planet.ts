@@ -23,7 +23,8 @@ export namespace Errors {
 }
 
 export default class PlanetService {
-    public constructor(private homePlanetService: HomePlanetService = new HomePlanetService()) {}
+    private readonly planetsConfig: any = uniConfig.get("planets"); //F*ck this types, it getting bugged with convict and indexes
+    public constructor(private readonly homePlanetService: HomePlanetService = new HomePlanetService()) {}
     /**
      * Creates and saves new planet to database
      * @param playerId Id of player who planet belongs to
@@ -32,40 +33,40 @@ export default class PlanetService {
      * @param resources Resources at start, if making colony it should be transported resources from fleet, if making home it shouldn't be set
      */
     //TODO: I don't know if it will work, need to test it
-    public async createNewPlanet(playerId: number, coords: ICoordinates, home: boolean = false, resources?: IResources) {
+    public async createNewPlanet(playerId: number, coords: ICoordinates, home = false, resources?: IResources) {
         if(home === false && this.checkCoords(coords) === false) {
             logger.error(`Coordinates ${coords.galaxy}:${coords.system}:${coords.position} are invalid!`);
             throw new Errors.InvalidCoordinates(coords);
         }
-        let planetData = await this.generatePlanetData(coords, home, resources || null);
-        
+        const planetData = await this.generatePlanetData(coords, home, resources || null);
+
         //Check after generating planet data to make sure that HomePlanetService bug didn't generate wrong coords
         if(await this.isPositionFree(planetData.coords) === false) {
-            logger.error(`There's already planet on coords: ${planetData.coords.galaxy}:${planetData.coords.system}:${planetData.coords.position}!`)
+            logger.error(`There's already planet on coords: ${planetData.coords.galaxy}:${planetData.coords.system}:${planetData.coords.position}!`);
             throw new Errors.PositionIsTaken(planetData.coords);
         }
-        let planet = Planet.createPlanet(playerId, planetData as IPlanetData);
+        const planet = Planet.createPlanet(playerId, planetData as IPlanetData);
         await planet.save();
         logger.info(`Created new ${home ? "home " : ""}planet on coords ${planet.galaxy}:${planet.system}:${planet.position}.`);
         return planet;
     }
     public async getAndUpdatePlanetById(id: number): Promise<Planet> {
-        let updater = new Updater(id);
-        let { planet } = await updater.fullUpdatePlanet();
+        const updater = new Updater(id);
+        const { planet } = await updater.fullUpdatePlanet();
         return planet;
     }
     public async getAndUpdateFirstPlayerPlanet(playerId: number): Promise<Planet> {
         let planet = await Planet.findOne({ playerId: playerId });
         if(!planet) return null;
-        let updater = new Updater(planet.id);
-        let updaterRes = await updater.fullUpdatePlanet();
+        const updater = new Updater(planet.id);
+        const updaterRes = await updater.fullUpdatePlanet();
         planet = updaterRes.planet;
         return planet;
     }
-    public getPlanetById(id: number | string): Promise<Planet> {
+    public async getPlanetById(id: number | string): Promise<Planet> {
         return Planet.findOne(id);
     }
-    public getFirstPlanetForPlayerId(playerId: number | string): Promise<Planet> {
+    public async getFirstPlanetForPlayerId(playerId: number | string): Promise<Planet> {
         return Planet.findOne({ playerId: playerId as any });
     }
     //TODO: I don't know if it will work, need to test it
@@ -86,9 +87,9 @@ export default class PlanetService {
         }
         const planetConfig = this.planetsConfig[planetData.coords.position.toString()];
         //TODO: Need to change temperature generation from static to random, values min and max should be random, I need to investigate how OGame generates temperatures exactly
-        planetData.temperature = { 
+        planetData.temperature = {
             min: planetConfig.temperature.min,
-            max: planetConfig.temperature.max 
+            max: planetConfig.temperature.max
         };
 
         if (planetData.coords.system % 2 === 1) {
@@ -97,7 +98,7 @@ export default class PlanetService {
         else {
             planetData.planetType = planetConfig.type.systemNumberEven;
         }
-        
+
         if(resources) {
             planetData.resources = resources;
         }
@@ -107,11 +108,10 @@ export default class PlanetService {
     private checkCoords(coords: ICoordinates) {
         return _.inRange(coords.galaxy, 1, uniConfig.get('size').galaxies + 1) &&
             _.inRange(coords.system, 1, uniConfig.get('size').systems + 1) &&
-            _.inRange(coords.position, 1, uniConfig.get('size').planets + 1)
+            _.inRange(coords.position, 1, uniConfig.get('size').planets + 1);
     }
     private async isPositionFree(coords: ICoordinates) {
-        let planetExists = await Planet.isPlanetExistsByCoords(coords.galaxy, coords.system, coords.position);
+        const planetExists = await Planet.isPlanetExistsByCoords(coords.galaxy, coords.system, coords.position);
         return !planetExists;
     }
-    private planetsConfig: any = uniConfig.get("planets"); //F*ck this types, it getting bugged with convict and indexes
 }

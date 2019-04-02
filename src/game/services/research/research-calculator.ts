@@ -4,7 +4,7 @@ import { ResourcesAndEnergy, IResources } from "../../data-types/resources";
 import uniConfig from "../../../config/uni-config";
 
 export default class ResearchCalculator {
-    constructor(private planet: Planet) {}
+    constructor(private readonly planet: Planet) {}
     public canDoResearch() {
         return this.planet.buildings.laboratory > 0;
     }
@@ -14,13 +14,13 @@ export default class ResearchCalculator {
     public calculateResearchTime(cost: IResources) {
         const universeResearchSpeed = uniConfig.get('speed').research;
         const labLevel = this.planet.buildings.laboratory;
-        let timeInHours = (cost.metal + cost.crystal) / (universeResearchSpeed * 1000 * (1 + labLevel));
+        const timeInHours = (cost.metal + cost.crystal) / (universeResearchSpeed * 1000 * (1 + labLevel));
         return Math.floor(timeInHours * 60 * 60 * 1000);
     }
     private getResearchCostFunction(techName: string) {
         switch(techName) {
             case "energyTechnology":
-                return (level: number) => 
+                return (level: number) =>
                     new ResourcesAndEnergy(0, 800, 400)
                     .multiplyBy(Math.pow(2, level));
             case "laserTechnology":
@@ -62,7 +62,7 @@ export default class ResearchCalculator {
                     new ResourcesAndEnergy(0, 0, 0, 300000)
                     .multiplyBy(Math.pow(3, level));
             case "combustionDrive":
-                return (level: number) => 
+                return (level: number) =>
                     new ResourcesAndEnergy(400, 0, 600)
                     .multiplyBy(Math.pow(2, level));
             case "impulseDrive":

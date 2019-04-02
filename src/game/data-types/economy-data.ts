@@ -6,16 +6,16 @@ export default interface IEconomyData {
         metalMineUsage: number;
         crystalMineUsage: number;
         deuteriumSynthesizerUsage: number;
-    }
+    };
     production: {
         metal: number;
         crystal: number;
         deuter: number;
-    }
+    };
     efficiency: {
         metalMine: number;
         crystalMine: number;
         deuterMine: number;
         //TODO: fusionReactor: number;
-    }
+    };
 }

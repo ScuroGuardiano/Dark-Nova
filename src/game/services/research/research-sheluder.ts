@@ -8,7 +8,7 @@ import { haveEnoughResources, subtractResources } from "../../utils";
 import ResearchTask from "../../../db/models/research-task";
 
 export default class ResearchSheluder {
-    public constructor(private _player: Player, private _planet: Planet) {}
+    public constructor(private readonly _player: Player, private readonly _planet: Planet) {}
 
     /**
      * Performing ACID operation of adding new research task.
@@ -22,7 +22,7 @@ export default class ResearchSheluder {
             return false;
         }
 
-        let [player, planet] = await this.loadPlayerAndPlanet(manager);
+        const [player, planet] = await this.loadPlayerAndPlanet(manager);
         const researchQueue = new ResearchQueue(player);
         await researchQueue.load(manager);
 
@@ -30,18 +30,18 @@ export default class ResearchSheluder {
             logger.error("Can't create research task, the queue is full!");
             return false;
         }
-        let calculator = new ResearchCalculator(planet);
+        const calculator = new ResearchCalculator(planet);
         let techLevel = player.research[techName];
 
         if(researchQueue.isEmpty()) {
             //Queue is empty, job starts now
-            let cost = calculator.calculateResearchCost(techName, techLevel);
+            const cost = calculator.calculateResearchCost(techName, techLevel);
             if(!haveEnoughResources(planet, cost))
                 return false;
-            
-            let researchTime = calculator.calculateResearchTime(cost);
-            let startTime = Date.now();
-            let researchTask = ResearchTask.createNew(
+
+            const researchTime = calculator.calculateResearchTime(cost);
+            const startTime = Date.now();
+            const researchTask = ResearchTask.createNew(
                 planet.id,
                 player.id,
                 techName,
@@ -65,11 +65,11 @@ export default class ResearchSheluder {
           Updater is calculating time again anyway. Also OGame shows time only for currently researching element, so
           knowing research time now is useless*/
         techLevel += researchQueue.countElementsForResearchName(techName);
-        let cost = calculator.calculateResearchCost(techName, techLevel);
-        let researchTime = calculator.calculateResearchTime(cost);
-        let startTime = (researchQueue.back()).finishTime;
+        const cost = calculator.calculateResearchCost(techName, techLevel);
+        const researchTime = calculator.calculateResearchTime(cost);
+        const startTime = (researchQueue.back()).finishTime;
 
-        let researchTask = ResearchTask.createNew(
+        const researchTask = ResearchTask.createNew(
             planet.id,
             player.id,
             techName,
@@ -82,9 +82,9 @@ export default class ResearchSheluder {
     }
 
     private async loadPlayerAndPlanet(manager: EntityManager) {
-        let playerPromise = manager.findOne(Player, this._player.id);
-        let planetPromise = manager.findOne(Planet, this._planet.id);
-        return await Promise.all([playerPromise, planetPromise]);
+        const playerPromise = manager.findOne(Player, this._player.id);
+        const planetPromise = manager.findOne(Planet, this._planet.id);
+        return Promise.all([playerPromise, planetPromise]);
     }
 
     private checkIfValidResearchName(researchName: string) {

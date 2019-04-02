@@ -6,7 +6,7 @@ function strictNumber(val: any) {
         throw new Error("must be a number.");
 }
 
-let uniConfig = convict({
+const uniConfig = convict({
     size: {
         galaxies: { format: "int", default: 9 },
         systems: { format: "int", default: 499 },
@@ -47,7 +47,7 @@ let uniConfig = convict({
         default: 2
     },
     planets: {
-        "1": { 
+        "1": {
             size: {
                 min: { format: "int", default: 56 },
                 max: { format: "int", default: 113 }
@@ -284,7 +284,7 @@ catch(err) {
             `Error details: ${err.err.message}`
         );
     }
-    let data = JSON.stringify(uniConfig.getProperties(), null, 4);
+    const data = JSON.stringify(uniConfig.getProperties(), null, 4);
     fs.writeFile('./config/uni-config.json', data, err => {
         if(!err)
             console.log("Created file ./config/uni-config.json, where you can adjust universe settings.");

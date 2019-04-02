@@ -20,21 +20,26 @@ export namespace Errors {
 }
 
 export default class PlayerService {
-    async createNewPlayer(userId: string, nickname: string) {
+    /** Allow only one space between words for nickname */
+    private readonly nicknameRegex = /^([a-zA-Z0-9]+\s){0,1}[a-zA-Z0-9]+$/;
+    /** Matches word: admin, mod, gm, gamemaster, game master*/
+    private readonly unallowedVerbs = /\b(\w*[aA4][dD][mM][iI1l][nN]\w*)|(\w*[mM][oO0][dD]\w*)|(\w*[gG][mM]\w*)|(\w*[gG][aA][mM][eE]\s*[mM][aA4][sS5][tT][eE3][rR]\w*)\b/;
+
+    public async createNewPlayer(userId: string, nickname: string) {
         nickname = nickname.trim();
         await this.checkIfPlayerCanBeCreated(userId, nickname);
-        
-        let player = Player.createNew(userId, nickname);
+
+        const player = Player.createNew(userId, nickname);
         await player.save();
         return player;
     }
     private async isUserGotPlayer(userId: string): Promise<boolean> {
-        let players = await Player.count({ where: { userId: userId }});
+        const players = await Player.count({ where: { userId: userId }});
         if(players > 0) return true;
         return false;
     }
     private async isPlayerExists(nickname: string): Promise<boolean> {
-        let player = await Player.findByNickname(nickname);
+        const player = await Player.findByNickname(nickname);
         if(player)
             return true;
         return false;
@@ -52,8 +57,4 @@ export default class PlayerService {
             return false;
         return this.nicknameRegex.test(nickname) && !this.unallowedVerbs.test(nickname);
     }
-    /** Allow only one space between words for nickname */
-    private nicknameRegex = /^([a-zA-Z0-9]+\s){0,1}[a-zA-Z0-9]+$/;
-    /** Matches word: admin, mod, gm, gamemaster, game master*/
-    private unallowedVerbs = /\b(\w*[aA4][dD][mM][iI1l][nN]\w*)|(\w*[mM][oO0][dD]\w*)|(\w*[gG][mM]\w*)|(\w*[gG][aA][mM][eE]\s*[mM][aA4][sS5][tT][eE3][rR]\w*)\b/;
 }

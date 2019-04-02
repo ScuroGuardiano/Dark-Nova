@@ -12,8 +12,31 @@ import IMessageData from '../../game/data-types/message-data';
 
 @Entity()
 export default class Message extends BaseEntity {
+
+    @PrimaryGeneratedColumn('increment')
+    public id: number;
+    @Column()
+    public senderName: string;
+    @ManyToOne(type => Player)
+    public sender?: Player;
+    @ManyToOne(type => Player)
+    public receiver: Player;
+    @Column()
+    public senderId?: number;
+    @Column({ nullable: false })
+    public receiverId: number;
+    @Column({ nullable: false, type: "tinyint" })
+    public type: number;
+    @Column({ default: "No subject" })
+    public subject: string;
+    @Column('text', { nullable: false })
+    public content: string;
+    @CreateDateColumn()
+    public createdAt: Date;
+    @Column({ default: false })
+    public read: boolean;
     public static createNew(messageData: IMessageData) {
-        let message = new Message();
+        const message = new Message();
         message.subject = messageData.subject || "No subject";
         message.content = messageData.content;
         message.type = messageData.type;
@@ -22,27 +45,4 @@ export default class Message extends BaseEntity {
         message.senderName = messageData.senderName;
         return message;
     }
-
-    @PrimaryGeneratedColumn('increment')
-    id: number;
-    @Column()
-    senderName: string;
-    @ManyToOne(type => Player)
-    sender?: Player;
-    @ManyToOne(type => Player)
-    receiver: Player;
-    @Column()
-    senderId?: number;
-    @Column({ nullable: false })
-    receiverId: number;
-    @Column({ nullable: false, type: "tinyint" })
-    type: number;
-    @Column({ default: "No subject" })
-    subject: string;
-    @Column('text', { nullable: false })
-    content: string;
-    @CreateDateColumn()
-    createdAt: Date;
-    @Column({ default: false })
-    read: boolean
 }

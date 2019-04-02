@@ -7,10 +7,10 @@ import { Transaction, TransactionManager, EntityManager } from "typeorm";
 import BuildQueue from "./build-queue";
 
 export default class BuildSheluder {
-    constructor(private _planet: Planet) {}
+    constructor(private readonly _planet: Planet) {}
     /**
      * Performing ACID operation of adding new build task.
-     * Loads planet again from DB in transaction, 
+     * Loads planet again from DB in transaction,
      * then saves it to database if modified resources
      */
     @Transaction({ isolation: "SERIALIZABLE" })
@@ -19,8 +19,8 @@ export default class BuildSheluder {
             logger.error(`Error while creating build job: There's no building ${buildingName}!`);
             return false;
         }
-        
-        let planet = await manager.findOne(Planet, this._planet.id);
+
+        const planet = await manager.findOne(Planet, this._planet.id);
         const buildQueue = new BuildQueue(planet);
         await buildQueue.load(manager);
 
@@ -28,7 +28,7 @@ export default class BuildSheluder {
             logger.error(`Trying to create build job while the queue if full!`);
             return false;
         }
-        let calculator = new BuildingsCalculator(planet);
+        const calculator = new BuildingsCalculator(planet);
         let buildingLevel = planet.buildings[buildingName];
 
         if(buildQueue.isEmpty()) {
@@ -37,13 +37,13 @@ export default class BuildSheluder {
                 logger.error(`Trying to create build job on full planet!`);
                 return false; //Not enough fields on planet
             }
-            let cost = calculator.calculateCostForBuild(buildingName, buildingLevel);
+            const cost = calculator.calculateCostForBuild(buildingName, buildingLevel);
             if (!haveEnoughResources(planet, cost))
                 return false;
-            
-            let buildTime = calculator.calculateBuildTime(cost, buildingLevel);
-            let startTime = Date.now();
-            let buildTask = BuildTask.createNew(
+
+            const buildTime = calculator.calculateBuildTime(cost, buildingLevel);
+            const startTime = Date.now();
+            const buildTask = BuildTask.createNew(
                 planet,
                 buildingName,
                 new Date(startTime),
@@ -57,10 +57,10 @@ export default class BuildSheluder {
             return true;
         }
         //Queue is not empty, so we only add task to queue, without taking resources.
-        /* If there's pending task in queue, then we must use higher level, 
+        /* If there's pending task in queue, then we must use higher level,
         for example if you have metal mine on level 2 and two metal mine build task in queue
         then when those tasks will be finished, metal mine will be on level 4.*/
-        let buildingTasksInQueue = buildQueue.length();
+        const buildingTasksInQueue = buildQueue.length();
         if(!this.checkPlanetFields(planet, buildingTasksInQueue + 1)) {
             logger.error(`Trying to create build job on full planet!`);
             return false; //Not enough fields on planet
@@ -69,11 +69,11 @@ export default class BuildSheluder {
           Updater is calculating time again anyway. Also OGame shows time only for currently building element, so
           knowing build time now is useless*/
         buildingLevel += buildQueue.countElementsForBuilding(buildingName);
-        let cost = calculator.calculateCostForBuild(buildingName, buildingLevel);
-        let buildTime = calculator.calculateBuildTime(cost, buildingLevel);
-        let startTime = (buildQueue.back()).finishTime;
+        const cost = calculator.calculateCostForBuild(buildingName, buildingLevel);
+        const buildTime = calculator.calculateBuildTime(cost, buildingLevel);
+        const startTime = (buildQueue.back()).finishTime;
 
-        let buildTask = BuildTask.createNew(planet,
+        const buildTask = BuildTask.createNew(planet,
             buildingName,
             startTime,
             new Date(startTime.getTime() + buildTime)
@@ -90,7 +90,7 @@ export default class BuildSheluder {
         .getBuildingsList()
         .findIndex(v => v.key === buildingName) != -1;
     }
-    private checkPlanetFields(planet: Planet, neededFields: number = 1) {
+    private checkPlanetFields(planet: Planet, neededFields = 1) {
         return (planet.usedFields + neededFields) <= planet.maxFields;
     }
 }

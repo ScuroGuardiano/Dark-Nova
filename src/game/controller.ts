@@ -59,7 +59,7 @@ router.use(loadPlanet);
 
 router.get('/test-view', async (req: NovaRequest, res, next) => {
     return res.render('game/' + req.query.view);
-})
+});
 router.get('/', async (req: NovaRequest, res, next) => {
     try {
         return res.render('game/index');
@@ -142,5 +142,5 @@ router.post("/sheludeResearchTask", async(req: NovaRequest, res, next) => {
     catch(err) {
         return res.status(500).send("Internalu Erroru");
     }
-})
+});
 

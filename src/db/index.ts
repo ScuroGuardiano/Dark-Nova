@@ -12,12 +12,12 @@ import Research from "./models/research";
 import ResearchTask from "./models/research-task";
 
 export default async function initDatabase() {
-    let entities = [
+    const entities = [
         User, Player, Planet, PlanetBuildings, BuildTask, Message,
         Research, ResearchTask
-    ]
+    ];
     const dbConfig = config.get("db");
-    let databaseOptions: any = {
+    const databaseOptions: any = {
         logging: dbConfig.logging,
         logger: dbConfig.logging && new DatabaseLogger(),
         entities: entities,

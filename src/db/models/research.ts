@@ -4,43 +4,43 @@ import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from "typeorm";
 export default class Research extends BaseEntity {
     [Key: string]: any;
     @PrimaryGeneratedColumn('increment')
-    id: number;
+    public id: number;
     //Basic
     @Column('smallint', { nullable: false, default: 0 })
-    energyTechnology: number = 0;
+    public energyTechnology = 0;
     @Column('smallint', { nullable: false, default: 0 })
-    laserTechnology: number = 0;
+    public laserTechnology = 0;
     @Column('smallint', { nullable: false, default: 0 })
-    ionTechnology: number = 0;
+    public ionTechnology = 0;
     @Column('smallint', { nullable: false, default: 0 })
-    hyperspaceTechnology: number = 0;
+    public hyperspaceTechnology = 0;
     @Column('smallint', { nullable: false, default: 0 })
-    plasmaTechnology: number = 0;
+    public plasmaTechnology = 0;
     //Advanced
     @Column('smallint', { nullable: false, default: 0 })
-    espionageTechnology: number = 0;
+    public espionageTechnology = 0;
     @Column('smallint', { nullable: false, default: 0 })
-    computerTechnology: number = 0;
+    public computerTechnology = 0;
     @Column('smallint', { nullable: false, default: 0 })
-    astrophysics: number = 0;
+    public astrophysics = 0;
     @Column('smallint', { nullable: false, default: 0 })
-    network: number = 0; //Intergalactic Research Network
+    public network = 0; //Intergalactic Research Network
     @Column('smallint', { nullable: false, default: 0 })
-    gravitonTechnology: number = 0;
+    public gravitonTechnology = 0;
     //Drives
     @Column('smallint', { nullable: false, default: 0 })
-    combustionDrive: number = 0;
+    public combustionDrive = 0;
     @Column('smallint', { nullable: false, default: 0 })
-    impulseDrive: number = 0;
+    public impulseDrive = 0;
     @Column('smallint', { nullable: false, default: 0 })
-    hyperspaceDrive: number = 0;
+    public hyperspaceDrive = 0;
     //Combat
     @Column('smallint', { nullable: false, default: 0 })
-    weaponTechnology: number;
+    public weaponTechnology: number;
     @Column('smallint', { nullable: false, default: 0 })
-    shieldingTechnology: number;
+    public shieldingTechnology: number;
     @Column('smallint', { nullable: false, default: 0 })
-    armourTechnology: number;
+    public armourTechnology: number;
 
     public getResearchList() {
         return [
@@ -60,6 +60,6 @@ export default class Research extends BaseEntity {
             { key: "weaponTechnology", level: this.weaponTechnology },
             { key: "shieldingTechnology", level: this.shieldingTechnology },
             { key: "armourTechnology", level: this.armourTechnology }
-        ]
+        ];
     }
 }

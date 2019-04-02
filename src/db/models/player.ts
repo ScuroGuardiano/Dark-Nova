@@ -20,59 +20,59 @@ export enum Permissions {
 }
 @Entity()
 export default class Player extends BaseEntity {
-    private constructor() {
-        super();
-    }
-    public static createNew(userId: string, nickname: string): Player {
-        let player = new Player();
-        player.userId = userId;
-        player.nickname = nickname;
-        player.nicknameLowcase = nickname.split(' ').join('').toLowerCase();
-        player.research = new Research();
-        return player;
-    }
-    public static findByNickname(nickname: string) {
-        let nicknameLowcase = nickname.split(' ').join('').toLowerCase();
-        return this.findOne({ where: { nicknameLowcase: nicknameLowcase }});
-    }
     @PrimaryGeneratedColumn('increment')
-    id: number;
+    public id: number;
 
     @Column({ nullable: false })
-    nickname: string;
+    public nickname: string;
 
     /** Lowercase nickname without spaces */
     @Column({ nullable: false })
-    nicknameLowcase: string;
+    public nicknameLowcase: string;
 
     @Column({ default: Permissions.USER })
-    permissions: Permissions;
+    public permissions: Permissions;
 
     /** If not banned, then it is set to null */
     @Column({ nullable: true })
-    bannedUntil: Date;
+    public bannedUntil: Date;
 
     /** If not banned, then it is set to null */
     @Column({ nullable: true })
-    banReason: string;
+    public banReason: string;
 
     @Column({ nullable: false })
-    userId: string;
+    public userId: string;
 
     @OneToOne(type => Research, {
         cascade: true,
         eager: true
     })
     @JoinColumn()
-    research: Research;
+    public research: Research;
 
     @OneToOne(type => User)
     @JoinColumn()
-    user: User;
+    public user: User;
 
     @CreateDateColumn()
-    createdAt: Date;
+    public createdAt: Date;
 
     @UpdateDateColumn()
-    updatedAt: Date;
+    public updatedAt: Date;
+    private constructor() {
+        super();
+    }
+    public static createNew(userId: string, nickname: string): Player {
+        const player = new Player();
+        player.userId = userId;
+        player.nickname = nickname;
+        player.nicknameLowcase = nickname.split(' ').join('').toLowerCase();
+        player.research = new Research();
+        return player;
+    }
+    public static async findByNickname(nickname: string) {
+        const nicknameLowcase = nickname.split(' ').join('').toLowerCase();
+        return this.findOne({ where: { nicknameLowcase: nicknameLowcase }});
+    }
 }

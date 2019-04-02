@@ -1,7 +1,7 @@
 import * as convict from 'convict';
 import * as colors from 'colors/safe';
 
-let config = convict({
+const config = convict({
     env: {
         doc: "The application enviroment",
         format: ["production", "development"],
@@ -63,7 +63,7 @@ let config = convict({
             format: "*",
             default: null,
             env: "DB_PASSWORD",
-            arg: "db-password" 
+            arg: "db-password"
         },
         host: {
             doc: "Database host",
@@ -109,7 +109,7 @@ let config = convict({
     },
 });
 
-let configWarnings: Array<string> = [];
+const configWarnings: Array<string> = [];
 
 try {
     config.loadFile('./config/' + config.get('env') + '.json');

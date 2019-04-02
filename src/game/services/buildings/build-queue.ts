@@ -5,16 +5,16 @@ import { EntityManager, getManager } from "typeorm";
 import BaseTaskQueue from "../../data-types/base-task-queue";
 
 /**
- * Abstraction for BuildTask table.  
+ * Abstraction for BuildTask table.
  * It's in fact priority queue, front element is element with the least finish time, last with the highest.
  */
 export default class BuildQueue extends BaseTaskQueue<BuildTask> {
-    constructor(private planet: Planet, private premium: boolean = false) {
+    constructor(private readonly planet: Planet, private readonly premium = false) {
         super();
         this.maxSize = uniConfig.get('buildQueueLimit')[this.premium ? 'premium' : 'normal'];
     }
     public async load(entityManager: EntityManager = getManager()): Promise<BuildQueue> {
-        this.elements = await entityManager.find(BuildTask, { 
+        this.elements = await entityManager.find(BuildTask, {
             where: { planetId: this.planet.id },
             order: { finishTime: "ASC" }
         });
@@ -32,6 +32,6 @@ export default class BuildQueue extends BaseTaskQueue<BuildTask> {
             if(current.buildingName === buildingName)
                 return count + 1;
             return count;
-        }, 0)
+        }, 0);
     }
 }

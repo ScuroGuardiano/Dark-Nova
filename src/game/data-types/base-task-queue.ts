@@ -3,6 +3,11 @@ import ITaskQueue from "../interfaces/task-queue";
 import { EntityManager } from "typeorm";
 
 export default abstract class BaseTaskQueue<T extends ITask = ITask> implements ITaskQueue<T> {
+
+    protected elements: Array<T>;
+    //To removed popped task from DB.
+    protected removed: Array<T>;
+    protected maxSize: number;
     constructor(maxSize = 1) {
         this.elements = [];
         this.removed = [];
@@ -29,16 +34,11 @@ export default abstract class BaseTaskQueue<T extends ITask = ITask> implements 
         this.elements.push(task);
     }
     public pop(): T {
-        let task = this.elements.shift();
+        const task = this.elements.shift();
         this.removed.push(task);
         return task;
     }
     public toArray() {
         return [...this.elements];
     }
-
-    protected elements: Array<T>;
-    //To removed popped task from DB.
-    protected removed: Array<T>;
-    protected maxSize: number;
 }

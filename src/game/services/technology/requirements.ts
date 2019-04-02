@@ -50,7 +50,7 @@ export const buildings: IRequirementList = {
             shipyard: 2
         }
     }
-}
+};
 
 export const technologies: IRequirementList = {
     energyTechnology: {
@@ -63,7 +63,7 @@ export const technologies: IRequirementList = {
             laboratory: 1
         },
         research: {
-           energyTechnology: 2 
+           energyTechnology: 2
         }
     },
     ionTechnology: {
@@ -110,7 +110,7 @@ export const technologies: IRequirementList = {
         },
         research: {
             espionageTechnology: 4,
-            hyperspaceDrive: 3 
+            hyperspaceDrive: 3
         }
     },
     network: {
@@ -169,11 +169,11 @@ export const technologies: IRequirementList = {
             laboratory: 2
         }
     }
-}
+};
 
 export const ships: IRequirementList = {
 
-}
+};
 export const defense: IRequirementList = {
-    
-}
+
+};

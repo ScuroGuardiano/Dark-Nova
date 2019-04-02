@@ -5,18 +5,18 @@ import { Resources } from "../data-types/resources";
 import IEconomyData from "../data-types/economy-data";
 
 export default class EconomyCalculator {
-    constructor(private planet: Planet) {}
+    constructor(private readonly planet: Planet) {}
     //TODO: Economy settings
     public calculateEconomy(): IEconomyData {
-        let energy = this.energyProduction();
-        let usedEnergy = this.energyUsage();
+        const energy = this.energyProduction();
+        const usedEnergy = this.energyUsage();
         let efficiency = energy / usedEnergy.total;
         const baseProductions = uniConfig.get('baseProductions');
 
         if(!isFinite(efficiency)) efficiency = 0;
         else if(efficiency > 1.0) efficiency = 1.0;
 
-        let production = this.buildingsProduction(usedEnergy);
+        const production = this.buildingsProduction(usedEnergy);
         production.multiplyBy(efficiency);
         production.metal += baseProductions.metal;
         production.crystal += baseProductions.crystal;
@@ -51,10 +51,10 @@ export default class EconomyCalculator {
         const metalMineLevel = this.planet.buildings.metalMine;
         const crystalMineLevel = this.planet.buildings.crystalMine;
         const deuteriumSynthesizerLevel = this.planet.buildings.deuteriumSynthesizer;
-        
-        let metalMineUsage = Math.floor(10 * metalMineLevel * Math.pow(1.1, metalMineLevel));
-        let crystalMineUsage = Math.floor(10 * crystalMineLevel * Math.pow(1.1, crystalMineLevel));
-        let deuteriumSynthesizerUsage = Math.floor(20 * deuteriumSynthesizerLevel * Math.pow(1.1, deuteriumSynthesizerLevel));
+
+        const metalMineUsage = Math.floor(10 * metalMineLevel * Math.pow(1.1, metalMineLevel));
+        const crystalMineUsage = Math.floor(10 * crystalMineLevel * Math.pow(1.1, crystalMineLevel));
+        const deuteriumSynthesizerUsage = Math.floor(20 * deuteriumSynthesizerLevel * Math.pow(1.1, deuteriumSynthesizerLevel));
 
         return {
             total: metalMineUsage + crystalMineUsage + deuteriumSynthesizerUsage,
