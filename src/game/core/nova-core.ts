@@ -2,8 +2,9 @@ import Planet from "../../db/models/planet";
 import Player from "../../db/models/player";
 import PlayerNotFound from "./errors/player-not-found";
 import PlanetService from "./services/planet";
-import PlayerService from "../services/player";
+import PlayerService from "./services/player";
 import Updater from "../services/updating/updater";
+import BuildingService from "./services/building";
 
 /**
  * NovaCore controls whole game logic by using various services  
@@ -25,10 +26,17 @@ import Updater from "../services/updating/updater";
 export default class NovaCore {
     private planet: Planet;
     private player: Player;
+    private _buildingService: BuildingService;
     private _planetService: PlanetService;
     private _playerService: PlayerService;
     private _initialized = false;
 
+    public get $planet() {
+        return this.planet;
+    }
+    public get $player() {
+        return this.player;
+    }
     public get initialized() {
         return this._initialized;
     }
@@ -37,6 +45,9 @@ export default class NovaCore {
     }
     public get playerService() {
         return this._playerService ? this._playerService : this._playerService = new PlayerService();
+    }
+    public get building() {
+        return this._buildingService ? this._buildingService : this._buildingService = new BuildingService(this.planet);
     }
 
     public constructor(private readonly userId: string) {}
@@ -58,8 +69,9 @@ export default class NovaCore {
             }
         }
         else {
-            const planet = await this.planetService.getFirstPlayerPlanet(this.planet.id);
-            if(!planet) {
+            const planet = await this.planetService.getFirstPlayerPlanet(this.player.id);
+            if(planet) this.planet = planet;
+            else {
                 //Planet does not exists, need to create new home planet
                 this.planet = await this.planetService.createNewPlanet(this.player.id, null, true);
                 this._initialized = true;
@@ -72,5 +84,8 @@ export default class NovaCore {
         this.player = player;
         this.planet = planet;
         this._initialized = true;
+    }
+    public async createNewPlayer(nickname: string) {
+        return this.playerService.createNewPlayer(this.userId, nickname);
     }
 }
