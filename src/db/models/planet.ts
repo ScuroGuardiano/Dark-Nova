@@ -12,7 +12,7 @@ import PlanetBuildings from './planet-buildings';
 import IPlanetData from '../../game/data-types/planet-data';
 import { IResourcesAndEnergy } from '../../game/data-types/resources';
 import IEconomyData from '../../game/data-types/economy-data';
-import EconomyCalculator from '../../game/services/economy-calculator';
+import EconomyCalculator from '../../game/core/services/economy-calculator';
 
 @Entity()
 @Index(['galaxy', 'system', 'position'], { unique: true })

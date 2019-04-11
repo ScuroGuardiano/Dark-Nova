@@ -1,11 +1,11 @@
-import Planet from "../../../db/models/planet";
-import BuildTask, { BuildTaskType } from "../../../db/models/build-task";
-import BuildingsCalculator from "../buildings/buildings-calculator";
-import { haveEnoughResources, subtractResources } from "../../utils";
-import BuildQueue from "../buildings/build-queue";
-import Player from "../../../db/models/player";
+import Planet from "../../../../db/models/planet";
+import BuildTask, { BuildTaskType } from "../../../../db/models/build-task";
+import BuildCalculator from "../building/build-calculator";
+import { haveEnoughResources, subtractResources } from "../../../utils";
+import BuildQueue from "../building/build-queue";
+import Player from "../../../../db/models/player";
 import ResearchQueue from "../research/research-queue";
-import ResearchTask from "../../../db/models/research-task";
+import ResearchTask from "../../../../db/models/research-task";
 import ResearchCalculator from "../research/research-calculator";
 
 const SECOND = 1000;
@@ -138,7 +138,7 @@ export class PureUpdater {
             return;
         if (this.buildQueue.front().taskType == BuildTaskType.BUILD) {
             const buildingName = this.buildQueue.front().buildingName;
-            const calculator = new BuildingsCalculator(this.planet);
+            const calculator = new BuildCalculator(this.planet);
             const buildingLevel = this.planet.buildings[buildingName];
             const cost = calculator.calculateCostForBuild(buildingName, buildingLevel);
             if (!haveEnoughResources(this.planet, cost)) {

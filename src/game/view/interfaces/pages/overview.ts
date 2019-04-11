@@ -1,5 +1,5 @@
 import IView from "../view";
 
-export default interface IOverviewPage extends IView {
-    
-}
+
+// tslint:disable-next-line: no-empty-interface
+export default interface IOverviewPage extends IView {}

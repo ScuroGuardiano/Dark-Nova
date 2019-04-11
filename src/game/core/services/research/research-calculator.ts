@@ -1,7 +1,6 @@
-import Player from "../../../db/models/player";
-import Planet from "../../../db/models/planet";
-import { ResourcesAndEnergy, IResources } from "../../data-types/resources";
-import uniConfig from "../../../config/uni-config";
+import Planet from "../../../../db/models/planet";
+import { ResourcesAndEnergy, IResources } from "../../../data-types/resources";
+import uniConfig from "../../../../config/uni-config";
 
 export default class ResearchCalculator {
     constructor(private readonly planet: Planet) {}

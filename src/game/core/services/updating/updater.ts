@@ -1,12 +1,12 @@
 import { Transaction, TransactionManager, EntityManager } from "typeorm";
-import Planet from "../../../db/models/planet";
-import BuildQueue from "../buildings/build-queue";
+import Planet from "../../../../db/models/planet";
+import BuildQueue from "../building/build-queue";
 import { PureUpdater } from "./pure-updater";
-import logger from "../../../logger";
-import BuildTask from "../../../db/models/build-task";
-import Player from "../../../db/models/player";
+import logger from "../../../../logger";
+import BuildTask from "../../../../db/models/build-task";
+import Player from "../../../../db/models/player";
 import ResearchQueue from "../research/research-queue";
-import ResearchTask from "../../../db/models/research-task";
+import ResearchTask from "../../../../db/models/research-task";
 
 //Okey about how this updating works I could write a book, so let's say it's magic :3
 export default class Updater {

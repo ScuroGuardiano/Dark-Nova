@@ -7,7 +7,7 @@ import * as _ from 'lodash';
 import Planet from "../../../db/models/planet";
 import BasicError from "../../../errors/basic-error";
 import logger from "../../../logger";
-import Updater from "../../services/updating/updater";
+import Updater from "./updating/updater";
 
 export namespace Errors {
     export class InvalidCoordinates extends BasicError {

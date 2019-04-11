@@ -3,8 +3,9 @@ import Player from "../../db/models/player";
 import PlayerNotFound from "./errors/player-not-found";
 import PlanetService from "./services/planet";
 import PlayerService from "./services/player";
-import Updater from "../services/updating/updater";
+import Updater from "./services/updating/updater";
 import BuildingService from "./services/building";
+import ResearchService from "./services/research";
 
 /**
  * NovaCore controls whole game logic by using various services  
@@ -27,6 +28,7 @@ export default class NovaCore {
     private planet: Planet;
     private player: Player;
     private _buildingService: BuildingService;
+    private _researchService: ResearchService;
     private _planetService: PlanetService;
     private _playerService: PlayerService;
     private _initialized = false;
@@ -48,6 +50,11 @@ export default class NovaCore {
     }
     public get building() {
         return this._buildingService ? this._buildingService : this._buildingService = new BuildingService(this.planet);
+    }
+    public get researching() {
+        return this._researchService ?
+            this._researchService
+            : this._researchService = new ResearchService(this.player, this.planet);
     }
 
     public constructor(private readonly userId: string) {}

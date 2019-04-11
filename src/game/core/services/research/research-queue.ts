@@ -1,8 +1,8 @@
-import Player from "../../../db/models/player";
+import Player from "../../../../db/models/player";
 import { EntityManager, getManager } from "typeorm";
-import ResearchTask from "../../../db/models/research-task";
-import BaseTaskQueue from "../../data-types/base-task-queue";
-import uniConfig from "../../../config/uni-config";
+import ResearchTask from "../../../../db/models/research-task";
+import BaseTaskQueue from "../../../data-types/base-task-queue";
+import uniConfig from "../../../../config/uni-config";
 
 export default class ResearchQueue extends BaseTaskQueue<ResearchTask> {
     constructor(private readonly player: Player, private readonly premium = false) {

@@ -1,11 +1,11 @@
-import Player from "../../../db/models/player";
-import Planet from "../../../db/models/planet";
+import Player from "../../../../db/models/player";
+import Planet from "../../../../db/models/planet";
 import { Transaction, TransactionManager, EntityManager } from "typeorm";
-import logger from "../../../logger";
+import logger from "../../../../logger";
 import ResearchQueue from "./research-queue";
 import ResearchCalculator from "./research-calculator";
 import { haveEnoughResources, subtractResources } from "../../utils";
-import ResearchTask from "../../../db/models/research-task";
+import ResearchTask from "../../../../db/models/research-task";
 
 export default class ResearchSheluder {
     public constructor(private readonly _player: Player, private readonly _planet: Planet) {}
