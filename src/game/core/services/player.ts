@@ -1,5 +1,5 @@
 import * as Errors from '../errors/player';
-import Player from "../../../db/models/player";
+import Player from "@db/models/player";
 
 export default class PlayerService {
     /** Allow only one space between words for nickname */

@@ -1,11 +1,10 @@
-import NovaCore from "../core/nova-core";
+import NovaCore from "@core/nova-core";
 import IOverviewPage from "./interfaces/pages/overview";
 import IBuildingsPage from "./interfaces/pages/buildings";
 import IBuildingInfo from "./interfaces/buildings-info";
-import { getBuidingNameByKey } from "../utils";
+import { getBuidingNameByKey, getTechNameByKey } from "./utils";
 import IResearchInfo from "./interfaces/research-info";
 import IResearchPage from "./interfaces/pages/research";
-import { getTechNameByKey } from "./utils";
 
 export default class NovaView {
     constructor(private readonly core: NovaCore) {}

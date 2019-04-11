@@ -1,13 +1,13 @@
 import * as express from 'express';
 import requireSession from '../middlewares/require-session';
 import { NovaRequest } from '../typings';
-import NovaCore from './core/nova-core';
-import * as PlayerErrors from './core/errors/player';
-import logger from '../logger';
+import NovaCore from '@core/nova-core';
+import * as PlayerErrors from '@core/errors/player';
+import logger from '@logger';
 import { inspect } from 'util';
 import initCore from './middlewares/init-core';
-import config from '../config';
-import NovaView from './view/nova-view';
+import config from '@config';
+import NovaView from '@nova-view/nova-view';
 
 const router = express.Router();
 export default router;

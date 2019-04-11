@@ -1,5 +1,5 @@
-import Planet from "../../db/models/planet";
-import Player from "../../db/models/player";
+import Planet from "@db/models/planet";
+import Player from "@db/models/player";
 import PlayerNotFound from "./errors/player-not-found";
 import PlanetService from "./services/planet";
 import PlayerService from "./services/player";

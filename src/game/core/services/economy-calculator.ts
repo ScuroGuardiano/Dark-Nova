@@ -1,5 +1,5 @@
-import Planet from "../../../db/models/planet";
-import uniConfig from "../../../config/uni-config";
+import Planet from "@db/models/planet";
+import uniConfig from "@config/uni-config";
 import IEnergyUsage from "../../data-types/energy-usage";
 import { Resources } from "../../data-types/resources";
 import IEconomyData from "../../data-types/economy-data";

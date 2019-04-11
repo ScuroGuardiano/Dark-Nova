@@ -1,6 +1,6 @@
-import Planet from "../../../../db/models/planet";
-import logger from "../../../../logger";
-import BuildTask from "../../../../db/models/build-task";
+import Planet from "@db/models/planet";
+import logger from "@logger";
+import BuildTask from "@db/models/build-task";
 import { haveEnoughResources, subtractResources } from "../../utils";
 import BuildCalculator from "./build-calculator";
 import { Transaction, TransactionManager, EntityManager } from "typeorm";

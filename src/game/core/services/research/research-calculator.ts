@@ -1,6 +1,6 @@
-import Planet from "../../../../db/models/planet";
+import Planet from "@db/models/planet";
 import { ResourcesAndEnergy, IResources } from "../../../data-types/resources";
-import uniConfig from "../../../../config/uni-config";
+import uniConfig from "@config/uni-config";
 
 export default class ResearchCalculator {
     constructor(private readonly planet: Planet) {}

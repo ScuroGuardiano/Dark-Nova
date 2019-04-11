@@ -1,6 +1,6 @@
-import Planet from "../../../../db/models/planet";
-import BuildTask from "../../../../db/models/build-task";
-import uniConfig from "../../../../config/uni-config";
+import Planet from "@db/models/planet";
+import BuildTask from "@db/models/build-task";
+import uniConfig from "@config/uni-config";
 import { EntityManager, getManager } from "typeorm";
 import BaseTaskQueue from "../../../data-types/base-task-queue";
 

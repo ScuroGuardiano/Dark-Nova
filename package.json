@@ -36,6 +36,7 @@
     "express": "^4.16.4",
     "joi": "^14.3.1",
     "lodash": "^4.17.11",
+    "module-alias": "^2.2.0",
     "morgan": "^1.9.1",
     "reflect-metadata": "^0.1.13",
     "sqlite3": "^4.0.6",
@@ -45,5 +46,12 @@
   "devDependencies": {
     "ts-node": "^7.0.1",
     "typescript": "^3.2.2"
+  },
+  "_moduleAliases": {
+    "@core": "build/game/core",
+    "@db": "build/db",
+    "@logger": "build/logger",
+    "@nova-view": "build/game/view",
+    "@config": "build/config"
   }
 }

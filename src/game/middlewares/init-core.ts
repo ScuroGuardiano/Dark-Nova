@@ -1,6 +1,6 @@
 import { NovaRequest } from "../../typings";
-import NovaCore from "../core/nova-core";
-import PlayerNotFound from "../core/errors/player-not-found";
+import NovaCore from "@core/nova-core";
+import PlayerNotFound from "@core/errors/player-not-found";
 import { Response, NextFunction } from 'express';
 
 /**

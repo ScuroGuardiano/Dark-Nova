@@ -1,6 +1,6 @@
-import Planet from "../../../../db/models/planet";
+import Planet from "@db/models/planet";
 import { IResourcesAndEnergy, ResourcesAndEnergy, IResources } from "../../../data-types/resources";
-import uniConfig from "../../../../config/uni-config";
+import uniConfig from "@config/uni-config";
 
 //https://ogame.fandom.com/wiki/Buildings
 export default class BuildCalculator {

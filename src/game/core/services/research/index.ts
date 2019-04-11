@@ -1,7 +1,7 @@
 import ResearchCalculator from "./research-calculator";
 import ResearchSheluder from "./research-sheluder";
-import Planet from "../../../../db/models/planet";
-import Player from "../../../../db/models/player";
+import Planet from "@db/models/planet";
+import Player from "@db/models/player";
 import ResearchQueue from "./research-queue";
 
 export default class ResearchService {

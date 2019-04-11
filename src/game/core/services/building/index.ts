@@ -1,4 +1,4 @@
-import Planet from "../../../../db/models/planet";
+import Planet from "@db/models/planet";
 import BuildQueue from "./build-queue";
 import BuildCalculator from "./build-calculator";
 import BuildSheluder from "./build-sheluder";

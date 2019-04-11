@@ -2,12 +2,11 @@ import { ICoordinates } from "../../data-types/coordinates";
 import { IResources } from "../../data-types/resources";
 import HomePlanetService from "./home-planet";
 import IPlanetData from "../../data-types/planet-data";
-import uniConfig from "../../../config/uni-config";
+import uniConfig from "@config/uni-config";
 import * as _ from 'lodash';
-import Planet from "../../../db/models/planet";
+import Planet from "@db/models/planet";
 import BasicError from "../../../errors/basic-error";
-import logger from "../../../logger";
-import Updater from "./updating/updater";
+import logger from "@logger";
 
 export namespace Errors {
     export class InvalidCoordinates extends BasicError {
