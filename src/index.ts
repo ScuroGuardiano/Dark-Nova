@@ -17,8 +17,6 @@ See file LICENSE in the root of this project or go to <https://opensource.org/li
 
 import * as dotenv from 'dotenv';
 dotenv.config();
-// tslint:disable-next-line: no-import-side-effect
-import "module-alias/register";
 import printLogo from "./print-logo";
 import Server from "./server";
 import config, { configWarnings } from "./config";
