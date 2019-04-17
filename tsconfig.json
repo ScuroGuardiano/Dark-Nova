@@ -22,7 +22,8 @@
             "@nova-view/*": ["game/view/*"],
             "@config": ["config/index"],
             "@config/*": ["config/*"]
-        }
+        },
+        "incremental": true
     },
     "include": [
         "src"

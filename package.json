@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc -p .",
     "start": "node index",
-    "dev": "ts-node --project ./tsconfig.json index.ts --env development",
+    "dev": "tsc --project ./tsconfig.json && node index --env development",
+    "watch": "concurrently \"tsc --watch\" \"nodemon\"",
     "production": "tsc -p . && node index --env production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -44,8 +45,8 @@
     "winston": "^3.1.0"
   },
   "devDependencies": {
-    "ts-node": "^7.0.1",
-    "typescript": "^3.2.2"
+    "concurrently": "^4.1.0",
+    "typescript": "^3.4.3"
   },
   "_moduleAliases": {
     "@core": "build/game/core",

@@ -5,11 +5,27 @@ It's currently under development and it is ~~doing nothing~~ creating and showin
 It can even update planet now! You can watch as you gather more and more metal and crystal &lt;3  
 EDIT!!! New feature!! You can build buildings now! They are doing ~~nothing~~ something, so BUILD THIS SH*T!
 
+## Run
+> Note: To install all dependencies you must have all node-pre-gyp dependencies, like python 2.7
+```bash
+    git clone https://github.com/ScuroGuardiano/Dark-Nova.git dark-nova
+    cd dark-nova
+    npm install
+    npm run dev
+```
+### Watch-mode
+```bash
+    npm run watch
+```
+<hr>
+
 ## Finished-ish
-*  Home planet creation
-*  Buildings
-*  Economy
-*  Resource and building tasks updater
+* Home planet creation  
+* Buildings  
+* Reseeearch  
+* Economy  
+* Resource and building tasks updater  
+* Research tasks updater  
 
 ## Some c00l scr33n
 ![C00l Scr33n](screens/scr1.png)
