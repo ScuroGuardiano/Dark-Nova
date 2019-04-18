@@ -7,6 +7,7 @@ import Player from "@db/models/player";
 import ResearchQueue from "../research/research-queue";
 import ResearchTask from "@db/models/research-task";
 import ResearchCalculator from "../research/research-calculator";
+import TechnologyChecker from "../technology/technology-checker";
 
 const SECOND = 1000;
 const MINUTE = SECOND * 60;
@@ -141,7 +142,16 @@ export class PureUpdater {
             const calculator = new BuildCalculator(this.planet);
             const buildingLevel = this.planet.buildings[buildingName];
             const cost = calculator.calculateCostForBuild(buildingName, buildingLevel);
-            if (!haveEnoughResources(this.planet, cost)) {
+            const technologyChecker = new TechnologyChecker(this.planet.buildings, this.player.research);
+
+            let failed = false;
+            if (
+                !haveEnoughResources(this.planet, cost)
+                || !technologyChecker.checkForBuilding(buildingName)
+            ) {
+                failed = true;
+            }
+            if (failed) {
                 this.failedBuildTasks.push(this.buildQueue.pop());
                 if(this.buildQueue.length() > 0) {
                     //It has to update next build task, because this one failed
@@ -170,11 +180,20 @@ export class PureUpdater {
         if(nextTask.planetId != this.planet.id)
             return false;
         //I can do it on this planet YAYX <3
-        const reseachName = nextTask.researchName;
+        const technologyName = nextTask.researchName;
         const calculator = new ResearchCalculator(this.planet);
-        const researchLevel = this.player.research[reseachName];
-        const cost = calculator.calculateResearchCost(reseachName, researchLevel);
-        if(!haveEnoughResources(this.planet, cost)) {
+        const technologyLevel = this.player.research[technologyName];
+        const cost = calculator.calculateResearchCost(technologyName, technologyLevel);
+        const technologyChecker = new TechnologyChecker(this.planet.buildings, this.player.research);
+
+        let failed = false;
+        if (
+            !haveEnoughResources(this.planet, cost)
+            || !technologyChecker.checkForResearch(technologyName)
+        ) {
+            failed = true;
+        }
+        if(failed) {
             this.failedResearchTasks.push(this.researchQueue.pop());
             if(this.researchQueue.length() > 0) {
                 //It has to update next research task, because this one failed

@@ -5,9 +5,11 @@ import { haveEnoughResources, subtractResources } from "../../utils";
 import BuildCalculator from "./build-calculator";
 import { Transaction, TransactionManager, EntityManager } from "typeorm";
 import BuildQueue from "./build-queue";
+import Player from "@db/models/player";
+import TechnologyChecker from "../technology/technology-checker";
 
 export default class BuildSheluder {
-    constructor(private readonly _planet: Planet) {}
+    constructor(private readonly _player: Player, private readonly _planet: Planet) {}
     /**
      * Performing ACID operation of adding new build task.
      * Loads planet again from DB in transaction,
@@ -21,6 +23,7 @@ export default class BuildSheluder {
         }
 
         const planet = await manager.findOne(Planet, this._planet.id);
+        //I don't have to reload player, because I am not changing it at all.
         const buildQueue = new BuildQueue(planet);
         await buildQueue.load(manager);
 
@@ -40,6 +43,10 @@ export default class BuildSheluder {
             const cost = calculator.calculateCostForBuild(buildingName, buildingLevel);
             if (!haveEnoughResources(planet, cost))
                 return false;
+
+            const technologyChecker = new TechnologyChecker(planet.buildings, this._player.research);
+            if (!technologyChecker.checkForBuilding(buildingName))
+                return false; //Planet/Player doesn't meets requirements to build this building
 
             const buildTime = calculator.calculateBuildTime(cost, buildingLevel);
             const startTime = Date.now();

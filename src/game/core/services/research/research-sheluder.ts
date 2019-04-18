@@ -6,6 +6,7 @@ import ResearchQueue from "./research-queue";
 import ResearchCalculator from "./research-calculator";
 import { haveEnoughResources, subtractResources } from "../../utils";
 import ResearchTask from "@db/models/research-task";
+import TechnologyChecker from "../technology/technology-checker";
 
 export default class ResearchSheluder {
     public constructor(private readonly _player: Player, private readonly _planet: Planet) {}
@@ -37,6 +38,10 @@ export default class ResearchSheluder {
             //Queue is empty, job starts now
             const cost = calculator.calculateResearchCost(techName, techLevel);
             if(!haveEnoughResources(planet, cost))
+                return false;
+
+            const technologyChecker = new TechnologyChecker(planet.buildings, player.research);
+            if(!technologyChecker.checkForResearch(techName))
                 return false;
 
             const researchTime = calculator.calculateResearchTime(cost);

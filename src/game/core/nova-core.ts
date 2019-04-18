@@ -49,7 +49,7 @@ export default class NovaCore {
         return this._playerService ? this._playerService : this._playerService = new PlayerService();
     }
     public get building() {
-        return this._buildingService ? this._buildingService : this._buildingService = new BuildingService(this.planet);
+        return this._buildingService ? this._buildingService : this._buildingService = new BuildingService(this.player, this.planet);
     }
     public get researching() {
         return this._researchService ?
