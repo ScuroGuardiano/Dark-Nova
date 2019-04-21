@@ -23,6 +23,7 @@ export default class TechnologyChecker {
         meetsRequirements = this.checkTechnologies(requirementList, meetsRequirements);
         return meetsRequirements;
     }
+
     private checkTechnologies(requirementList: IRequirement, meetsRequirements: boolean) {
         if (meetsRequirements && requirementList.research) {
             Object.keys(requirementList.research).forEach(requirement => {
@@ -33,7 +34,6 @@ export default class TechnologyChecker {
         }
         return meetsRequirements;
     }
-
     private checkBuildings(requirementList: IRequirement, meetsRequirements: boolean) {
         if (requirementList.buildings) {
             Object.keys(requirementList.buildings).forEach(requirement => {

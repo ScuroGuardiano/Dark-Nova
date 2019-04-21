@@ -13,6 +13,8 @@ import IPlanetData from '../../game/data-types/planet-data';
 import { IResourcesAndEnergy } from '../../game/data-types/resources';
 import IEconomyData from '../../game/data-types/economy-data';
 import EconomyCalculator from '../../game/core/services/economy-calculator';
+import Defense from './defense';
+import Ships from './ships';
 
 @Entity()
 @Index(['galaxy', 'system', 'position'], { unique: true })
@@ -78,6 +80,20 @@ export default class Planet extends BaseEntity implements IResourcesAndEnergy {
     @JoinColumn()
     public buildings: PlanetBuildings;
 
+    @OneToOne(type => Defense, {
+        eager: true,
+        cascade: true
+    })
+    @JoinColumn()
+    public defense: Defense;
+
+    @OneToOne(type => Ships, {
+        eager: true,
+        cascade: true
+    })
+    @JoinColumn()
+    public ships: Ships;
+
     @Column({ type: "int", nullable: false })
     public galaxy: number;
 
@@ -122,6 +138,8 @@ export default class Planet extends BaseEntity implements IResourcesAndEnergy {
     public static createPlanet(playerId: number, planetData: IPlanetData, planetBuildings: PlanetBuildings = new PlanetBuildings()) {
         const planet = new Planet();
         planet.buildings = planetBuildings;
+        planet.defense = new Defense();
+        planet.ships = new Ships();
 
         planet.playerId = playerId;
         planet.name = planetData.name;

@@ -10,11 +10,13 @@ import BuildTask from "./models/build-task";
 import Message from "./models/message";
 import Research from "./models/research";
 import ResearchTask from "./models/research-task";
+import Defense from "./models/defense";
+import Ships from "./models/ships";
 
 export default async function initDatabase() {
     const entities = [
         User, Player, Planet, PlanetBuildings, BuildTask, Message,
-        Research, ResearchTask
+        Research, ResearchTask, Defense, Ships
     ];
     const dbConfig = config.get("db");
     const databaseOptions: any = {
