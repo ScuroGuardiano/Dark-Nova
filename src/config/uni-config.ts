@@ -265,6 +265,10 @@ const uniConfig = convict({
     researchQueueLimit: {
         normal: { format: "int", default: 1 },
         premium: { format: "int", default: 5 }
+    },
+    shipyardQueueLimit: {
+        normal: { format: "int", default: 100 },
+        premium: { format: "int", default: 200 }
     }
 });
 

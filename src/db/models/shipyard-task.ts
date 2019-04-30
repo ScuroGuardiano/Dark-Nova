@@ -6,7 +6,7 @@ This file and project is licensed under the MIT license
 See file LICENSE in the root of this project or go to <https://opensource.org/licenses/MIT> for full license details.
 */
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
-import ITask from "game/interfaces/task";
+import ITask from "../../game/interfaces/task";
 
 
 export enum ShipyardStructureType {
