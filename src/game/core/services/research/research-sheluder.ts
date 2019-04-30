@@ -46,13 +46,13 @@ export default class ResearchSheluder {
 
             const researchTime = calculator.calculateResearchTime(cost);
             const startTime = Date.now();
-            const researchTask = ResearchTask.createNew(
-                planet.id,
-                player.id,
-                techName,
-                new Date(startTime),
-                new Date(startTime + researchTime)
-            );
+            const researchTask = ResearchTask.createNew({ 
+                planetId: planet.id,
+                playerId: player.id,
+                researchName: techName,
+                startTime: new Date(startTime),
+                finishTime: new Date(startTime + researchTime)
+            });
             subtractResources(planet, cost);
 
             researchQueue.push(researchTask);
@@ -74,13 +74,13 @@ export default class ResearchSheluder {
         const researchTime = calculator.calculateResearchTime(cost);
         const startTime = (researchQueue.back()).finishTime;
 
-        const researchTask = ResearchTask.createNew(
-            planet.id,
-            player.id,
-            techName,
+        const researchTask = ResearchTask.createNew({
+            planetId: planet.id,
+            playerId: player.id,
+            researchName: techName,
             startTime,
-            new Date(startTime.getTime() + researchTime)
-        );
+            finishTime: new Date(startTime.getTime() + researchTime)
+        });
         researchQueue.push(researchTask);
         await researchQueue.save(manager);
         return true;

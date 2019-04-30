@@ -50,12 +50,12 @@ export default class BuildSheluder {
 
             const buildTime = calculator.calculateBuildTime(cost, buildingLevel);
             const startTime = Date.now();
-            const buildTask = BuildTask.createNew(
+            const buildTask = BuildTask.createNew({
                 planet,
                 buildingName,
-                new Date(startTime),
-                new Date(startTime + buildTime)
-            );
+                startTime: new Date(startTime),
+                finishTime: new Date(startTime + buildTime)
+            });
             subtractResources(planet, cost);
 
             buildQueue.push(buildTask);
@@ -80,11 +80,12 @@ export default class BuildSheluder {
         const buildTime = calculator.calculateBuildTime(cost, buildingLevel);
         const startTime = (buildQueue.back()).finishTime;
 
-        const buildTask = BuildTask.createNew(planet,
+        const buildTask = BuildTask.createNew({
+            planet,
             buildingName,
             startTime,
-            new Date(startTime.getTime() + buildTime)
-        );
+            finishTime: new Date(startTime.getTime() + buildTime)
+        });
         buildQueue.push(buildTask);
         await buildQueue.save(manager);
         return true;

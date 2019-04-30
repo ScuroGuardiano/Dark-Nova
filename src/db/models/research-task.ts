@@ -29,7 +29,10 @@ export default class ResearchTask extends BaseEntity implements ITask {
 
     @Column({ nullable: false })
     public finishTime: Date;
-    public static createNew(planetId: number, playerId: number, researchName: string, startTime: Date, finishTime: Date) {
+    public static createNew(
+        { planetId, playerId, researchName, startTime, finishTime }:
+        { planetId: number; playerId: number; researchName: string; startTime: Date; finishTime: Date; }
+    ) {
         const task = new ResearchTask();
         task.planetId = planetId;
         task.playerId = playerId;

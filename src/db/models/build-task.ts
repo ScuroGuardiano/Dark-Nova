@@ -39,7 +39,10 @@ export default class BuildTask extends BaseEntity implements ITask {
 
     @Column({ nullable: false })
     public finishTime: Date;
-    public static createNew(planet: Planet, buildingName: string, startTime: Date, finishTime: Date, taskType = BuildTaskType.BUILD) {
+    public static createNew(
+        { planet, buildingName, startTime, finishTime, taskType = BuildTaskType.BUILD }:
+        { planet: Planet; buildingName: string; startTime: Date; finishTime: Date; taskType?: BuildTaskType; }
+    ) {
         const buildTask = new BuildTask();
         buildTask.planet = planet;
         buildTask.buildingName = buildingName;
