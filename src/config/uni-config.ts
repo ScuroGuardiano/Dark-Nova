@@ -16,6 +16,7 @@ const uniConfig = convict({
         fleet: { format: strictNumber, default: 1 },
         buildings: { format: strictNumber, default: 1 },
         research: { format: strictNumber, default: 1 },
+        shipyard: { format: strictNumber, default: 1 },
         production: { format: strictNumber, default: 1 }
     },
     storageMultipler: { format: strictNumber, default: 1 },

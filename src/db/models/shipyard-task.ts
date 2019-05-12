@@ -38,14 +38,16 @@ export default class ShipyardTask extends BaseEntity implements ITask {
     public finishTime: Date;
 
     public static createNew(
-        { planetId, structureType, structureName, startTime, finishTime }: 
-        { planetId: number; structureType: ShipyardStructureType; structureName: string; startTime: Date; finishTime: Date; }
+        { planetId, structureType, structureName, amount = 1, startTime, finishTime }: 
+        { planetId: number; structureType: ShipyardStructureType; structureName: string; amount: number; startTime: Date; finishTime: Date; }
     ) {
         const shipyardTask = new ShipyardTask();
         shipyardTask.planetId = planetId;
         shipyardTask.structureName = structureName;
         shipyardTask.structureType = structureType;
+        shipyardTask.amount = amount;
         shipyardTask.startTime = startTime;
         shipyardTask.finishTime = finishTime;
+        return shipyardTask;
     }
 }

@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 @Entity()
 export default class Defense {
+    [key: string]: any;
     @PrimaryGeneratedColumn('increment')
     public id: number;
     @Column('bigint', { default: 0, nullable: false })

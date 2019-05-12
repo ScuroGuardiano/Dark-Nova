@@ -23,7 +23,7 @@ export default class ShipyardQueue extends BaseTaskQueue<ShipyardTask> {
         ]);
         return this;
     }
-    public async countElementsForStructureName(structureName: string) {
+    public countElementsForStructureName(structureName: string) {
         return this.elements.reduce((count, current): number => {
             if (current.structureName === structureName)
                 return count + 1;
