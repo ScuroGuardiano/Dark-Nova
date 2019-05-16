@@ -27,6 +27,7 @@ import * as colors from 'colors/safe';
 import * as util from 'util';
 import initDatabase from './db';
 import waitForLogger from './logger/wait-for-logger';
+import createAPIRouter from './api';
 
 class DarkNova {
     private readonly server: Server;
@@ -40,6 +41,9 @@ class DarkNova {
         this.printInfo();
         this.printConfigWarnings();
         await this.loadNeededModules();
+        if(config.get('exposeAPI')) {
+            this.server.registerRouter('/api', await createAPIRouter());
+        }
         this.server.start();
     }
     ////////////////////////////////////////////////////////////////////////////

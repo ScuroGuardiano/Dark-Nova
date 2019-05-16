@@ -1,0 +1,12 @@
+{
+    "name": "Dark Nova",
+    "version": "1.0.0",
+    "description": "OGame private server",
+    "title": "Dark Nova API Documentation",
+    "url": "/api/v1",
+    "order": [
+        "Register",
+        "Login",
+        "DestroySession"
+    ]
+}

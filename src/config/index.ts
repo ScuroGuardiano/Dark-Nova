@@ -29,6 +29,12 @@ const config = convict({
         default: "debug",
         env: "LOGGING_LEVEL"
     },
+    exposeAPI: {
+        doc: "Expose API routes",
+        format: [true, false],
+        default: false,
+        env: "EXPOSE_API"
+    },
     db: {
         dialect: {
             doc: "Database dialect (sqlite, mysql, postgres, mssql)",

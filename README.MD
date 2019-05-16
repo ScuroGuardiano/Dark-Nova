@@ -30,6 +30,12 @@ EDIT!!! New feature!! You can build buildings now! They are doing ~~nothing~~ so
 ## Some c00l scr33n
 ![C00l Scr33n](screens/scr1.png)
 
+## API
+I added some API to create frontend client in javascript framework. It is in src/api folder.  
+To enable this API you must set EXPOSE_API enviroment variable to true or set in config file ``` "exposeAPI": true ```  
+### Generate API dosc
+I use apidoc for API documentation, to generate documentation in HTML head here for instructions: https://github.com/apidoc/apidoc
+
 ## Legal
 This Project is in no way affiliated with, authorized, maintained, sponsored or endorsed by Gameforge or any of its affiliates or subsidiaries. Using the Project might be against the TOS.
 

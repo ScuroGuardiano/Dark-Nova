@@ -79,6 +79,9 @@ export default class Server {
             process.nextTick(cb);
         }
     }
+    public registerRouter(path: string, router: express.Router) {
+        this.app.use(path, router);
+    }
 
     //Private methods
     private configureServer() {
@@ -97,7 +100,7 @@ export default class Server {
         //For 2xx and 3xx normal logging
         this.app.use(morgan('short', {
             stream: loggerSuccessStream,
-            skip(req, res) { return res.statusCode > 400; }
+            skip(req, res) { return res.statusCode >= 400; }
         }));
         // ============= body-parser =============
         this.app.use(bodyParser.urlencoded({ extended: true }));

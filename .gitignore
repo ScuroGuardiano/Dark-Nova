@@ -6,3 +6,4 @@ logs
 config/*
 *.sqlite
 notes.txt
+apidoc
