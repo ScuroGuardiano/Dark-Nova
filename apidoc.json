@@ -5,8 +5,10 @@
     "title": "Dark Nova API Documentation",
     "url": "/api/v1",
     "order": [
+        "Auth",
         "Register",
         "Login",
-        "DestroySession"
+        "DestroySession",
+        "Account Management"
     ]
 }

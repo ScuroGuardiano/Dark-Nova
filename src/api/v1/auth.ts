@@ -3,7 +3,6 @@ import logger from '@logger';
 import { inspect } from 'util';
 import { default as UserService, Errors as UserErrors } from '../../login/service';
 import APIRequest from './interfaces/api-request';
-import { SessionNotFoundError } from 'server-sessions';
 
 const router = express.Router();
 export default router;
@@ -11,13 +10,13 @@ export default router;
 const userService = new UserService();
 
 /**
- * @api {post} /register Register user
+ * @api {post} /auth/register Register user
  * @apiVersion 1.0.0
  * @apiName Register
  * @apiGroup Auth
  * 
- * @apiParam {String} email User's email
- * @apiParam {String} password User's password
+ * @apiParam {string} email User's email
+ * @apiParam {string} password User's password
  * 
  * @apiParamExample {json} Request-Example:
  *      {
@@ -25,7 +24,7 @@ const userService = new UserService();
  *          "password": "V3ry_57r0ng_p4$$w0rd"
  *      }
  * 
- * @apiSuccess (200) {string}  token Session token
+ * @apiSuccess (Success Response (200)) {string}  token Session token
  * 
  * @apiSuccessExample {json} Success-Response:
  *      HTTP/1.1 200 OK
@@ -83,7 +82,7 @@ router.post('/register', async (req: APIRequest, res, next) => {
 });
 
 /**
- * @api {post} /login Login
+ * @api {post} /auth/login Login
  * @apiVersion 1.0.0
  * @apiName Login
  * @apiGroup Auth
@@ -97,7 +96,7 @@ router.post('/register', async (req: APIRequest, res, next) => {
  *          "password": "V3ry_57r0ng_p4$$w0rd"
  *      }
  *
- * @apiSuccess (200) {string}  token Session token
+ * @apiSuccess (Success Response (200)) {string}  token Session token
  *
  * @apiSuccessExample {json} Success-Response:
  *      HTTP/1.1 200 OK
@@ -140,12 +139,12 @@ router.post('/login', async (req: APIRequest, res, next) => {
     }
 });
 /**
- * @api {delete} /destroy-session Destroy session
+ * @api {delete} /auth/destroy-session Destroy session
  * @apiVersion 1.0.0
  * @apiName DestroySession
  * @apiGroup Auth
  *
- * @apiParam {String} token SessionToken
+ * @apiParam {string} token SessionToken
  *
  * @apiParamExample {json} Request-Example:
  *      {
@@ -177,6 +176,6 @@ router.use((err: any, req: express.Request, res: express.Response, next: express
     logger.error("API::Login: %s", inspect(err));
     return res.send({
         statusCode: 500,
-        message: "Internal Error"
+        error: "INTERNAL_ERROR"
     });
 });

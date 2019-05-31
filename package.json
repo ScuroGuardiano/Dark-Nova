@@ -9,7 +9,8 @@
     "dev": "tsc --project ./tsconfig.json && node index --env development",
     "watch": "concurrently \"tsc --watch\" \"nodemon\"",
     "production": "tsc -p . && node index --env production",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "apidoc": "apidoc -i src/ -o apidoc/"
   },
   "author": "ScuroGuardiano",
   "license": "MIT",

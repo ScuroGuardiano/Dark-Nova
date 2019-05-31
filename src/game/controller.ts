@@ -26,6 +26,9 @@ router.post('/createPlayer', async(req: NovaRequest, res) => {
             await core.createNewPlayer(nickname);
             return res.redirect('/game/');
         }
+        return res.render('game/create-player', {
+            error: "Yo must send nickname!"
+        });
     }
     catch(err) {
         if(err instanceof PlayerErrors.InvalidNickname) {
