@@ -6,6 +6,7 @@ import PlayerService from "./services/player";
 import Updater from "./services/updating/updater";
 import BuildingService from "./services/building";
 import ResearchService from "./services/research";
+import PlanetDoesNotBelongToPlayer from "./errors/planet-not-belong-to-player";
 
 /**
  * NovaCore controls whole game logic by using various services  
@@ -73,6 +74,9 @@ export default class NovaCore {
             if(planet) {
                 //Planet does belong to player, we can assign it to this.planet, in other case default planet will be loaded
                 this.planet = planet;
+            }
+            else {
+                throw new PlanetDoesNotBelongToPlayer(planetId, this.player.id);
             }
         }
         else {
