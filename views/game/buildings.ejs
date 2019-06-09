@@ -5,7 +5,7 @@
     <p class="window-title">Planet  &quot;<%=planet.name%>&quot; (<%=player.nickname%>) - Buildings</p>
     <div>
         <% buildQueue.forEach(el => {%> 
-            <%=el.buildingName%> | <%=el.startTime%> | <%=el.finishTime%><br>
+            <%=el.buildingName%> | Time Remain: <%=Math.floor((el.finishTime - Date.now())/1000)%>s<br>
         <%})%>
     </div>
         <% buildings.forEach(building => { %>
@@ -29,13 +29,6 @@
                     &nbsp;&nbsp;Energy: <b><%=building.cost.energy%></b><br>
                 <%}%>
                 Building time: <%=Math.floor(building.buildTime / 1000)%>s
-                    
-                <%if(buildQueue.finishTime) {%>
-                    Time Remain:    <% buildQueue.forEach(el => {%> 
-                                        <%=Math.floor((el.finishTime - Date.now())/1000)%> 
-                                    <%})%>s
-                <%}%>
-                
             </div>
             <div class="building-build">
                 <a onclick="sheludeBuildTask('<%=building.key%>')" href="#">Build to level: <%=building.level + 1%></a>
