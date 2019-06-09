@@ -50,20 +50,24 @@ routerek.post('/create-player', async (req: APIRequest, res: APIResponse, next) 
             await core.createNewPlayer(nickname);
             return res.status(201).send();
         }
-        return res.status(400).json(apiError(400, "INVALID_REQUEST"));
+        return apiError(res, 400, "INVALID_REQUEST");
     }
     catch(err) {
         if(err instanceof PlayerErrors.InvalidNickname) {
-            return res.status(400).json(apiError(400, "INVALID_NICKNAME"));
+            return apiError(res, 400, "INVALID_NICKNAME");
         }
         if(err instanceof PlayerErrors.NicknameIsInUse) {
-            return res.status(400).json(apiError(400, "NICKNAME_IN_USE"));
+            return apiError(res, 400, "NICKNAME_IN_USE");
         }
         if(err instanceof PlayerErrors.UserAlreadyGotPlayer) {
-            return res.status(400).json(apiError(400, "USER_ALREADY_GOT_PLAYER"));
+            return apiError(res, 400, "USER_ALREADY_GOT_PLAYER");
         }
         return next(err);
     }
+});
+
+routerek.get('/overview', async (req: APIRequest, res: APIResponse) => {
+
 });
 
 //Da Error Handla
