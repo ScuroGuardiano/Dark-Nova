@@ -37,9 +37,12 @@ export default class ShipyardTask extends BaseEntity implements ITask {
     @Column({ nullable: false })
     public finishTime: Date;
 
+    @Column({ nullable: false })
+    public unitBuildTime: number;
+
     public static createNew(
-        { planetId, structureType, structureName, amount = 1, startTime, finishTime }: 
-        { planetId: number; structureType: ShipyardStructureType; structureName: string; amount: number; startTime: Date; finishTime: Date; }
+        { planetId, structureType, structureName, amount = 1, startTime, finishTime, unitBuildTime }:
+        { planetId: number; structureType: ShipyardStructureType; structureName: string; amount: number; startTime: Date; finishTime: Date; unitBuildTime: number; }
     ) {
         const shipyardTask = new ShipyardTask();
         shipyardTask.planetId = planetId;
@@ -48,6 +51,7 @@ export default class ShipyardTask extends BaseEntity implements ITask {
         shipyardTask.amount = amount;
         shipyardTask.startTime = startTime;
         shipyardTask.finishTime = finishTime;
+        shipyardTask.unitBuildTime = unitBuildTime;
         return shipyardTask;
     }
 }

@@ -10,7 +10,7 @@ import { haveEnoughResources, subtractResources } from "../../utils";
 import calculateShipyardTaskBuildTime from "./calculate-build-time";
 
 export default class ShipyardSheluder {
-    constructor(private planet: Planet) {}
+    constructor(private readonly planet: Planet) {}
     /**
      * Performing ACID operation of adding new shipyard task.
      * Loads planet again from DB in transaction
@@ -49,9 +49,11 @@ export default class ShipyardSheluder {
         // At the moment of shelude, so it makes job much easier
         if(!haveEnoughResources(planet, { ...totalCost, energy: 0 }))
             return false;
-        
+
+        //TODO: Conditions check
         //TODO: T E C H N O L O G Y   C H E  C K
         const buildTime = calculateShipyardTaskBuildTime(totalCost, planet);
+        const unitBuildTime = buildTime / amount;
         const startTime = shipyardQueue.isEmpty() ? Date.now() : shipyardQueue.back().finishTime.getTime();
         const finishTime = startTime + buildTime;
         const task = ShipyardTask.createNew({
@@ -60,7 +62,8 @@ export default class ShipyardSheluder {
             structureName: structureKey,
             amount: amount,
             startTime: new Date(startTime),
-            finishTime: new Date(finishTime)
+            finishTime: new Date(finishTime),
+            unitBuildTime: unitBuildTime
         });
         subtractResources(planet, totalCost);
         shipyardQueue.push(task);
