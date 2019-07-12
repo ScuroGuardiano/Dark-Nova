@@ -36,7 +36,7 @@
     "dotenv": "^6.2.0",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.13",
     "module-alias": "^2.2.0",
     "morgan": "^1.9.1",
     "reflect-metadata": "^0.1.13",
