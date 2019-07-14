@@ -28,6 +28,7 @@ import { NovaRequest } from './typings';
 import * as path from 'path';
 import { inspect } from 'util';
 import * as colors from 'colors/safe';
+import * as cors from 'cors';
 
 const SESSIONS_CONFIG = config.get("client-sessions");
 
@@ -89,6 +90,10 @@ export default class Server {
         this.configureMiddlewares();
     }
     private configureMiddlewares() {
+        // ============= C O R S ==================
+        if(config.get('env') == "development") {
+            this.app.use(cors());
+        }
         // ============= static files =============
         this.app.use("/public", express.static('./public'));
         // ============= Mo(r)gan =============
