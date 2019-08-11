@@ -7,6 +7,7 @@ import * as PlayerErrors from '@core/errors/player';
 import apiError from './helpers/api-error';
 import logger from '@logger';
 import { inspect } from 'util';
+import initCore from '../../game/middlewares/init-core';
 
 const routerek = express.Router();
 export default routerek;
@@ -66,6 +67,11 @@ routerek.post('/create-player', async (req: APIRequest, res: APIResponse, next) 
     }
 });
 
+routerek.use(initCore);
+// ==== ROUTES BELOW REQUIRE PLAYER TO EXISTS!!! ==== //
+// ==== ROUTES BELOW LOADS OR CREATES PLANET!!!! ==== //
+
+// < G E T   R O U T E S > //
 routerek.get('/overview', async (req: APIRequest, res: APIResponse) => {
 
 });

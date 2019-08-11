@@ -8,7 +8,7 @@ import apiError from "../helpers/api-error";
 
 /**
  * Inits and loads **NovaCore** to **_res.locals.core_**  
- * If planetId get param is specified, it will use it, if no, it will load first player planet
+ * If planetId get param is specified, it will use it, if no, it will load first player planet  
  * **Requires** _User_ placed in **_res.locals.user_**  
  * Can return 2 errors, I think it's easy to understand what they mean :)
 ```js
