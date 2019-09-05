@@ -7,7 +7,9 @@ import * as PlayerErrors from '@core/errors/player';
 import apiError from './helpers/api-error';
 import logger from '@logger';
 import { inspect } from 'util';
-import initCore from '../../game/middlewares/init-core';
+import IPlayer from './interfaces/dtos/player';
+import IPlanet from './interfaces/dtos/planet';
+import initCore from './middleware/init-core';
 
 const routerek = express.Router();
 export default routerek;
@@ -72,8 +74,73 @@ routerek.use(initCore);
 // ==== ROUTES BELOW LOADS OR CREATES PLANET!!!! ==== //
 
 // < G E T   R O U T E S > //
-routerek.get('/overview', async (req: APIRequest, res: APIResponse) => {
+routerek.get('/basic-data', async(req: APIRequest, res: APIResponse, next: express.NextFunction) => {
+    try {
+        const core = res.locals.core;
+        const player = core.$player;
+        const planet = core.$planet;
 
+        const response = {
+            player: {
+                nickname: player.nickname
+            },
+            planet: {
+                name: planet.name,
+                energy: planet.energy,
+                energyUsage: planet.usedEnergy,
+                metal: planet.metal,
+                crystal: planet.crystal,
+                deuterium: planet.deuter,
+                metalPerHour: planet.metalPerHour,
+                crystalPerHour: planet.crystalPerHour,
+                deuteriumPerHour: planet.deuteriumPerHour,
+                metalStorage: planet.metalStorage,
+                crystalStorage: planet.crystalStorage,
+                deuteriumStorage: planet.deuteriumStorage
+            }
+        } as {
+            player: Partial<IPlayer>,
+            planet: Partial<IPlanet>
+        };
+
+        return res.status(200).json(response);
+    }
+    catch(err) {
+        next(err);
+    }
+});
+routerek.get('/overview', async (req: APIRequest, res: APIResponse, next: express.NextFunction) => {
+    try {
+        const core = res.locals.core;
+        const player = core.$player;
+        const planet = core.$planet;
+
+        const response = {
+            player: {
+                nickname: player.nickname
+            },
+            planet: {
+                name: planet.name,
+                maxFields: planet.maxFields,
+                usedFields: planet.usedFields,
+                galaxy: planet.galaxy,
+                system: planet.system,
+                position: planet.position,
+                diameter: planet.diameter,
+                minTemperature: planet.minTemperature,
+                maxTemperature: planet.maxTemperature,
+                planetType: planet.planetType
+            }
+        } as {
+            player: Partial<IPlayer>,
+            planet: Partial<IPlanet>
+        };
+        
+        return res.status(200).json(response);
+    }
+    catch(err) {
+        next(err);
+    }
 });
 
 //Da Error Handla
