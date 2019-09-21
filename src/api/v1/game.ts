@@ -146,7 +146,7 @@ routerek.get('/overview', async (req: APIRequest, res: APIResponse, next: expres
 //Da Error Handla
 routerek.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
     logger.error("API::Game: %s", inspect(err));
-    return res.send({
+    return res.status(500).send({
         statusCode: 500,
         error: "INTERNAL_ERROR"
     });
