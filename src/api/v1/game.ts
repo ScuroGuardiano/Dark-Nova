@@ -10,6 +10,9 @@ import { inspect } from 'util';
 import IPlayer from './interfaces/dtos/player';
 import IPlanet from './interfaces/dtos/planet';
 import initCore from './middleware/init-core';
+import IBuildingInfo from './interfaces/dtos/building-info';
+import IBuildTask from './interfaces/dtos/build-task';
+import { BuildTaskType } from '../../db/models/build-task';
 
 const routerek = express.Router();
 export default routerek;
@@ -72,6 +75,8 @@ routerek.post('/create-player', async (req: APIRequest, res: APIResponse, next) 
 routerek.use(initCore);
 // ==== ROUTES BELOW REQUIRE PLAYER TO EXISTS!!! ==== //
 // ==== ROUTES BELOW LOADS OR CREATES PLANET!!!! ==== //
+
+//TODO: Add api docs to routes below
 
 // < G E T   R O U T E S > //
 routerek.get('/basic-data', async(req: APIRequest, res: APIResponse, next: express.NextFunction) => {
@@ -137,6 +142,46 @@ routerek.get('/overview', async (req: APIRequest, res: APIResponse, next: expres
         };
         
         return res.status(200).json(response);
+    }
+    catch(err) {
+        next(err);
+    }
+});
+routerek.get('/buildings', async (req: APIRequest, res: APIResponse, next: express.NextFunction) => {
+    try {
+        const core = res.locals.core;
+        const planet = core.$planet;
+        const calculator = core.building.$calculator;
+        const buildingsInfo: IBuildingInfo[] = [];
+
+        planet.buildings.getBuildingsList().forEach(building => {
+            const cost = calculator.calculateCostForBuild(building.key, building.level);
+            const buildTime = calculator.calculateBuildTime(cost, building.level);
+            buildingsInfo.push({
+                key: building.key,
+                level: building.level,
+                cost,
+                buildTime
+            });
+        });
+
+        const buildQueueRaw = await core.building.getBuildQueue();
+        //Convert BuildTask DB objects to simplified ones
+        const buildQueue: IBuildTask[] = buildQueueRaw.toArray().map((buildTask): IBuildTask => {
+            const taskType: "construction" | "destruction" =
+                buildTask.taskType == BuildTaskType.BUILD ? "construction" : "destruction";
+            return {
+                taskId: buildTask.id,
+                taskType,
+                buildingKey: buildTask.buildingName,
+                startTime: buildTask.startTime.getTime(),
+                finishTime: buildTask.finishTime.getTime()
+            };
+        });
+
+        return res.status(200).json({
+            buildingsInfo, buildQueue
+        });
     }
     catch(err) {
         next(err);
