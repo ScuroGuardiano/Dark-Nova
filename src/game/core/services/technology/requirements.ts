@@ -172,8 +172,190 @@ export const technologies: IRequirementList = {
 };
 
 export const ships: IRequirementList = {
-
+    smallCargo: {
+        buildings: {
+            shipyard: 2
+        },
+        research: {
+            combustionDrive: 2
+        }
+    },
+    largeCargo: {
+        buildings: {
+            shipyard: 4
+        },
+        research: {
+            combustionDrive: 6
+        }
+    },
+    lightFighter: {
+        buildings: {
+            shipyard: 1
+        },
+        research: {
+            combustionDrive: 1
+        }
+    },
+    heavyFighter: {
+        buildings: {
+            shipyard: 3
+        },
+        research: {
+            impulseDrive: 2,
+            armourTechnology: 2
+        }
+    },
+    cruiser: {
+        buildings: {
+            shipyard: 5
+        },
+        research: {
+            impulseDrive: 4,
+            ionTechnology: 2
+        }
+    },
+    battleship: {
+        buildings: {
+            shipyard: 7
+        },
+        research: {
+            hyperspaceDrive: 4
+        }
+    },
+    battlecruiser: {
+        buildings: {
+            shipyard: 8
+        },
+        research: {
+            hyperspaceDrive: 5,
+            hyperspaceTechnology: 5,
+            laserTechnology: 12
+        }
+    },
+    bomber: {
+        buildings: {
+            shipyard: 8
+        },
+        research: {
+            impulseDrive: 6,
+            plasmaTechnology: 5
+        }
+    },
+    destroyer: {
+        buildings: {
+            shipyard: 9
+        },
+        research: {
+            hyperspaceDrive: 6,
+            hyperspaceTechnology: 5
+        }
+    },
+    deathstar: {
+        buildings: {
+            shipyard: 12
+        },
+        research: {
+            hyperspaceDrive: 7,
+            hyperspaceTechnology: 6,
+            gravitonTechnology: 1
+        }
+    },
+    recycler: {
+        buildings: {
+            shipyard: 4
+        },
+        research: {
+            combustionDrive: 6,
+            shieldingTechnology: 2
+        }
+    },
+    espionageProbe: {
+        buildings: {
+            shipyard: 3
+        },
+        research: {
+            combustionDrive: 3,
+            espionageTechnology: 2
+        }
+    },
+    solarSatellite: {
+        buildings: {
+            shipyard: 1
+        }
+    },
+    colonyShip: {
+        buildings: {
+            shipyard: 4
+        },
+        research: {
+            impulseDrive: 3
+        }
+    }
 };
 export const defense: IRequirementList = {
-
+    rocketLauncher: {
+        buildings: {
+            shipyard: 1
+        }
+    },
+    lightLaser: {
+        buildings: {
+            shipyard: 2
+        },
+        research: {
+            laserTechnology: 3,
+            energyTechnology: 1
+        }
+    },
+    heavyLaser: {
+        buildings: {
+            shipyard: 4
+        },
+        research: {
+            energyTechnology: 3,
+            laserTechnology: 6
+        }
+    },
+    ionCannon: {
+        buildings: {
+            shipyard: 4
+        },
+        research: {
+            ionTechnology: 4
+        }
+    },
+    gaussCannon: {
+        buildings: {
+            shipyard: 6
+        },
+        research: {
+            energyTechnology: 6,
+            weaponTechnology: 3,
+            shieldingTechnology: 1
+        }
+    },
+    plasmaTurret: {
+        buildings: {
+            shipyard: 8
+        },
+        research: {
+            plasmaTechnology: 7
+        }
+    },
+    smallShieldDome: {
+        buildings: {
+            shipyard: 1
+        },
+        research: {
+            shieldingTechnology: 2
+        }
+    },
+    largeShieldDome: {
+        buildings: {
+            shipyard: 6
+        },
+        research: {
+            shieldingTechnology: 6
+        }
+    }
 };

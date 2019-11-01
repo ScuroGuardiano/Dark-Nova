@@ -23,6 +23,24 @@ export default class TechnologyChecker {
         meetsRequirements = this.checkTechnologies(requirementList, meetsRequirements);
         return meetsRequirements;
     }
+    public checkForShip(shipName: string) {
+        const requirementList = requirements.ships[shipName];
+        if(!requirementList)
+            return true;
+        let meetsRequirements = true;
+        meetsRequirements = this.checkBuildings(requirementList, meetsRequirements);
+        meetsRequirements = this.checkTechnologies(requirementList, meetsRequirements);
+        return meetsRequirements;
+    }
+    public checkForDefense(defenseName: string) {
+        const requirementList = requirements.defense[defenseName];
+        if (!requirementList)
+            return true;
+        let meetsRequirements = true;
+        meetsRequirements = this.checkBuildings(requirementList, meetsRequirements);
+        meetsRequirements = this.checkTechnologies(requirementList, meetsRequirements);
+        return meetsRequirements;
+    }
 
     private checkTechnologies(requirementList: IRequirement, meetsRequirements: boolean) {
         if (meetsRequirements && requirementList.research) {

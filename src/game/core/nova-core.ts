@@ -7,6 +7,7 @@ import Updater from "./services/updating/updater";
 import BuildingService from "./services/building";
 import ResearchService from "./services/research";
 import PlanetDoesNotBelongToPlayer from "./errors/planet-not-belong-to-player";
+import ShipyardService from "./services/shipyard";
 
 /**
  * NovaCore controls whole game logic by using various services  
@@ -30,6 +31,7 @@ export default class NovaCore {
     private player: Player;
     private _buildingService: BuildingService;
     private _researchService: ResearchService;
+    private _shipyardService: ShipyardService;
     private _planetService: PlanetService;
     private _playerService: PlayerService;
     private _initialized = false;
@@ -56,6 +58,9 @@ export default class NovaCore {
         return this._researchService ?
             this._researchService
             : this._researchService = new ResearchService(this.player, this.planet);
+    }
+    public get shipyard() {
+        return this._shipyardService ? this._shipyardService : this._shipyardService = new ShipyardService(this.player, this.planet);
     }
 
     public constructor(private readonly userId: string) {}

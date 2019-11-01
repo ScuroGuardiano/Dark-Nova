@@ -2,12 +2,13 @@ import Planet from "@db/models/planet";
 import { Resources } from "../../../data-types/resources";
 import { SHIPS, DEFENSE } from "./ships-and-defense";
 import ShipyardSheluder from "./shipyard-sheluder";
+import Player from "@db/models/player";
 
 export default class ShipyardService {
-    constructor(private readonly planet: Planet) {}
     private sheluder: ShipyardSheluder;
+    constructor(private readonly player: Player, private readonly planet: Planet) {}
     public get $sheluder() {
-        return this.sheluder ? this.sheluder : this.sheluder = new ShipyardSheluder(this.planet);
+        return this.sheluder ? this.sheluder : this.sheluder = new ShipyardSheluder(this.planet, this.player);
     }
     public getShipCost(shipKey: string): Resources {
         const ship = SHIPS.find(s => s.key === shipKey);

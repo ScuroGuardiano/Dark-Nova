@@ -4,7 +4,8 @@ Dark Nova is a OGame Private Server made in Node.js using express and ~~sequeliz
 It's currently under development and it is ~~doing nothing~~ creating and showing planet ^^  
 It can even update planet now! You can watch as you gather more and more metal and crystal &lt;3  
 EDIT!!! New feature!! You can build buildings now! They are doing ~~nothing~~ something, so BUILD THIS SH*T!
-
+  
+The UI looks like a sh*t, I will make it better after finishing core features :)
 ## Run
 > Note: To install all dependencies you must have all node-pre-gyp dependencies, like python 2.7
 ```bash
@@ -26,6 +27,7 @@ EDIT!!! New feature!! You can build buildings now! They are doing ~~nothing~~ so
 * Economy  
 * Resource and building tasks updater  
 * Research tasks updater  
+* Shipyard. Ships, defense, this kind of stuff, ya know. Well almost finished...
 
 ## Some c00l scr33n
 ![C00l Scr33n](screens/scr1.png)

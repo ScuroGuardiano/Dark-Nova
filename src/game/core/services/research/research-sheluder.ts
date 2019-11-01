@@ -24,6 +24,12 @@ export default class ResearchSheluder {
         }
 
         const [player, planet] = await this.loadPlayerAndPlanet(manager);
+        //Before doing anything, let's check if there research lab on the planet
+        if(planet.buildings.laboratory <= 0) {
+            logger.debug("Can't create research task when there's no research lab on the planet.");
+            return false;
+        }
+
         const researchQueue = new ResearchQueue(player);
         await researchQueue.load(manager);
 
@@ -46,7 +52,7 @@ export default class ResearchSheluder {
 
             const researchTime = calculator.calculateResearchTime(cost);
             const startTime = Date.now();
-            const researchTask = ResearchTask.createNew({ 
+            const researchTask = ResearchTask.createNew({
                 planetId: planet.id,
                 playerId: player.id,
                 researchName: techName,

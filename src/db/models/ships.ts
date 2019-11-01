@@ -11,6 +11,8 @@ export default class Ships {
     @Column('bigint', { default: 0, nullable: false })
     public lightFighter = 0;
     @Column('bigint', { default: 0, nullable: false })
+    public heavyFighter = 0;
+    @Column('bigint', { default: 0, nullable: false })
     public cruiser = 0;
     @Column('bigint', { default: 0, nullable: false })
     public battleship = 0;
