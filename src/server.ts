@@ -60,7 +60,7 @@ export default class Server {
     }
 
     //Public methods
-    public start(cb?: Function) {
+    public start(cb?: (err?: any) => void) {
         const callback = cb ? cb : () => {
             logger.info("HTTP Server is listening on %s:%d", this.host, this.port);
         };
@@ -70,7 +70,7 @@ export default class Server {
             logger.info("HTTP Server has been shutted down");
         });
     }
-    public close(cb?: Function) {
+    public close(cb?: (err?: any) => void) {
         if(this.server && this.server.listening) {
             logger.info("Shutting down HTTP Server...");
             this.server.close(cb);
