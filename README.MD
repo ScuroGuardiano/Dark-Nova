@@ -7,8 +7,8 @@ This time I'll use
 1. ***Yarn*** for workspaces
 2. ***NestJS*** + ***TypeORM*** for *SOLID* backend
 3. ***Next.js*** for blazingly fast yet ***reactive*** frontend
-4. ***Angular*** with ***ngx-ui*** for fucking dope admin panel
-5. ***Docker*** & ***Docker compose*** to wrap this shit like wrap from KFC*
+4. ***Angular*** with ***ngx-ui*** for dope admin panel
+5. ***Docker*** & ***Docker compose*** to wrap this s\*\*t like wrap from KFC*
 
 ###### * Project is not sponsored by KFC
 
