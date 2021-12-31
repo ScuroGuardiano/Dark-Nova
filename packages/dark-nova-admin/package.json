@@ -2,11 +2,11 @@
   "name": "dark-nova-admin",
   "version": "0.0.0",
   "scripts": {
-    "ng": "ng",
-    "start:ng": "ng serve",
-    "build:ng": "ng build",
-    "watch:ng": "ng build --watch --configuration development",
-    "test:ng": "ng test"
+    "admin:ng": "ng",
+    "admin:start": "ng serve",
+    "admin:build": "ng build",
+    "admin:watch": "ng build --watch --configuration development",
+    "admin:test": "ng test"
   },
   "private": true,
   "dependencies": {

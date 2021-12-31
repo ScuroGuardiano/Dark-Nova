@@ -2,10 +2,10 @@
   "name": "dark-nova-frontend",
   "private": true,
   "scripts": {
-    "dev:nx": "next dev",
-    "build:nx": "next build",
-    "start:nx": "next start",
-    "lint:nx": "next lint"
+    "front:dev": "next dev",
+    "front:build": "next build",
+    "front:start": "next start",
+    "front:lint": "next lint"
   },
   "dependencies": {
     "next": "12.0.7",
