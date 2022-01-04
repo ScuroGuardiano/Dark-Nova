@@ -10,7 +10,7 @@
     "back:build": "nest build",
     "back:format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "back:start": "nest start",
-    "back:start:dev": "nest start --watch",
+    "back:start:dev": "nest start --watch --preserveWatchOutput",
     "back:start:debug": "nest start --debug --watch",
     "back:start:prod": "node dist/main",
     "back:lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",

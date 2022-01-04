@@ -7185,7 +7185,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express@npm:^4.17.1":
+"express@npm:^4.17.1, express@npm:^4.17.2":
   version: 4.17.2
   resolution: "express@npm:4.17.2"
   dependencies:
@@ -12862,6 +12862,15 @@ __metadata:
   checksum: 29c6990ce9364648255454842f06f8c46fcd124d3e6d7c5066df44662de63cdc0bad032e9bf5a3d653ff72141cc7b6019873d685708ac8210c30458ad99f2b74
   languageName: node
   linkType: hard
+
+"proxy@workspace:packages/proxy":
+  version: 0.0.0-use.local
+  resolution: "proxy@workspace:packages/proxy"
+  dependencies:
+    express: ^4.17.2
+    http-proxy: ^1.18.1
+  languageName: unknown
+  linkType: soft
 
 "prr@npm:~1.0.1":
   version: 1.0.1

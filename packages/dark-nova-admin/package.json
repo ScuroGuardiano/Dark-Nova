@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "admin:ng": "ng",
-    "admin:start": "ng serve",
+    "admin:start": "ng serve --disable-host-check --host=0.0.0.0",
     "admin:build": "ng build",
     "admin:watch": "ng build --watch --configuration development",
     "admin:test": "ng test"
